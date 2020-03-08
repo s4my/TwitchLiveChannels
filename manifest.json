@@ -1,0 +1,38 @@
+{
+  "name": "TTV live channels",
+  "version": "1.0",
+  "description": "TTV live channels extension displays a user followed channels witch are currently live",
+  "browser_action": {
+    "default_title": "TTV live channels",
+    "default_icon": "icons/icon.png",
+    "default_popup": "popup.html"
+  },
+  "icons":{
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "notifications",
+    "activeTab"
+  ],
+  "background": {
+    "run_at": "document_start",
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "matches": [
+        "*://*.player.twitch.tv/?*"
+      ],
+      "js": ["content.js", 
+             "/scripts/tmi.min.js"]
+    }
+  ],
+  "options_page": "options.html",
+  "manifest_version": 2
+}

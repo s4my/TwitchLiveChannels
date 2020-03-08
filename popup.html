@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/scripts/jquery-3.4.1.min.js"></script>  
+    <style>
+      .content{
+        padding-bottom: 10px;
+      }
+      .category{
+        text-transform: capitalize;
+        font-size: 14px;
+        font-weight: 500;
+        padding-left: 1px;
+        padding-bottom: 3px;
+        border-bottom: 1px solid #c5c5c5;
+        margin-bottom: 5px;
+      }
+      .viewerCount{
+        float: right;
+      }
+      .name{
+        font-size: 13px;
+        padding-right: 5px;
+        padding-left: 5px;
+        border-bottom: 1px dashed rgba(197, 197, 197, 0.5);
+        cursor: pointer;
+        height: 22px;
+        vertical-align: middle;
+      }
+      .VOD{
+        color: #929292;
+      }
+      .nostream{
+        text-align: center;
+        font-size: 13px;
+      }
+      .updateBtn{
+        background-image: url('icons/update.png');
+        background-repeat: no-repeat;
+        float: right;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-top: 17px;
+      }
+      .title{
+        display: inline-block;
+      }
+
+    </style>
+  </head>
+  <body style="min-width: 300px; min-height: 100px;">
+    <h2 class="title">LIVE CHANNELS</h2>
+    <div class="updateBtn" title="update"></div>
+    <div class="nostream">      
+      None of the channels you follow are currently online.
+    </div>
+    
+    <div class="content"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>
