@@ -23,8 +23,8 @@ console.log('TTV live channels started.');
 
 async function httpRequest(url){  
   const response = await fetch(url, {method: 'GET', headers: {
-    'Accept'    : 'application/vnd.twitchtv.v5+json',
-    'Client-ID' : 'haeyonp05j4wiphav3eppivtdsvlyoq'
+    'Accept':    'application/vnd.twitchtv.v5+json',
+    'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
   }});
 
   let followedChannels = await response.json();
@@ -33,14 +33,14 @@ async function httpRequest(url){
   let liveChannels = [];
 
   for(channel of followedChannels.follows){
-    let id = channel.channel._id;
+    let id =   channel.channel._id;
     let name = channel.channel.name;
 
     // fetch live status
-    let liveURL    = 'https://api.twitch.tv/kraken/streams/'+id;
+    let liveURL =    'https://api.twitch.tv/kraken/streams/'+id;
     const response = await fetch(liveURL, {method: 'GET', headers: {
-      'Accept'    : 'application/vnd.twitchtv.v5+json',
-      'Client-ID' : 'haeyonp05j4wiphav3eppivtdsvlyoq'
+      'Accept':    'application/vnd.twitchtv.v5+json',
+      'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
     }});
 
     let channelStatus = await response.json();
@@ -59,8 +59,8 @@ async function httpRequest(url){
       let category = (channelStatus.stream.channel.game == '') ? 
                       'UNDEFINED':channelStatus.stream.channel.game;
       
-      let viewers  = channelStatus.stream.viewers;
-      let title    = channelStatus.stream.channel.status;
+      let viewers =  channelStatus.stream.viewers;
+      let title =    channelStatus.stream.channel.status;
      
 
       /*
@@ -77,13 +77,12 @@ async function httpRequest(url){
       */
 
       let data = {
-        'name'     : name,
-        'category' : category,
-        'viewers'  : viewers,
-        'title'    : title,
-        'type'     : stream_type
+        'name':     name,
+        'category': category,
+        'viewers':  viewers,
+        'title':    title,
+        'type':     stream_type
       };
-
 
       liveChannels.push(data);    
     }        
@@ -149,17 +148,17 @@ chrome.storage.onChanged.addListener(function(storedData, namespace) {
     */
     for(channelNew of storedData.liveChannels.newValue){
       let notification_status = true;
-      let updateBadgeStatus   = false;
-      let liveChannelCounter  = storedData.liveChannels.newValue.length;    
+      let updateBadgeStatus =   false;
+      let liveChannelCounter =  storedData.liveChannels.newValue.length;    
 
       for(channelOld of storedData.liveChannels.oldValue){    
         if(channelNew.name == channelOld.name){
           notification_status = false;     
-          updateBadgeStatus   = false;               
+          updateBadgeStatus =   false;               
           break;
         }else{
           notification_status = true;
-          updateBadgeStatus   = true;
+          updateBadgeStatus =   true;
         }        
       }
 
@@ -191,18 +190,18 @@ chrome.storage.onChanged.addListener(function(storedData, namespace) {
 
 function showNotification(channel){
   let notificationID = null;
-  let name           = channel.name;
-  let category       = channel.category;
+  let name =           channel.name;
+  let category =       channel.category;
 
   console.log("showing notification for "+name);
   let notificationOptions = {
-    title    : 'TTV live channels',
-    priority : 0,
-    type     : 'list',
-    message  : `${name} is Live streaming ${category}`,
-    items    : [{title: name, message: ` is Live streaming ${category}`}],
-    iconUrl  : chrome.runtime.getURL("icons/icon-48.png"),
-    buttons  : [{title : 'Open'}]
+    title:    'TTV live channels',
+    priority: 0,
+    type:     'list',
+    message:  `${name} is Live streaming ${category}`,
+    items:    [{title: name, message: ` is Live streaming ${category}`}],
+    iconUrl:  chrome.runtime.getURL("icons/icon-48.png"),
+    buttons:  [{title : 'Open'}]
   };
   
   chrome.notifications.create("", notificationOptions, function(ID){
@@ -213,14 +212,12 @@ function showNotification(channel){
   chrome.notifications.onButtonClicked.addListener(function(ID, btnID) {
     if (ID == notificationID) {
       if (btnID == 0) {  
-        let popupWidth  = 900;
-        let popupHeight = 650;
-    
-        let left = (screen.width/2)-(popupWidth/2);
-        let top  = (screen.height/2)-(popupHeight/2);
-        
+        let popupWidth  =    900;
+        let popupHeight =    650;
+        let left =           (screen.width/2)-(popupWidth/2);
+        let top =            (screen.height/2)-(popupHeight/2);
         let windowsOptions = '?enableExtensions=true&muted=false&player=popout&volume=1,width='+
-                              popupWidth+',height='+popupHeight+',left='+left+',top='+top;
+                             popupWidth+',height='+popupHeight+',left='+left+',top='+top;
         
         // open the popout window of the stream and close the notification
         window.open('https://player.twitch.tv/?channel='+name, '_blank', windowsOptions);

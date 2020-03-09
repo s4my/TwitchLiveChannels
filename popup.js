@@ -88,11 +88,11 @@ chrome.storage.local.get(['liveChannels'], function(result) {
   }
   
   for(channel of result.liveChannels){
-    let name     = channel.name;
+    let name =     channel.name;
     let category = channel.category;
-    let viewers  = channel.viewers;
-    let title    = channel.title;
-    let type     = channel.type;
+    let viewers =  channel.viewers;
+    let title =    channel.title;
+    let type =     channel.type;
 
 
     // update UI
@@ -121,7 +121,7 @@ function animate_updateBtn(d){
 }
 
 
-window.onload = function(){
+window.onload = () => {
   jQuery(".updateBtn").click(function(){
     // fetch update 
     chrome.runtime.sendMessage({"message": "update"});
@@ -135,7 +135,7 @@ window.onload = function(){
     let popupHeight = 650;
 
     let left = (screen.width/2)-(popupWidth/2);
-    let top = (screen.height/2)-(popupHeight/2);
+    let top =  (screen.height/2)-(popupHeight/2);
     
     let windowsOptions = '?enableExtensions=true&muted=false&player=popout&volume=1,width='+
                           popupWidth+',height='+popupHeight+',left='+left+',top='+top;

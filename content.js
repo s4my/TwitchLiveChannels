@@ -17,13 +17,13 @@ console.log("twitch player detected");
 
 
 window.onload = function(){
-	let channel = document.URL.split('=')[1];
+	let channel= 			  document.URL.split('=')[1];
 	let playerButtons = document.getElementsByClassName('player-buttons-right');
 
 	// TODO: add a svg icon instead of 'CHAT' 
 	let button = document.createElement('div');
 	button.className = 'chatBtn';
-	button.style     = 'font-weight: bold;';
+	button.style = 		 'font-weight: bold;';
 	button.innerHTML = `<button class="player-button" type="button">
 											  <span class="player-tip" data-tip="Chat"></span>
 											  <span>
@@ -39,15 +39,15 @@ window.onload = function(){
 		if(document.getElementsByClassName("chat").length == 0){
 			document.getElementById('video-playback').style.width = (document.body.clientWidth - 350).toString()+"px";
 
-			let chat = document.createElement("iframe");
-			chat.className   = "chat";
-			chat.id          = channel;
+			let chat =         document.createElement("iframe");
+			chat.className =   "chat";
+			chat.id =          channel;
 			chat.frameborder = 0;
-			chat.scrolling   = 'no';
-			chat.src         = "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout";
-			chat.height      = "100%";
-		  chat.width       = "350";
-		  chat.style       = "position: absolute; float: right; right: 0px;";
+			chat.scrolling =   'no';
+			chat.src =         "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout";
+			chat.height =      "100%";
+		  chat.width =       "350";
+		  chat.style =       "position: absolute; float: right; right: 0px;";
 
 			document.body.append(chat);
 		}else{
