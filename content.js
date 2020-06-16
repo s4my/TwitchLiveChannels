@@ -51,12 +51,16 @@ window.onload = function(){
 		<div class="tw-tooltip tw-tooltip--align-right tw-tooltip--up">Chat</div>
 	</div>`;
 
+	// TODO: fix the chat (chat is not showing on the right side when i click the chatBtn)
 	playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
-	
 
 	button.addEventListener("click", function() {
+		let video_player = document.getElementsByClassName('video-player__container')[0];
+		video_player.style.position = "fixed";
+		video_player.style.left = "0px";
+
 		if(document.getElementsByClassName("chat").length == 0){
-			document.getElementsByClassName('video-player__container')[0].style.width = (document.body.clientWidth - 350).toString()+"px";
+			video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
 
 			let chat =         document.createElement("iframe");
 			chat.className =   "chat";
@@ -65,12 +69,12 @@ window.onload = function(){
 			chat.scrolling =   'no';
 			chat.src =         "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout&parent=twitch.tv";
 			chat.height =      "100%";
-		  chat.width =       "350";
-		  chat.style =       "position: absolute; float: right; right: 0px;";
+			chat.width =       "350";
+			chat.style =       "position: fixed; top: 0px; right: 0px;";
 
 			document.body.append(chat);
 		}else{
-			document.getElementsByClassName('video-player__default-player')[0].style.width = (document.body.clientWidth).toString()+"px";
+			video_player.style.width = (document.body.clientWidth).toString()+"px";
 			let chat = document.getElementsByClassName('chat')[0];
 			chat.parentNode.removeChild(chat);
 		}
