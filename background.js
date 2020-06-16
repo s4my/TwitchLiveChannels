@@ -1,27 +1,28 @@
-/* 
-  optimization : Gets a list of online streams a user is following 
-  based on a specified OAuth token.
-
-  https://dev.twitch.tv/docs/v5/reference/streams/#get-followed-streams
-*/
-
 /*
   TODO:
-    - add a refresh button
-    - bug: the re-stream streams show like normal streams 'live'
-    - bug: sometimes clicking on streams doesn't open the stream popout
-    - implement the options 
-    - to get the userID:
-      https://api.twitch.tv/helix/users?login=s4my_h4ck3r
-      add header:
-      Client_ID: haeyonp05j4wiphav3eppivtdsvlyoq
+    [~] add a refresh button
+      [X] add phisical button 
+      [X] add an animation
+      [X] add functionality
+      [ ] update the UI as soon as the data is back 
+
+    [ ] implement the options 
+    
+    [ ] to get the userID:
+        https://api.twitch.tv/helix/users?login=s4my_h4ck3r
+        add header:
+        Client_ID: haeyonp05j4wiphav3eppivtdsvlyoq
+    
+    [ ] optimization: Gets a list of live streams a user is following 
+                      based on a specified OAuth token.
+        https://dev.twitch.tv/docs/v5/reference/streams/#get-followed-streams
+
+  BUGS:
+    - the re-stream streams show like normal streams 'live' with 0 viewers
+    - sometimes clicking on streams doesn't open the stream popout
 */
 
-
-console.log('TTV live channels started.');
-
-
-async function httpRequest(url){  
+async function httpRequest(url){ 
   const response = await fetch(url, {method: 'GET', headers: {
     'Accept':    'application/vnd.twitchtv.v5+json',
     'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'

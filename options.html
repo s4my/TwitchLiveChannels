@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-
+    <title>TTV live channels - Options</title>
+    <style>
+      .save_btn{
+        background: #a250f4;
+        padding: 10px;
+        color: #ffffff;
+        font-weight: bold;
+        border: 0px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .save_btn:active{
+        background: #b48cdc;
+      }
+      .save_msg{
+        display: inline-block;
+        color: #4ece37;
+        opacity: 0;
+      }
+    </style>
   </head>
   <body>
-    <div>
+    <div style="display: inline-block;">
       <span>Twitch account name  <input type="text" class="username"></span>      
-    </div>
-    <div>
-      <span>Notifications   <input type="checkbox"></span>
-    </div>
+    </div><br>    
+    <div style="display: inline-block;">
+      <span><input type="checkbox">Show Notifications</span><br>
+      <span><input type="checkbox">Do Not Display Re-Streams</span><br>
+    </div><br>
+    <span><button class="save_btn">SAVE</button> <p class="save_msg">Options Saved.</p></span>
   </body>
 </html>
