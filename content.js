@@ -17,7 +17,7 @@ console.log("twitch player detected");
 
 
 window.onload = function(){
-	let channel= document.URL.split('=')[1];
+	let channel = document.URL.split('=')[1].split('&')[0];
 	let playerButtons = document.getElementsByClassName('player-controls__right-control-group');
 
 	let button = document.createElement('div');
