@@ -213,15 +213,21 @@ function showNotification(channel){
   chrome.notifications.onButtonClicked.addListener(function(ID, btnID) {
     if (ID == notificationID) {
       if (btnID == 0) {  
-        let popupWidth  =    900;
-        let popupHeight =    650;
-        let left =           (screen.width/2)-(popupWidth/2);
-        let top =            (screen.height/2)-(popupHeight/2);
-        let windowsOptions = '?enableExtensions=true&muted=false&player=popout&volume=1,width='+
-                             popupWidth+',height='+popupHeight+',left='+left+',top='+top;
+        let popupWidth = 900;
+        let popupHeight = 650;
+
+        let left = (screen.width/2)-(popupWidth/2);
+        let top =  (screen.height/2)-(popupHeight/2);
+                                  
+        let windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
+        
         
         // open the popout window of the stream and close the notification
-        window.open('https://player.twitch.tv/?channel='+name, '_blank', windowsOptions);
+        window.open('https://player.twitch.tv/?channel='+name+
+                    "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                    '_about', windowsOptions);
+        window.close();
+
         chrome.notifications.clear(notificationID);
       }
     }

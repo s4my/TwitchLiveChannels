@@ -1,5 +1,7 @@
 (function () {
   function updateUI(name, category, viewers, title, type){
+    title = title.replace(/"/g, "&quot;");
+    
     // hide the nostream div if there are streams online
     jQuery('.nostream').hide();
     
@@ -138,8 +140,9 @@
       let windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
       
       
-      window.open(jQuery(this).attr("data-url")+"&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-      				    '_about', windowsOptions);
+      window.open(jQuery(this).attr("data-url")+
+                  "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                  '_about', windowsOptions);
       window.close();
     });
   });
