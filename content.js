@@ -16,6 +16,7 @@ console.log("twitch player detected");
 // };
 
 
+
 window.onload = function(){
 	let channel = document.URL.split('=')[1].split('&')[0];
 	let playerButtons = document.getElementsByClassName('player-controls__right-control-group');
@@ -51,11 +52,13 @@ window.onload = function(){
 		<div class="tw-tooltip tw-tooltip--align-right tw-tooltip--up">Chat</div>
 	</div>`;
 
-	// TODO: fix the chat (chat is not showing on the right side when i click the chatBtn)
+	
 	playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
+				 
 
+	let video_player = document.getElementsByClassName('video-player__container')[0];
+	
 	button.addEventListener("click", function() {
-		let video_player = document.getElementsByClassName('video-player__container')[0];
 		video_player.style.position = "fixed";
 		video_player.style.left = "0px";
 
@@ -78,10 +81,19 @@ window.onload = function(){
 			let chat = document.getElementsByClassName('chat')[0];
 			chat.parentNode.removeChild(chat);
 		}
-		
-
 
   }, false);
+
+
+  window.addEventListener('resize', function(){  	
+  	if(document.getElementsByClassName("chat").length == 1){
+  		console.log("chat detected resizing accordingly ");
+  		console.log(document.body.clientWidth)
+  		video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
+  	}else{
+  		video_player.style.width = (document.body.clientWidth).toString()+"px";  		
+  	}
+  });
 }
 
 // this function sends a message to chat without loading any of the UI
