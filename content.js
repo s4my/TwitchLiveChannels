@@ -25,27 +25,27 @@ window.onload = function(){
 	button.style = 		 'font-weight: bold;';
 	button.innerHTML = `<div class="tw-inline-flex tw-relative tw-tooltip-wrapper">
 		<button class="tw-align-items-center tw-align-middle tw-border-bottom-left-radius-medium tw-border-bottom-right-radius-medium tw-border-top-left-radius-medium tw-border-top-right-radius-medium tw-button-icon tw-button-icon--overlay tw-core-button tw-core-button--overlay tw-inline-flex tw-interactive tw-justify-content-center tw-overflow-hidden tw-relative">
-		
-			<span class="tw-button-icon__icon">
-				<div style="width: 2rem; height: 2rem;">
-					<div class="tw-align-items-center tw-full-width tw-icon tw-icon--fill tw-inline-flex">
-						<div class="tw-aspect tw-aspect--align-top">
-							<div class="tw-aspect__spacer" style="padding-bottom: 100%;"></div>
-							<svg version="1.1" id="IconsRepoEditor" xmlns="http://www.w3.org/2000/svg" 
-								xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65" 
-								style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px" 
-								fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g> 
-								<path d="M44.348,12.793H2.652C1.189,12.793,0,13.982,0,15.445v43.762l9.414-9.414h34.934c1.463,0,
-								2.652-1.19,2.652-2.653V15.445 C47,13.982,45.811,12.793,44.348,12.793z M10,35.777c-2.206,
-								0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S12.206,35.777,10,35.777z M23,35.777c-2.206,
-								0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S25.206,35.777,23,35.777z M36,35.777c-2.206,
-								0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path> 
-								<path d="M57.348,0.793H12.652C11.189,0.793,10,1.982,10,3.445v7.348h34.348c2.565,0,4.652,2.087,
-								4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path> 
-							</svg>
-						</div>
-					</div>
-				</div>
+				<span class="tw-button-icon__icon">
+	        <div style="width: 2rem; height: 2rem;">
+            <div class="ScIconLayout-sc-1bgeryd-0 kbOjdP tw-icon">
+              <div class="ScAspectRatio-sc-1sw3lwy-1 dNNaBC tw-aspect">
+                <div class="ScAspectSpacer-sc-1sw3lwy-0 gkBhyN"></div>
+                <svg version="1.1" id="IconsRepoEditor" xmlns="http://www.w3.org/2000/svg" 
+									xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65" 
+									style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px" 
+									fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g> 
+									<path d="M44.348,12.793H2.652C1.189,12.793,0,13.982,0,15.445v43.762l9.414-9.414h34.934c1.463,0,
+									2.652-1.19,2.652-2.653V15.445 C47,13.982,45.811,12.793,44.348,12.793z M10,35.777c-2.206,
+									0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S12.206,35.777,10,35.777z M23,35.777c-2.206,
+									0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S25.206,35.777,23,35.777z M36,35.777c-2.206,
+									0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path> 
+									<path d="M57.348,0.793H12.652C11.189,0.793,10,1.982,10,3.445v7.348h34.348c2.565,0,4.652,2.087,
+									4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path> 
+								</svg>
+              </div>
+            </div>
+	        </div>
+		    </span>
 			</span>
 		</button>
 		<div class="tw-tooltip tw-tooltip--align-right tw-tooltip--up">Chat</div>
@@ -80,44 +80,11 @@ window.onload = function(){
 		}
 		
 
-		// /*
-		// 	- fix the position and style, and may add the emoticons button
-		// 	- need add chat features such as @username
-		// 	- make it so that when i hit return the message is sent,
-		// 		then hide the chatForm (remove it from the DOM), or maybe when i click away 
-		// 		hide the form, or when a certain time is elapsed.
-		//	- to get chatters to be able to @ people, get list of chatters 
-		//	  from https://tmi.twitch.tv/group/user/<channel>/chatters
-		// */
-		//
-		// if(document.getElementsByClassName("chatForm").length == 0){
-		// 	 let form = document.createElement('textarea');
-		// 	 form.maxlength 		= 500;
-		// 	 form.palceholder   = "Send a message";
-		// 	 form.rows 				  = 1;
-		// 	 form.className     = 'chatForm';	
-		// 	 form.style.cssText = `position      : absolute;
-		// 	 											 float         : right;
-		// 	 											 right         : 40px;
-		// 	 											 bottom        : 40px;
-		// 	 											 border        : 1px;
-		// 	 											 border-raduis : 5px;
-		// 	 											 padding       : 3px;
-		// 	 											 max-height    : 91px;
-	  //   											 min-height    : 40px;
-	  //   											 width         : 400px;
-	  //   											 box-shadow    : 5px 5px #b565f7;`
-		//
-		// 	 document.body.append(form);
-		// }else{
-		// 	let chatForm = document.getElementsByClassName('chatForm')[0];
-		// 	chatForm.parentNode.removeChild(chatForm);
-		// }
 
   }, false);
 }
 
-
+// this function sends a message to chat without loading any of the UI
 // function sendMSG(){
 // 	let channel = document.URL.split('=')[1];
 // 	let msg = document.getElementByClassName('chatForm')[0].textContent;
