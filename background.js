@@ -5,6 +5,7 @@
       [X] add an animation
       [X] add functionality
       [ ] update the UI as soon as the data is back 
+      [ ] add links to the categories 
 
     [ ] implement the options 
     
@@ -233,4 +234,3 @@ function showNotification(channel){
     }
   });
 }
-
