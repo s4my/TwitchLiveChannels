@@ -39,7 +39,7 @@ async function httpRequest(url){
     let name = channel.channel.name;
 
     // fetch live status
-    let liveURL =    'https://api.twitch.tv/kraken/streams/'+id;
+    let liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
     const response = await fetch(liveURL, {method: 'GET', headers: {
       'Accept':    'application/vnd.twitchtv.v5+json',
       'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
@@ -67,7 +67,6 @@ async function httpRequest(url){
 
       /*
         save the data to the chrome.storage in the following format 
-       
         
         [{name: "greekgodx", 
           category: "Just Chatting", 
@@ -101,7 +100,6 @@ let updateBadge = function(liveChannelCounter) {
 
   chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
   chrome.browserAction.setBadgeText({"text": liveChannelCounter});
-
 }
 
 
@@ -153,6 +151,7 @@ chrome.storage.onChanged.addListener(function(storedData, namespace) {
       let updateBadgeStatus =   false;
       let liveChannelCounter =  storedData.liveChannels.newValue.length;    
 
+      // make sure storedData.liveChannels.oldValue is not empty (case of the 1st run)
       for(channelOld of storedData.liveChannels.oldValue){    
         if(channelNew.name == channelOld.name){
           notification_status = false;     

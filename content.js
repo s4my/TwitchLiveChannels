@@ -8,33 +8,33 @@ window.onload = function(){
 	button.className = 'chatBtn';
 	button.style = 'font-weight: bold;';
     button.innerHTML = `
-    <div class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd">
-        <button class="ScCoreButton-sc-1qn4ixc-0 inkhfW ScButtonIcon-sc-o7ndmn-0 iIdEOY"
-            aria-label="Chat" data-a-target="player-chat-button">    
-            <div class="ScButtonIconFigure-sc-o7ndmn-1 gakSVk">
-                <div class="ScIconLayout-sc-1bgeryd-0 kbOjdP tw-icon">            
-                    <div class="ScAspectRatio-sc-1sw3lwy-1 dNNaBC tw-aspect">
-                        <div class="ScAspectSpacer-sc-1sw3lwy-0 gkBhyN"></div>                
-                        <svg version="1.1" class="ScIconSVG-sc-1bgeryd-1 cMQeyU"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65" 
-                            style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px" 
-                            fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g> 
-                            <path d="M44.348,12.793H2.652C1.189,12.793,0,13.982,0,15.445v43.762l9.414-9.414h34.934c1.463,0,
-                            2.652-1.19,2.652-2.653V15.445 C47,13.982,45.811,12.793,44.348,12.793z M10,35.777c-2.206,
-                            0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S12.206,35.777,10,35.777z M23,35.777c-2.206,
-                            0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S25.206,35.777,23,35.777z M36,35.777c-2.206,
-                            0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path> 
-                            <path d="M57.348,0.793H12.652C11.189,0.793,10,1.982,10,3.445v7.348h34.348c2.565,0,4.652,2.087,
-                            4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path> 
-                        </svg>
-                    </div>
+    <div aria-describedby="ec3d0550c404c5736508b1ef6b8d4373" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 jrXOjD">
+       <button class="ScCoreButton-sc-1qn4ixc-0 fVEFfF ScButtonIcon-sc-o7ndmn-0 jGcDiv"
+       aria-label="Chat" data-a-target="player-clip-button">
+          <div class="ScButtonIconFigure-sc-o7ndmn-1 fppMur">
+             <div class="ScIconLayout-sc-1bgeryd-0 cOOGTE tw-icon">
+                <div class="ScAspectRatio-sc-1sw3lwy-1 bneAWp tw-aspect">
+                   <div class="ScAspectSpacer-sc-1sw3lwy-0 gMCXS"></div>
+                   <svg version="1.1" class="ScIconSVG-sc-1bgeryd-1 cMQeyU"
+                       xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65" 
+                       style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px" 
+                       fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g> 
+                       <path d="M44.348,12.793H2.652C1.189,12.793,0,13.982,0,15.445v43.762l9.414-9.414h34.934c1.463,0,
+                       2.652-1.19,2.652-2.653V15.445 C47,13.982,45.811,12.793,44.348,12.793z M10,35.777c-2.206,
+                       0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S12.206,35.777,10,35.777z M23,35.777c-2.206,
+                       0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S25.206,35.777,23,35.777z M36,35.777c-2.206,
+                       0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path> 
+                       <path d="M57.348,0.793H12.652C11.189,0.793,10,1.982,10,3.445v7.348h34.348c2.565,0,4.652,2.087,
+                       4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path> 
+                    </svg>
                 </div>
-            </div>
-        </button>
-            
-        <div class="ScAttachedTooltip-sc-v8mg6d-1 czcJg tw-tooltip" data-a-target="tw-tooltip-label" role="tooltip" id="a6c5339e1679cc0a85bf51e22ea4f695" direction="top">Chat</div>
-    </div>
-    `;
+             </div>
+          </div>
+       </button>
+       <div class="ScAttachedTooltip-sc-v8mg6d-1 kVzNwn tw-tooltip"
+       data-a-target="tw-tooltip-label" role="tooltip" id="ec3d0550c404c5736508b1ef6b8d4373"
+       direction="top">Chat</div>
+    </div>`;
 	
 	playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
 
