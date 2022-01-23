@@ -1,12 +1,10 @@
-console.log("twitch player detected");
+window.onload = function() {
+    let channel = document.URL.split('=')[1].split('&')[0];
+    let playerButtons = document.getElementsByClassName('player-controls__right-control-group');
 
-window.onload = function(){
-	let channel = document.URL.split('=')[1].split('&')[0];
-	let playerButtons = document.getElementsByClassName('player-controls__right-control-group');
-
-	let button = document.createElement('div');
-	button.className = 'chatBtn';
-	button.style = 'font-weight: bold;';
+    let button       = document.createElement('div');
+    button.className = 'chatBtn';
+    button.style     = 'font-weight: bold;';
     button.innerHTML = `
     <div aria-describedby="ec3d0550c404c5736508b1ef6b8d4373" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 jrXOjD">
        <button class="ScCoreButton-sc-1qn4ixc-0 fVEFfF ScButtonIcon-sc-o7ndmn-0 jGcDiv"
@@ -16,16 +14,16 @@ window.onload = function(){
                 <div class="ScAspectRatio-sc-1sw3lwy-1 bneAWp tw-aspect">
                    <div class="ScAspectSpacer-sc-1sw3lwy-0 gMCXS"></div>
                    <svg version="1.1" class="ScIconSVG-sc-1bgeryd-1 cMQeyU"
-                       xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65" 
-                       style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px" 
-                       fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g> 
+                       xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65"
+                       style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px"
+                       fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g>
                        <path d="M44.348,12.793H2.652C1.189,12.793,0,13.982,0,15.445v43.762l9.414-9.414h34.934c1.463,0,
                        2.652-1.19,2.652-2.653V15.445 C47,13.982,45.811,12.793,44.348,12.793z M10,35.777c-2.206,
                        0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S12.206,35.777,10,35.777z M23,35.777c-2.206,
                        0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S25.206,35.777,23,35.777z M36,35.777c-2.206,
-                       0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path> 
+                       0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path>
                        <path d="M57.348,0.793H12.652C11.189,0.793,10,1.982,10,3.445v7.348h34.348c2.565,0,4.652,2.087,
-                       4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path> 
+                       4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path>
                     </svg>
                 </div>
              </div>
@@ -35,85 +33,40 @@ window.onload = function(){
        data-a-target="tw-tooltip-label" role="tooltip" id="ec3d0550c404c5736508b1ef6b8d4373"
        direction="top">Chat</div>
     </div>`;
-	
-	playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
 
-	let video_player = document.getElementsByClassName('video-player__container')[0];
-	
-	button.addEventListener("click", function() {
-		video_player.style.position = "fixed";
-		video_player.style.left = "0px";
+    playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
 
-		if(document.getElementsByClassName("chat").length == 0){
-			video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
+    let video_player = document.getElementsByClassName('video-player__container')[0];
 
-			let chat =         document.createElement("iframe");
-			chat.className =   "chat";
-			chat.id =          channel;
-			chat.frameborder = 0;
-			chat.scrolling =   'no';
-			chat.src =         "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout&parent=twitch.tv";
-			chat.height =      "100%";
-			chat.width =       "350";
-			chat.style =       "position: fixed; top: 0px; right: 0px;";
+    button.addEventListener("click", function() {
+        video_player.style.position = "fixed";
+        video_player.style.left = "0px";
 
-			document.body.append(chat);
-		}else{
-			video_player.style.width = (document.body.clientWidth).toString()+"px";
-			let chat = document.getElementsByClassName('chat')[0];
-			chat.parentNode.removeChild(chat);
-		}
+        if(document.getElementsByClassName("chat").length === 0){
+            video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
+            let chat         = document.createElement("iframe");
+            chat.className   = "chat";
+            chat.id          = channel;
+            chat.frameborder = 0;
+            chat.scrolling   = 'no';
+            chat.src         = "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout&parent=twitch.tv";
+            chat.height      = "100%";
+            chat.width       = "350";
+            chat.style       = "position: fixed; top: 0px; right: 0px;";
 
-  }, false);
+            document.body.append(chat);
+        } else {
+            video_player.style.width = (document.body.clientWidth).toString()+"px";
+            let chat = document.getElementsByClassName('chat')[0];
+            chat.parentNode.removeChild(chat);
+        }
+    }, false);
 
-
-  window.addEventListener('resize', function(){  	
-  	if(document.getElementsByClassName("chat").length == 1){
-  		console.log("chat detected resizing accordingly ");
-  		console.log(document.body.clientWidth)
-  		video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
-  	}else{
-  		video_player.style.width = (document.body.clientWidth).toString()+"px";  		
-  	}
-  });
+    window.addEventListener('resize', function() {
+        if (document.getElementsByClassName("chat").length === 1) {
+            video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
+        } else {
+            video_player.style.width = (document.body.clientWidth).toString()+"px";
+        }
+    });
 }
-
-
-
-// load the <script src="/scripts/tmi.min.js"></script> 
-// let script = document.createElement('script');
-
-// TODO: fails constanly to load the script ??
-// script.src = chrome.runtime.getURL("/scripts/tmi.min.js");	
-// document.head.append(script);
-
-// script.onload = function() {
-//   // call tmi module  
-// };
-
-// script.onerror = function() {
-//   alert("Error loading " + this.src);
-// };
-
-
-// this function sends a message to chat without loading any of the UI
-// function sendMSG(){
-// 	let channel = document.URL.split('=')[1];
-// 	let msg = document.getElementByClassName('chatForm')[0].textContent;
-
-// 	const client = new tmi.Client({
-// 		options: { debug: true },
-// 		connection: {
-// 			reconnect: true,
-// 			secure: true
-// 		},
-// 		identity: {
-// 			username: 's4my_h4ck3r',
-// 			password: 'oauth:1b4bv8320pv6euffqw7xg9zsf2vrmo'
-// 		},
-// 		channels: []
-// 	});
-
-// 	client.connect();
-// 	client.say(channel, msg);
-// }
