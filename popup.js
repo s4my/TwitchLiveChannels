@@ -72,7 +72,6 @@
             let title    = channel.title.replace(/"/g, "&quot;");
             let type     = (channel.type === 'live') ? '':' VOD';
 
-            // update UI
             updateUI(name, category, viewers, title, type);
         }
     });
@@ -95,7 +94,7 @@
 
     $(document).ready(function () {
         jQuery(".updateBtn").click(function() {
-            // fetch update
+            // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
             animate_updateBtn(360);
         });

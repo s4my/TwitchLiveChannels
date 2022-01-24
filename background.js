@@ -148,8 +148,8 @@ function showNotification(channel) {
         type:     'list',
         message:  ``,
         items:    [{
-            title: name,
-            message: ` is Live streaming ${category}`
+            title   : name,
+            message : ` is Live streaming ${category}`
         }],
         iconUrl:  chrome.runtime.getURL("icons/icon-48.png"),
         buttons:  [{title : 'Open'}]
