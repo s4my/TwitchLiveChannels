@@ -1,11 +1,10 @@
 window.onload = function() {
-    let channel = document.URL.split('=')[1].split('&')[0];
+    let channel       = document.URL.split('=')[1].split('&')[0];
     let playerButtons = document.getElementsByClassName('player-controls__right-control-group');
-
-    let button       = document.createElement('div');
-    button.className = 'chatBtn';
-    button.style     = 'font-weight: bold;';
-    button.innerHTML = `
+    let button        = document.createElement('div');
+    button.className  = 'chatBtn';
+    button.style      = 'font-weight: bold;';
+    button.innerHTML  = `
     <div aria-describedby="ec3d0550c404c5736508b1ef6b8d4373" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 jrXOjD">
        <button class="ScCoreButton-sc-1qn4ixc-0 fVEFfF ScButtonIcon-sc-o7ndmn-0 jGcDiv"
        aria-label="Chat" data-a-target="player-clip-button">
@@ -40,24 +39,24 @@ window.onload = function() {
 
     button.addEventListener("click", function() {
         video_player.style.position = "fixed";
-        video_player.style.left = "0px";
+        video_player.style.left     = "0px";
 
         if(document.getElementsByClassName("chat").length === 0){
             video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
-            let chat         = document.createElement("iframe");
-            chat.className   = "chat";
-            chat.id          = channel;
-            chat.frameborder = 0;
-            chat.scrolling   = 'no';
-            chat.src         = "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout&parent=twitch.tv";
-            chat.height      = "100%";
-            chat.width       = "350";
-            chat.style       = "position: fixed; top: 0px; right: 0px;";
+            let chat                 = document.createElement("iframe");
+            chat.className           = "chat";
+            chat.id                  = channel;
+            chat.frameborder         = 0;
+            chat.scrolling           = 'no';
+            chat.src                 = "https://www.twitch.tv/embed/"+channel+"/chat/?darkpopout&parent=twitch.tv";
+            chat.height              = "100%";
+            chat.width               = "350";
+            chat.style               = "position: fixed; top: 0px; right: 0px;";
 
             document.body.append(chat);
         } else {
             video_player.style.width = (document.body.clientWidth).toString()+"px";
-            let chat = document.getElementsByClassName('chat')[0];
+            let chat                 = document.getElementsByClassName('chat')[0];
             chat.parentNode.removeChild(chat);
         }
     }, false);
