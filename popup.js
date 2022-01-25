@@ -92,15 +92,15 @@
         }, 2000)
     }
 
-    $(document).ready(() => {
-        jQuery(".updateBtn").click(() => {
+    $(document).ready(function() {
+        jQuery(".updateBtn").click(function() {
             // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
             animate_updateBtn(360);
         });
 
         // open streams on a popup windows (centered on screen)
-        jQuery('.name').click(() => {
+        jQuery('.name').click(function() {
             let popupWidth  = 900;
             let popupHeight = 650;
 
