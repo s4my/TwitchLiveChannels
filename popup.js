@@ -14,7 +14,7 @@
                 </div>`;
         } else {
             // if the category exists already do check if the stream isn't already added
-            if(document.getElementsByClassName('name')[0].innerHTML.split('<')[0].trim() != name){
+            if(document.getElementsByClassName('name')[0].innerHTML.split('<')[0].trim() !== name) {
                 document.getElementsByClassName(category)[0].innerHTML += `
                 <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
                     ${name}

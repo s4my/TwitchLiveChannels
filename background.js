@@ -32,7 +32,7 @@ async function httpRequest(url) {
 
         let channelStatus = await response.json();
 
-        if (channelStatus.stream != null) {
+        if (channelStatus.stream !== null) {
             let stream_type = '';
             if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
             else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live'}
@@ -96,12 +96,11 @@ chrome.runtime.onMessage.addListener(
 );
 
 chrome.storage.onChanged.addListener(function(storedData, namespace) {
-    if(storedData.liveChannels != undefined) {
+    if(storedData.liveChannels !== undefined) {
         // check for each channel if it's already in the storedData,
         // if not, show notification and update the badge.
         for (channelNew of storedData.liveChannels.newValue) {
             let notification_status = true;
-            let updateBadgeStatus   = false;
             let liveChannelCounter  = storedData.liveChannels.newValue.length;
 
             if (storedData.liveChannels.oldValue.length > 0)
@@ -109,29 +108,20 @@ chrome.storage.onChanged.addListener(function(storedData, namespace) {
                 for (channelOld of storedData.liveChannels.oldValue) {
                     if (channelNew.name === channelOld.name) {
                         notification_status = false;
-                        updateBadgeStatus   = false;
                         break;
                     } else {
                         notification_status = true;
-                        updateBadgeStatus   = true;
                     }
                 }
             }
 
-            if (updateBadgeStatus) {
-                updateBadge(liveChannelCounter.toString());
-            } else {
-                // call updateBadge if the badge is not set yet (at 1st run for ex.)
-                chrome.browserAction.getBadgeText({}, function(oldbadgetext) {
-                    //console.log('Badge text = ' + oldbadgetext);
-                    //console.log('liveChannelCounter = ' + liveChannelCounter);
-                    if (oldbadgetext != liveChannelCounter) {
-                        updateBadge(liveChannelCounter.toString());
-                    }
-                });
-            }
+            chrome.browserAction.getBadgeText({}, function(oldbadgetext) {
+                if (oldbadgetext !== liveChannelCounter) {
+                    updateBadge(liveChannelCounter.toString());
+                }
+            });
 
-            if(notification_status){showNotification(channelNew);}
+            if(notification_status) {showNotification(channelNew);}
         }
     }
 });
