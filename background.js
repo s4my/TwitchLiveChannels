@@ -1,7 +1,9 @@
 async function httpRequest(url) {
     // fetch list of all followed channels
+    let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
+
     const response = await fetch (
-        url,
+        URL,
         {
             method: 'GET',
             headers: {
@@ -72,7 +74,7 @@ function updateBadge(liveChannelCounter) {
 
 function fetchDATA(url) {
     httpRequest(url).catch(error => {
-        console.log("Error: ${error}");
+        console.error(error);
     });
 }
 
@@ -123,21 +125,16 @@ function showNotification(channel) {
 
 //get list of all live channels every 2 min
 let timeDelay = 60*1000*2; //2min
-let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
 
-fetchDATA(URL);
-setInterval(fetchDATA, timeDelay, URL);
+fetchDATA();
+setInterval(fetchDATA, timeDelay);
 
 // update when the updateBtn is clicked on the popup.html
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        if (request.message === "update") {
-            httpRequest(URL).catch(error => {
-                console.log("Error: ${error}");
-            });
-        }
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.message === "update") {
+        fetchDATA();
     }
-);
+});
 
 chrome.storage.onChanged.addListener((storedData, namespace) => {
     if(storedData.liveChannels !== undefined) {
