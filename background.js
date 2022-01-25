@@ -34,8 +34,8 @@ async function httpRequest(url) {
 
         if (channelStatus.stream != null) {
             let stream_type = '';
-            if (channelStatus.stream.stream_type === 'playlist'){stream_type = 'VOD';}
-            else if (channelStatus.stream.stream_type === 'live'){stream_type = 'live'}
+            if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
+            else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live'}
 
             console.log(name+' is LIVE');
 
@@ -111,7 +111,7 @@ chrome.storage.onChanged.addListener(function(storedData, namespace) {
                         notification_status = false;
                         updateBadgeStatus   = false;
                         break;
-                    } else{
+                    } else {
                         notification_status = true;
                         updateBadgeStatus   = true;
                     }

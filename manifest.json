@@ -1,7 +1,7 @@
 {
   "name": "TTV live channels",
   "version": "1.0",
-  "description": "TTV live channels extension displays a user followed channels witch are currently live",
+  "description": "TTV live channels extension displays who is live in user's follow list",
   "browser_action": {
     "default_title": "TTV live channels",
     "default_icon": "icons/icon.png",
@@ -29,7 +29,7 @@
       "matches": [
         "*://*.player.twitch.tv/?*"
       ],
-      "js": ["content.js", 
+      "js": ["content.js",
              "/scripts/tmi.min.js"]
     }
   ],
