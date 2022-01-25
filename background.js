@@ -1,4 +1,4 @@
-async function httpRequest(url) {
+async function httpRequest() {
     // fetch list of all followed channels
     let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
 
@@ -72,8 +72,8 @@ function updateBadge(liveChannelCounter) {
     chrome.browserAction.setBadgeText({"text": liveChannelCounter});
 }
 
-function fetchDATA(url) {
-    httpRequest(url).catch(error => {
+function fetchDATA() {
+    httpRequest().catch(error => {
         console.error(error);
     });
 }
