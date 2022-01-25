@@ -37,7 +37,7 @@ window.onload = function() {
 
     let video_player = document.getElementsByClassName('video-player__container')[0];
 
-    button.addEventListener("click", function() {
+    button.addEventListener("click", () => {
         video_player.style.position = "fixed";
         video_player.style.left     = "0px";
 
@@ -61,7 +61,7 @@ window.onload = function() {
         }
     }, false);
 
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', () => {
         if (document.getElementsByClassName("chat").length === 1) {
             video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
         } else {

@@ -1,4 +1,5 @@
 async function httpRequest(url) {
+    // fetch list of all followed channels
     const response = await fetch (
         url,
         {
@@ -17,7 +18,7 @@ async function httpRequest(url) {
         let id   = channel.channel._id;
         let name = channel.channel.name;
 
-        // fetch live status
+        // fetch live status for each followed channel
         let liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
         const response = await fetch(
             liveURL,
@@ -35,7 +36,7 @@ async function httpRequest(url) {
         if (channelStatus.stream !== null) {
             let stream_type = '';
             if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
-            else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live'}
+            else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
 
             console.log(name+' is LIVE');
 
@@ -61,7 +62,6 @@ async function httpRequest(url) {
     console.log(liveChannels);
 }
 
-
 function updateBadge(liveChannelCounter) {
     console.log('updating the badge');
     let badgeColor = [106, 117, 242, 255];
@@ -75,57 +75,6 @@ function fetchDATA(url) {
         console.log("Error: ${error}");
     });
 }
-
-//fetch list of all followed channels
-let timeDelay = 60*1000*2; //2min
-let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
-
-fetchDATA(URL);
-// fetch data every 2min
-setInterval(fetchDATA, timeDelay, URL);
-
-// update when the updateBtn is clicked on the popup.html
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        if (request.message === "update") {
-            httpRequest(URL).catch(error => {
-                console.log("Error: ${error}");
-            });
-        }
-    }
-);
-
-chrome.storage.onChanged.addListener(function(storedData, namespace) {
-    if(storedData.liveChannels !== undefined) {
-        // check for each channel if it's already in the storedData,
-        // if not, show notification and update the badge.
-        for (channelNew of storedData.liveChannels.newValue) {
-            let notification_status = true;
-            let liveChannelCounter  = storedData.liveChannels.newValue.length;
-
-            if (storedData.liveChannels.oldValue.length > 0)
-            {
-                for (channelOld of storedData.liveChannels.oldValue) {
-                    if (channelNew.name === channelOld.name) {
-                        notification_status = false;
-                        break;
-                    } else {
-                        notification_status = true;
-                    }
-                }
-            }
-
-            chrome.browserAction.getBadgeText({}, function(oldbadgetext) {
-                if (oldbadgetext !== liveChannelCounter) {
-                    updateBadge(liveChannelCounter.toString());
-                }
-            });
-
-            if(notification_status) {showNotification(channelNew);}
-        }
-    }
-});
-
 
 function showNotification(channel) {
     let notificationID = null;
@@ -145,11 +94,11 @@ function showNotification(channel) {
         buttons:  [{title : 'Open'}]
     };
 
-    chrome.notifications.create("", notificationOptions, function(ID) {
+    chrome.notifications.create("", notificationOptions, (ID) => {
         notificationID = ID;
     });
 
-    chrome.notifications.onButtonClicked.addListener(function(ID, btnID) {
+    chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
         if (ID === notificationID) {
             if (btnID === 0) {
                 let popupWidth  = 900;
@@ -171,3 +120,50 @@ function showNotification(channel) {
         }
     });
 }
+
+//get list of all live channels every 2 min
+let timeDelay = 60*1000*2; //2min
+let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
+
+fetchDATA(URL);
+setInterval(fetchDATA, timeDelay, URL);
+
+// update when the updateBtn is clicked on the popup.html
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.message === "update") {
+            httpRequest(URL).catch(error => {
+                console.log("Error: ${error}");
+            });
+        }
+    }
+);
+
+chrome.storage.onChanged.addListener((storedData, namespace) => {
+    if(storedData.liveChannels !== undefined) {
+        // check for each channel if it's already in the storedData,
+        // if not, show notification and update the badge.
+        for (channelNew of storedData.liveChannels.newValue) {
+            let notification_status = true;
+            let liveChannelCounter  = storedData.liveChannels.newValue.length;
+
+            if (storedData.liveChannels.oldValue.length > 0)
+            {
+                for (channelOld of storedData.liveChannels.oldValue) {
+                    if (channelNew.name === channelOld.name) {
+                        notification_status = false;
+                        break;
+                    }
+                }
+            }
+
+            chrome.browserAction.getBadgeText({}, (oldbadgetext) => {
+                if (oldbadgetext !== liveChannelCounter) {
+                    updateBadge(liveChannelCounter.toString());
+                }
+            });
+
+            if(notification_status) {showNotification(channelNew);}
+        }
+    }
+});

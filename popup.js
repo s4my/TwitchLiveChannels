@@ -51,7 +51,7 @@
     }
 
     // update the UI every time the popup is opened
-    chrome.storage.local.get(['liveChannels'], function(result) {
+    chrome.storage.local.get(['liveChannels'], (result) => {
         // sorting the result by category in alphabetical order
         result.liveChannels.sort(compareCategories);
         // sorting in descending order the viewer count
@@ -81,26 +81,26 @@
 
         jQuery({deg: 0}).animate({deg: d}, {
             duration: 2000,
-            step:     function(now) {
+            step:     (now) => {
                 updateBtn.css({transform: "rotate(" + now + "deg)"});
             }
         });
 
-        setTimeout(function() {
+        setTimeout(() => {
             let imageUrl = '/icons/update_done.png';
             jQuery(".updateBtn").css("background-image", "url(" + imageUrl + ")");
         }, 2000)
     }
 
-    $(document).ready(function () {
-        jQuery(".updateBtn").click(function() {
+    $(document).ready(() => {
+        jQuery(".updateBtn").click(() => {
             // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
             animate_updateBtn(360);
         });
 
         // open streams on a popup windows (centered on screen)
-        jQuery('.name').click(function() {
+        jQuery('.name').click(() => {
             let popupWidth  = 900;
             let popupHeight = 650;
 
