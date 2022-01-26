@@ -1,4 +1,4 @@
-async function httpRequest() {
+async function updateLiveChannels() {
     // fetch list of all followed channels
     let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
 
@@ -73,7 +73,7 @@ function updateBadge(liveChannelCounter) {
 }
 
 function fetchDATA() {
-    httpRequest().catch(error => {
+    updateLiveChannels().catch(error => {
         console.error(error);
     });
 }
@@ -124,14 +124,15 @@ function showNotification(channel) {
 }
 
 //get list of all live channels every 2 min
-let timeDelay = 60*1000*2; //2min
+let timeDelay = 60*1000*2;
 
 fetchDATA();
-setInterval(fetchDATA, timeDelay);
+let intervalID = setInterval(fetchDATA, timeDelay);
 
 // update when the updateBtn is clicked on the popup.html
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "update") {
+        clearInterval(intervalID);
         fetchDATA();
     }
 });
