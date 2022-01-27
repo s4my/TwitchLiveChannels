@@ -6,11 +6,12 @@
         // if the category doesn't exist do
         if (document.getElementsByClassName(category).length == 0) {
             document.getElementsByClassName("content")[0].innerHTML += `
-                <div class="${category}"><p class="category">${category}</p>
-                <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
-                    ${name}
-                    <span class="viewerCount">${viewers}</span>
-                </div>
+                <div class="${category}">
+                    <p class="category">${category}</p>
+                    <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
+                        ${name}
+                        <span class="viewerCount">${viewers}</span>
+                    </div>
                 </div>`;
         } else {
             // if the category exists already do check if the stream isn't already added
@@ -97,6 +98,10 @@
             // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
             animate_updateBtn(360);
+        });
+
+        jQuery(".category").click(function() {
+            window.open("https://www.twitch.tv/directory/game/"+jQuery(this).text().trim(), "_blank");
         });
 
         // open streams on a popup windows (centered on screen)
