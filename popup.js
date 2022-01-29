@@ -84,7 +84,6 @@
     // update the UI every time the popup is opened
     updateUI();
 
-    // TODO: update the icon for the updateBtn (normal(css), done)
     function animate_updateBtn(d) {
         let updateBtn = jQuery(".updateBtn");
 
@@ -98,7 +97,7 @@
         setTimeout(() => {
             let imageUrl = '/icons/update_done.png';
             jQuery(".updateBtn").css("background-image", "url(" + imageUrl + ")");
-        }, 2000)
+        }, 2000);
     }
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
