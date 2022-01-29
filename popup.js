@@ -15,7 +15,7 @@
                 chrome.browserAction.setBadgeText({'text': '0'});
             } else {
                 // hide the nostream div if there are streams online
-                jQuery('.nostream').hide();
+                $('.nostream').hide();
             }
 
             document.getElementsByClassName("content")[0].innerHTML = "";
@@ -83,42 +83,40 @@
 
     // update the UI every time the popup is opened
     updateUI();
-
-    function animate_updateBtn(d) {
-        let updateBtn = jQuery(".updateBtn");
-
-        jQuery({deg: 0}).animate({deg: d}, {
-            duration: 2000,
-            step:     (now) => {
-                updateBtn.css({transform: "rotate(" + now + "deg)"});
-            }
-        });
-
-        setTimeout(() => {
-            let imageUrl = '/icons/update_done.png';
-            jQuery(".updateBtn").css("background-image", "url(" + imageUrl + ")");
-        }, 2000);
-    }
+    let updateBtnIntervalID = 0
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.message === "updateUI") {
             updateUI();
+            clearInterval(updateBtnIntervalID);
+            let imageUrl = '/icons/update_done.png';
+            $(".updateBtn").css("background-image", "url(" + imageUrl + ")");
+            imageUrl = '/icons/update.png';
+            setTimeout(() => {$(".updateBtn").css("background-image", "url(" + imageUrl + ")")}, 2000);
         }
     });
 
     $(document).ready(function() {
-        jQuery(".updateBtn").click(function() {
+        $(".updateBtn").click(function() {
             // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
-            animate_updateBtn(360);
+
+            updateBtnIntervalID = setInterval(function() {
+                $({deg: 0}).animate({deg: 360}, {
+                    duration: 2000,
+                    step:     (now) => {
+                        $(".updateBtn").css({transform: "rotate(" + now + "deg)"});
+                    }
+                });
+            }, 1000);
         });
 
-        jQuery(".category").click(function() {
-            window.open("https://www.twitch.tv/directory/game/"+jQuery(this).text().trim(), "_blank");
+        $(".category").click(function() {
+            window.open("https://www.twitch.tv/directory/game/"+$(this).text().trim(), "_blank");
         });
 
         // open streams on a popup windows (centered on screen)
-        jQuery('.name').click(function() {
+        $('.name').click(function() {
             let popupWidth  = 900;
             let popupHeight = 650;
 
@@ -127,7 +125,7 @@
 
             let windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
 
-            let popupWindow = window.open(jQuery(this).attr("data-url")+
+            let popupWindow = window.open($(this).attr("data-url")+
                 "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                 '_about', windowsOptions);
             popupWindow.focus();
