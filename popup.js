@@ -1,4 +1,8 @@
 (function () {
+    function numberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (result) => {
             // sorting the result by category in alphabetical order
@@ -23,7 +27,7 @@
             for (channel of result.liveChannels) {
                 let name     = channel.name;
                 let category = channel.category;
-                let viewers  = channel.viewers;
+                let viewers  = numberWithCommas(channel.viewers);
                 let title    = channel.title.replace(/"/g, "&quot;");
                 let type     = (channel.type === 'live') ? '':' VOD';
 
