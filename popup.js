@@ -1,28 +1,54 @@
 (function () {
-    function updateUI(name, category, viewers, title, type) {
-        // hide the nostream div if there are streams online
-        jQuery('.nostream').hide();
+    function updateUI() {
+        chrome.storage.local.get(['liveChannels'], (result) => {
+            // sorting the result by category in alphabetical order
+            result.liveChannels.sort(compareCategories);
 
-        // if the category doesn't exist do
-        if (document.getElementsByClassName(category).length == 0) {
-            document.getElementsByClassName("content")[0].innerHTML += `
-                <div class="${category}">
-                    <p class="category">${category}</p>
-                    <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
-                        ${name}
-                        <span class="viewerCount">${viewers}</span>
-                    </div>
-                </div>`;
-        } else {
-            // if the category exists already do check if the stream isn't already added
-            if(document.getElementsByClassName('name')[0].innerHTML.split('<')[0].trim() !== name) {
-                document.getElementsByClassName(category)[0].innerHTML += `
-                <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
-                    ${name}
-                    <span class="viewerCount">${viewers}</span>
-                </div>`;
+            // sorting in descending order the viewer count
+            result.liveChannels.sort(compareViewers);
+
+            // if there are no channels live set badge to '0'
+            if (result.liveChannels.length === 0) {
+                let badgeColor = [106, 117, 242, 255];
+
+                chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
+                chrome.browserAction.setBadgeText({'text': '0'});
+            } else {
+                // hide the nostream div if there are streams online
+                jQuery('.nostream').hide();
             }
-        }
+
+            document.getElementsByClassName("content")[0].innerHTML = "";
+
+            for ([i, channel] of result.liveChannels.entries()) {
+                let name     = channel.name;
+                let category = channel.category;
+                let viewers  = channel.viewers;
+                let title    = channel.title.replace(/"/g, "&quot;");
+                let type     = (channel.type === 'live') ? '':' VOD';
+
+                // if the category doesn't exist do
+                if (document.getElementsByClassName(category).length === 0) {
+                    document.getElementsByClassName("content")[0].innerHTML += `
+                        <div class="${category}">
+                            <p class="category">${category}</p>
+                            <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
+                                ${name}
+                                <span class="viewerCount">${viewers}</span>
+                            </div>
+                        </div>`;
+                } else {
+                    // if the category exists already do check if the stream isn't already added
+                    if(document.getElementsByClassName('name')[0].innerHTML.split('<')[0].trim() !== name) {
+                        document.getElementsByClassName(category)[0].innerHTML += `
+                        <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
+                            ${name}
+                            <span class="viewerCount">${viewers}</span>
+                        </div>`;
+                    }
+                }
+            }
+        });
     }
 
     // sort the categories alphabetically
@@ -52,30 +78,7 @@
     }
 
     // update the UI every time the popup is opened
-    chrome.storage.local.get(['liveChannels'], (result) => {
-        // sorting the result by category in alphabetical order
-        result.liveChannels.sort(compareCategories);
-        // sorting in descending order the viewer count
-        result.liveChannels.sort(compareViewers);
-
-        // if there are no channels live set badge to '0'
-        if (result.liveChannels.length === 0) {
-            let badgeColor = [106, 117, 242, 255];
-
-            chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
-            chrome.browserAction.setBadgeText({'text': '0'});
-        }
-
-        for (channel of result.liveChannels) {
-            let name     = channel.name;
-            let category = channel.category;
-            let viewers  = channel.viewers;
-            let title    = channel.title.replace(/"/g, "&quot;");
-            let type     = (channel.type === 'live') ? '':' VOD';
-
-            updateUI(name, category, viewers, title, type);
-        }
-    });
+    updateUI();
 
     function animate_updateBtn(d) {
         let updateBtn = jQuery(".updateBtn");
@@ -92,6 +95,12 @@
             jQuery(".updateBtn").css("background-image", "url(" + imageUrl + ")");
         }, 2000)
     }
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.message === "updateUI") {
+            updateUI();
+        }
+    });
 
     $(document).ready(function() {
         jQuery(".updateBtn").click(function() {

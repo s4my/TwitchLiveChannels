@@ -61,6 +61,7 @@ async function updateLiveChannels() {
     }
 
     chrome.storage.local.set({'liveChannels': liveChannels});
+    chrome.runtime.sendMessage({"message": "updateUI"});
     console.log(liveChannels);
 }
 
