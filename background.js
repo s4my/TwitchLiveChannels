@@ -63,6 +63,7 @@ async function updateLiveChannels() {
         updateBadge(liveChannels.length.toString());
     });
 
+    // tell popup.js to update the UI
     chrome.runtime.sendMessage({"message": "updateUI"});
 
     console.log(liveChannels);
@@ -70,9 +71,7 @@ async function updateLiveChannels() {
 }
 
 function updateBadge(liveChannelCounter) {
-    let badgeColor = [106, 117, 242, 255];
-
-    chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
+    chrome.browserAction.setBadgeBackgroundColor({color: '#6a75f2'});
     chrome.browserAction.setBadgeText({"text": liveChannelCounter});
 }
 
