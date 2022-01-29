@@ -63,10 +63,10 @@ async function updateLiveChannels() {
     chrome.storage.local.set({'liveChannels': liveChannels});
     chrome.runtime.sendMessage({"message": "updateUI"});
     console.log(liveChannels);
+    console.log("Update done "+new Date().toUTCString());
 }
 
 function updateBadge(liveChannelCounter) {
-    console.log('updating the badge');
     let badgeColor = [106, 117, 242, 255];
 
     chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});

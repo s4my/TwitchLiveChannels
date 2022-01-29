@@ -5,10 +5,7 @@
 
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (result) => {
-            // sorting the result by category in alphabetical order
             result.liveChannels.sort(compareCategories);
-
-            // sorting in descending order the viewer count
             result.liveChannels.sort(compareViewers);
 
             // if there are no channels live set badge to '0'
@@ -87,16 +84,12 @@
 
     // update the UI every time the popup is opened
     updateUI();
-    let updateBtnIntervalID = 0
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.message === "updateUI") {
             updateUI();
-            clearInterval(updateBtnIntervalID);
-            let imageUrl = '/icons/update_done.png';
-            $(".updateBtn").css("background-image", "url(" + imageUrl + ")");
-            imageUrl = '/icons/update.png';
-            setTimeout(() => {$(".updateBtn").css("background-image", "url(" + imageUrl + ")")}, 2000);
+            $(".updateBtn").css("background-image", "url('/icons/update_done.png')");
+            setTimeout(() => {$(".updateBtn").css("background-image", "url('/icons/update.png')")}, 2000);
         }
     });
 
@@ -105,14 +98,7 @@
             // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
 
-            updateBtnIntervalID = setInterval(function() {
-                $({deg: 0}).animate({deg: 360}, {
-                    duration: 2000,
-                    step:     (now) => {
-                        $(".updateBtn").css({transform: "rotate(" + now + "deg)"});
-                    }
-                });
-            }, 1000);
+            $(".updateBtn").css("background-image", "url('/icons/loading.gif')");
         });
 
         $(".category").click(function() {
