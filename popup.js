@@ -85,6 +85,7 @@
     // update the UI every time the popup is opened
     updateUI();
 
+    // update the UI if the message "updateUI" is received from background.js
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.message === "updateUI") {
             updateUI();

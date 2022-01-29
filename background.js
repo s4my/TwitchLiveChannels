@@ -42,9 +42,8 @@ async function updateLiveChannels() {
 
             let category = (channelStatus.stream.channel.game === '') ?
                             'UNDEFINED':channelStatus.stream.channel.game;
-
-            let viewers =  channelStatus.stream.viewers;
-            let title   =  channelStatus.stream.channel.status;
+            let viewers  = channelStatus.stream.viewers;
+            let title    = channelStatus.stream.channel.status;
 
             let data = {
                 'name':     name,
