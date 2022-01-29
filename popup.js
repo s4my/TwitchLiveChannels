@@ -20,14 +20,14 @@
 
             document.getElementsByClassName("content")[0].innerHTML = "";
 
-            for ([i, channel] of result.liveChannels.entries()) {
+            for (channel of result.liveChannels) {
                 let name     = channel.name;
                 let category = channel.category;
                 let viewers  = channel.viewers;
                 let title    = channel.title.replace(/"/g, "&quot;");
                 let type     = (channel.type === 'live') ? '':' VOD';
 
-                // if the category doesn't exist do
+                // if the category doesn't exist create it and add the stream to it
                 if (document.getElementsByClassName(category).length === 0) {
                     document.getElementsByClassName("content")[0].innerHTML += `
                         <div class="${category}">
@@ -38,8 +38,12 @@
                             </div>
                         </div>`;
                 } else {
-                    // if the category exists already do check if the stream isn't already added
-                    if(document.getElementsByClassName('name')[0].innerHTML.split('<')[0].trim() !== name) {
+                    // if the category already exists, check if the stream isn't already added
+                    let streamers = []
+                    for (streamer of document.getElementsByClassName(category)[0].getElementsByClassName("name")) {
+                        streamers.push(streamer.innerHTML.split('<')[0].trim());
+                    }
+                    if (!streamers.includes(name)) {
                         document.getElementsByClassName(category)[0].innerHTML += `
                         <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
                             ${name}
@@ -80,6 +84,7 @@
     // update the UI every time the popup is opened
     updateUI();
 
+    // TODO: update the icon for the updateBtn (normal(css), done)
     function animate_updateBtn(d) {
         let updateBtn = jQuery(".updateBtn");
 
