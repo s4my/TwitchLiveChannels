@@ -40,8 +40,6 @@ async function updateLiveChannels() {
             if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
             else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
 
-            console.log(name+' is LIVE');
-
             let category = (channelStatus.stream.channel.game === '') ?
                             'UNDEFINED':channelStatus.stream.channel.game;
 
@@ -61,7 +59,12 @@ async function updateLiveChannels() {
     }
 
     chrome.storage.local.set({'liveChannels': liveChannels});
+    chrome.browserAction.getBadgeText({}, () => {
+        updateBadge(liveChannels.length.toString());
+    });
+
     chrome.runtime.sendMessage({"message": "updateUI"});
+
     console.log(liveChannels);
     console.log("Update done "+new Date().toUTCString());
 }
@@ -125,10 +128,8 @@ function showNotification(channel) {
 }
 
 //get list of all live channels every 2 min
-let timeDelay = 60*1000*2;
-
 fetchDATA();
-let intervalID = setInterval(fetchDATA, timeDelay);
+let intervalID = setInterval(fetchDATA, 60*1000*2/*2 min*/);
 
 // update when the updateBtn is clicked on the popup.html
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
