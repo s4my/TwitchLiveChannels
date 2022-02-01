@@ -1,29 +1,9 @@
 async function updateLiveChannels() {
     // fetch list of all followed channels
-    let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
-
-    const response = await fetch (
-        URL,
-        {
-            method: 'GET',
-            headers: {
-                'Accept':    'application/vnd.twitchtv.v5+json',
-                'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
-            }
-        }
-    );
-
-    let followedChannels = await response.json();
-    let liveChannels = [];
-
-    for (channel of followedChannels.follows) {
-        let id   = channel.channel._id;
-        let name = channel.channel.name;
-
-        // fetch live status for each followed channel
-        let liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
-        const response = await fetch(
-            liveURL,
+    try {
+        let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
+        const response = await fetch (
+            URL,
             {
                 method: 'GET',
                 headers: {
@@ -33,51 +13,71 @@ async function updateLiveChannels() {
             }
         );
 
-        let channelStatus = await response.json();
+        let followedChannels = await response.json();
+        let liveChannels = [];
 
-        if (channelStatus.stream !== null) {
-            let stream_type = '';
-            if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
-            else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
+        for (channel of followedChannels.follows) {
+            let id   = channel.channel._id;
+            let name = channel.channel.name;
 
-            let category = (channelStatus.stream.channel.game === '') ?
-                            'UNDEFINED':channelStatus.stream.channel.game;
-            let viewers  = channelStatus.stream.viewers;
-            let title    = channelStatus.stream.channel.status;
+            // fetch live status for each followed channel
+            try {
+                let liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
+                const response = await fetch(
+                    liveURL,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Accept':    'application/vnd.twitchtv.v5+json',
+                            'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
+                        }
+                    }
+                );
 
-            let data = {
-                'name':     name,
-                'category': category,
-                'viewers':  viewers,
-                'title':    title,
-                'type':     stream_type
-            };
+                let channelStatus = await response.json();
+                if (channelStatus.stream !== null) {
+                    let stream_type = '';
+                    if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
+                    else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
 
-            liveChannels.push(data);
+                    let category = (channelStatus.stream.channel.game === '') ?
+                                    'UNDEFINED':channelStatus.stream.channel.game;
+                    let viewers  = channelStatus.stream.viewers;
+                    let title    = channelStatus.stream.channel.status;
+
+                    let data = {
+                        'name':     name,
+                        'category': category,
+                        'viewers':  viewers,
+                        'title':    title,
+                        'type':     stream_type
+                    };
+
+                    liveChannels.push(data);
+                }
+            } catch (error) {
+                console.error(error);
+            }
         }
+
+        chrome.storage.local.set({'liveChannels': liveChannels});
+        chrome.browserAction.getBadgeText({}, () => {
+            updateBadge(liveChannels.length.toString());
+        });
+
+        // tell popup.js to update the UI
+        chrome.runtime.sendMessage({"message": "updateUI"});
+
+        console.log(liveChannels);
+        console.log("Update done "+new Date().toUTCString());
+    } catch (error) {
+        console.error(error);
     }
-
-    chrome.storage.local.set({'liveChannels': liveChannels});
-    chrome.browserAction.getBadgeText({}, () => {
-        updateBadge(liveChannels.length.toString());
-    });
-
-    // tell popup.js to update the UI
-    chrome.runtime.sendMessage({"message": "updateUI"});
-
-    console.log(liveChannels);
-    console.log("Update done "+new Date().toUTCString());
 }
 
 function updateBadge(liveChannelCounter) {
     chrome.browserAction.setBadgeBackgroundColor({color: '#6a75f2'});
     chrome.browserAction.setBadgeText({"text": liveChannelCounter});
-}
-
-function fetchDATA() {
-    updateLiveChannels().catch(error => {
-        console.error(error);
-    });
 }
 
 function showNotification(channel) {
@@ -126,14 +126,14 @@ function showNotification(channel) {
 }
 
 //get list of all live channels every 2 min
-fetchDATA();
-let intervalID = setInterval(fetchDATA, 60*1000*2/*2 min*/);
+updateLiveChannels();
+let intervalID = setInterval(updateLiveChannels, 60*1000*2/*2 min*/);
 
 // update when the updateBtn is clicked on the popup.html
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "update") {
         clearInterval(intervalID);
-        fetchDATA();
+        updateLiveChannels();
     }
 });
 
