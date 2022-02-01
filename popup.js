@@ -10,9 +10,7 @@
 
             // if there are no channels live set badge to '0'
             if (result.liveChannels.length === 0) {
-                let badgeColor = [106, 117, 242, 255];
-
-                chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
+                chrome.browserAction.setBadgeBackgroundColor({color: [106, 117, 242, 255]});
                 chrome.browserAction.setBadgeText({'text': '0'});
             } else {
                 // hide the nostream div if there are streams online
@@ -22,11 +20,11 @@
             document.getElementsByClassName("content")[0].innerHTML = "";
 
             for (channel of result.liveChannels) {
-                let name     = channel.name;
-                let category = channel.category;
-                let viewers  = numberWithCommas(channel.viewers);
-                let title    = channel.title.replace(/"/g, "&quot;");
-                let type     = (channel.type === 'live') ? '':' VOD';
+                const name     = channel.name;
+                const category = channel.category;
+                const viewers  = numberWithCommas(channel.viewers);
+                const title    = channel.title.replace(/"/g, "&quot;");
+                const type     = (channel.type === 'live') ? '':' VOD';
 
                 // if the category doesn't exist create it and add the stream to it
                 if (document.getElementsByClassName(category).length === 0) {
@@ -61,11 +59,8 @@
         const categoryA = a.category.toUpperCase();
         const categoryB = b.category.toUpperCase();
 
-        let comparison = 0;
-        if (categoryA > categoryB) {comparison = 1;}
-        else {comparison = -1;}
-
-        return comparison;
+        if (categoryA > categoryB) return 1;
+        else return -1;
     }
 
     // sort viewers from highest to lowest
@@ -74,11 +69,8 @@
             const viewersA = a.viewers;
             const viewersB = b.viewers;
 
-            let comparison = 0;
-            if (viewersA > viewersB) {comparison = -1;}
-            else {comparison = 1;}
-
-            return comparison;
+            if (viewersA > viewersB) return -1;
+            else return 1;
         }
     }
 
@@ -108,15 +100,15 @@
 
         // open streams on a popup windows (centered on screen)
         $('.name').click(function() {
-            let popupWidth  = 900;
-            let popupHeight = 650;
+            const popupWidth  = 900;
+            const popupHeight = 650;
 
-            let left = (screen.width/2)-(popupWidth/2);
-            let top  = (screen.height/2)-(popupHeight/2);
+            const left = (screen.width/2)-(popupWidth/2);
+            const top  = (screen.height/2)-(popupHeight/2);
 
-            let windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
+            const windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
 
-            let popupWindow = window.open($(this).attr("data-url")+
+            const popupWindow = window.open($(this).attr("data-url")+
                 "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                 '_about', windowsOptions);
             popupWindow.focus();

@@ -1,7 +1,8 @@
 async function updateLiveChannels() {
+    console.log("[~] Fetching update...");
     // fetch list of all followed channels
     try {
-        let URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
+        const URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
         const response = await fetch (
             URL,
             {
@@ -13,16 +14,16 @@ async function updateLiveChannels() {
             }
         );
 
-        let followedChannels = await response.json();
+        const followedChannels = await response.json();
         let liveChannels = [];
 
         for (channel of followedChannels.follows) {
-            let id   = channel.channel._id;
-            let name = channel.channel.name;
+            const id   = channel.channel._id;
+            const name = channel.channel.name;
 
             // fetch live status for each followed channel
             try {
-                let liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
+                const liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
                 const response = await fetch(
                     liveURL,
                     {
@@ -34,18 +35,18 @@ async function updateLiveChannels() {
                     }
                 );
 
-                let channelStatus = await response.json();
+                const channelStatus = await response.json();
                 if (channelStatus.stream !== null) {
                     let stream_type = '';
                     if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
                     else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
 
-                    let category = (channelStatus.stream.channel.game === '') ?
+                    const category = (channelStatus.stream.channel.game === '') ?
                                     'UNDEFINED':channelStatus.stream.channel.game;
-                    let viewers  = channelStatus.stream.viewers;
-                    let title    = channelStatus.stream.channel.status;
+                    const viewers  = channelStatus.stream.viewers;
+                    const title    = channelStatus.stream.channel.status;
 
-                    let data = {
+                    const data = {
                         'name':     name,
                         'category': category,
                         'viewers':  viewers,
@@ -69,7 +70,7 @@ async function updateLiveChannels() {
         chrome.runtime.sendMessage({"message": "updateUI"});
 
         console.log(liveChannels);
-        console.log("Update done "+new Date().toUTCString());
+        console.log("Update done: "+new Date().toUTCString());
     } catch (error) {
         console.error(error);
     }
@@ -82,10 +83,10 @@ function updateBadge(liveChannelCounter) {
 
 function showNotification(channel) {
     let notificationID = null;
-    let name           = channel.name;
-    let category       = channel.category;
+    const name           = channel.name;
+    const category       = channel.category;
 
-    let notificationOptions = {
+    const notificationOptions = {
         title:    'TTV live channels',
         priority: 0,
         type:     'list',
@@ -105,13 +106,13 @@ function showNotification(channel) {
     chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
         if (ID === notificationID) {
             if (btnID === 0) {
-                let popupWidth  = 900;
-                let popupHeight = 650;
+                const popupWidth  = 900;
+                const popupHeight = 650;
 
-                let left = (screen.width/2)-(popupWidth/2);
-                let top  = (screen.height/2)-(popupHeight/2);
+                const left = (screen.width/2)-(popupWidth/2);
+                const top  = (screen.height/2)-(popupHeight/2);
 
-                let windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
+                const windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
 
                 // open the popout window of the stream and close the notification
                 window.open('https://player.twitch.tv/?channel='+name+
@@ -143,7 +144,7 @@ chrome.storage.onChanged.addListener((storedData, namespace) => {
         // if not, show notification and update the badge.
         for (channelNew of storedData.liveChannels.newValue) {
             let notification_status = true;
-            let liveChannelCounter  = storedData.liveChannels.newValue.length;
+            const liveChannelCounter  = storedData.liveChannels.newValue.length;
 
             if (storedData.liveChannels.oldValue.length > 0)
             {

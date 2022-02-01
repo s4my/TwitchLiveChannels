@@ -1,6 +1,6 @@
 window.onload = function() {
-    let channel       = document.URL.split('=')[1].split('&')[0];
-    let playerButtons = document.getElementsByClassName('player-controls__right-control-group');
+    const channel       = document.URL.split('=')[1].split('&')[0];
+    const playerButtons = document.getElementsByClassName('player-controls__right-control-group');
     let button        = document.createElement('div');
     button.className  = 'chatBtn';
     button.style      = 'font-weight: bold;';
