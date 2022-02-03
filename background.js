@@ -45,13 +45,15 @@ async function updateLiveChannels() {
                                     'UNDEFINED':channelStatus.stream.channel.game;
                     const viewers  = channelStatus.stream.viewers;
                     const title    = channelStatus.stream.channel.status;
+                    const logo     = channelStatus.stream.channel.logo;
 
                     const data = {
                         'name':     name,
                         'category': category,
                         'viewers':  viewers,
                         'title':    title,
-                        'type':     stream_type
+                        'type':     stream_type,
+                        'logo':     logo
                     };
 
                     liveChannels.push(data);
@@ -81,10 +83,14 @@ function updateBadge(liveChannelCounter) {
     chrome.browserAction.setBadgeText({"text": liveChannelCounter});
 }
 
-function showNotification(channel) {
+async function showNotification(channel) {
     let notificationID = null;
-    const name           = channel.name;
-    const category       = channel.category;
+    const name         = channel.name;
+    const category     = channel.category;
+
+    const response = await fetch(channel.logo);
+    const blob     = await response.blob();
+    const logo     = URL.createObjectURL(blob);
 
     const notificationOptions = {
         title:    'TTV live channels',
@@ -95,7 +101,7 @@ function showNotification(channel) {
             title   : name,
             message : ` is Live streaming ${category}`
         }],
-        iconUrl:  chrome.runtime.getURL("icons/icon-48.png"),
+        iconUrl:  logo,
         buttons:  [{title : 'Open'}]
     };
 
