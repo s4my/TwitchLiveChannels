@@ -17,7 +17,7 @@
                 $('.nostream').hide();
             }
 
-            document.getElementsByClassName("content")[0].innerHTML = "";
+            document.getElementById("content").innerHTML = "";
 
             for (channel of result.liveChannels) {
                 const name     = channel.name;
@@ -28,7 +28,7 @@
 
                 // if the category doesn't exist create it and add the stream to it
                 if (document.getElementsByClassName(category).length === 0) {
-                    document.getElementsByClassName("content")[0].innerHTML += `
+                    document.getElementById("content").innerHTML += `
                         <div class="${category}">
                             <p class="category">${category}</p>
                             <div class="name${type}" title="${title}" data-url="https://player.twitch.tv/?channel=${name}">
