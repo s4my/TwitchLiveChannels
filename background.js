@@ -17,7 +17,7 @@ async function updateLiveChannels() {
         const followedChannels = await response.json();
         let liveChannels = [];
 
-        for (channel of followedChannels.follows) {
+        for (const channel of followedChannels.follows) {
             const id   = channel.channel._id;
             const name = channel.channel.name;
 
@@ -41,14 +41,15 @@ async function updateLiveChannels() {
                     if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
                     else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
 
-                    const category = (channelStatus.stream.channel.game === '') ?
-                                    'UNDEFINED':channelStatus.stream.channel.game;
-                    const viewers  = channelStatus.stream.viewers;
-                    const title    = channelStatus.stream.channel.status;
-                    const logo     = channelStatus.stream.channel.logo;
+                    const display_name = channelStatus.stream.channel.display_name;
+                    const category     = (channelStatus.stream.channel.game === '') ?
+                                         'UNDEFINED':channelStatus.stream.channel.game;
+                    const viewers      = channelStatus.stream.viewers;
+                    const title        = channelStatus.stream.channel.status;
+                    const logo         = channelStatus.stream.channel.logo;
 
                     const data = {
-                        'name':     name,
+                        'name':     display_name,
                         'category': category,
                         'viewers':  viewers,
                         'title':    title,
@@ -105,9 +106,7 @@ async function showNotification(channel) {
         buttons:  [{title : 'Open'}]
     };
 
-    chrome.notifications.create("", notificationOptions, (ID) => {
-        notificationID = ID;
-    });
+    chrome.notifications.create("", notificationOptions, (ID) => notificationID = ID);
 
     chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
         if (ID === notificationID) {
@@ -148,13 +147,13 @@ chrome.storage.onChanged.addListener((storedData, namespace) => {
     if(storedData.liveChannels !== undefined) {
         // check for each channel if it's already in the storedData,
         // if not, show notification and update the badge.
-        for (channelNew of storedData.liveChannels.newValue) {
-            let notification_status = true;
-            const liveChannelCounter  = storedData.liveChannels.newValue.length;
+        for (const channelNew of storedData.liveChannels.newValue) {
+            let notification_status  = true;
+            const liveChannelCounter = storedData.liveChannels.newValue.length;
 
             if (storedData.liveChannels.oldValue.length > 0)
             {
-                for (channelOld of storedData.liveChannels.oldValue) {
+                for (const channelOld of storedData.liveChannels.oldValue) {
                     if (channelNew.name === channelOld.name) {
                         notification_status = false;
                         break;
@@ -168,7 +167,7 @@ chrome.storage.onChanged.addListener((storedData, namespace) => {
                 }
             });
 
-            if(notification_status) {showNotification(channelNew);}
+            if(notification_status) showNotification(channelNew);
         }
     }
 });
