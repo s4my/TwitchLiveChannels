@@ -55,6 +55,20 @@
         }
     });
 
+    let scrollbarStyle = document.createElement('style');
+    scrollbarStyle.id          = 'remove-scroll-style';
+    scrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +
+                                 'body::-webkit-scrollbar{display:none !important}';
+
+    document.body.appendChild(scrollbarStyle);
+
+    document.body.addEventListener("mouseover", () => {
+        document.body.removeChild(scrollbarStyle);
+    });
+    document.body.addEventListener("mouseout", () => {
+        document.body.appendChild(scrollbarStyle);
+    });
+
     window.addEventListener('click', (event) => {
         if (event.target.id === "updateBtn") {
             // tell background.js to fetch an update.

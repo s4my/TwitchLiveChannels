@@ -94,10 +94,21 @@
             position: relative;
             margin: 0px 4px 0px 3px;
         }
-        /* TODO: create a custom scrollbar mutch like twitch did
-           ::-webkit-scrollbar {
-            display: none !important;
-        } */
+
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #FFFFFF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+            min-height: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
         /* TODO: detect auto dark theme, and setting the theme accordingly
             https://developer.chrome.com/blog/auto-dark-theme/#:~:text=Navigate%20to%20chrome
             %3A%2F%2Fflags,themes%20to%20sites%2C%20when%20possible.

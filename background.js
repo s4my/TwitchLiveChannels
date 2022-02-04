@@ -113,16 +113,13 @@ async function showNotification(channel) {
             if (btnID === 0) {
                 const popupWidth  = 900;
                 const popupHeight = 650;
-
-                const left = (screen.width/2)-(popupWidth/2);
-                const top  = (screen.height/2)-(popupHeight/2);
-
-                const windowsOptions = 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top;
+                const left        = (screen.width/2) - (popupWidth/2);
+                const top         = (screen.height/2) - (popupHeight/2);
 
                 // open the popout window of the stream and close the notification
                 window.open('https://player.twitch.tv/?channel='+name+
                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                            '_about', windowsOptions);
+                            '_about', 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top);
                 window.close();
 
                 chrome.notifications.clear(notificationID);
