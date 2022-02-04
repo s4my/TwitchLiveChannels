@@ -51,10 +51,11 @@
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.message === "updateUI") {
             updateUI();
-            document.getElementById("updateBtn").style.backgroundImage = "url('/icons/update.png')";
+            document.getElementById("updateBtn").style.backgroundImage = "";
         }
     });
 
+    // auto hide the scrollbar
     let scrollbarStyle = document.createElement('style');
     scrollbarStyle.id          = 'remove-scroll-style';
     scrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +
