@@ -130,12 +130,11 @@ async function showNotification(channel) {
 
 //get list of all live channels every 2 min
 updateLiveChannels();
-let intervalID = setInterval(updateLiveChannels, 60*1000*2/*2 min*/);
+setInterval(updateLiveChannels, 60*1000*2/*2 min*/);
 
 // update when the updateBtn is clicked on the popup.html
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "update") {
-        clearInterval(intervalID);
         updateLiveChannels();
     }
 });
