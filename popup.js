@@ -56,18 +56,20 @@
     });
 
     // auto hide the scrollbar
-    let scrollbarStyle = document.createElement('style');
-    scrollbarStyle.id          = 'remove-scroll-style';
-    scrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +
-                                 'body::-webkit-scrollbar{display:none !important}';
+    // TODO(bug): since the scrollbar is not a part of the body, hovering over it will cause it
+    //            to be hidden.
+    let hideScrollbarStyle = document.createElement('style');
+    hideScrollbarStyle.id          = 'remove-scrollbar';
+    hideScrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +
+                                     'body::-webkit-scrollbar{display:none !important}';
 
-    document.body.appendChild(scrollbarStyle);
+    document.body.appendChild(hideScrollbarStyle);
 
     document.body.addEventListener("mouseover", () => {
-        document.body.removeChild(scrollbarStyle);
+        document.body.removeChild(hideScrollbarStyle);
     });
     document.body.addEventListener("mouseout", () => {
-        document.body.appendChild(scrollbarStyle);
+        document.body.appendChild(hideScrollbarStyle);
     });
 
     window.addEventListener('click', (event) => {
