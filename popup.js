@@ -28,7 +28,7 @@
                 const viewers  = numberWithCommas(channel.viewers);
                 const title    = channel.title.replace(/"/g, "&quot;");
                 const type     = (channel.type === 'live') ? '':' VOD';
-                const logo     = channel.logo;
+                const logo     = channel.logo.replace("300x300", "70x70");
 
                 document.getElementById("content").innerHTML += `
                     <div class="stream" title="${title}">
