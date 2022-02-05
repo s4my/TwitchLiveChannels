@@ -58,6 +58,7 @@
     // auto hide the scrollbar
     // TODO(bug): since the scrollbar is not a part of the body, hovering over it will cause it
     //            to be hidden.
+    // TODO: add a right margin to the body when the scrollbar is showing.
     let hideScrollbarStyle = document.createElement('style');
     hideScrollbarStyle.id          = 'remove-scrollbar';
     hideScrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +

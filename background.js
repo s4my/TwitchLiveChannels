@@ -89,9 +89,15 @@ async function showNotification(channel) {
     const name         = channel.name;
     const category     = channel.category;
 
-    const response = await fetch(channel.logo);
-    const blob     = await response.blob();
-    const logo     = URL.createObjectURL(blob);
+    const logo = await fetch(channel.logo)
+        .then(response => response.blob())
+        .then(blob => URL.createObjectURL(blob))
+        .catch(error => {
+            console.error(error);
+            return chrome.runtime.getURL("icons/icon-48.png");
+        });
+
+    // TODO: look for a way to round images in js
 
     const notificationOptions = {
         title:    'TTV live channels',
