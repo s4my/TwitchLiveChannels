@@ -56,21 +56,24 @@
     });
 
     // auto hide the scrollbar
-    // TODO(bug): since the scrollbar is not a part of the body, hovering over it will cause it
-    //            to be hidden.
-    // TODO: add a right margin to the body when the scrollbar is showing.
     let hideScrollbarStyle = document.createElement('style');
     hideScrollbarStyle.id          = 'remove-scrollbar';
     hideScrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +
                                      'body::-webkit-scrollbar{display:none !important}';
 
-    document.body.appendChild(hideScrollbarStyle);
+    document.documentElement.appendChild(hideScrollbarStyle);
 
-    document.body.addEventListener("mouseover", () => {
-        document.body.removeChild(hideScrollbarStyle);
+    document.documentElement.addEventListener("mouseover", () => {
+        // show the scrollbar
+        if (document.documentElement.contains(hideScrollbarStyle)) document.documentElement.removeChild(hideScrollbarStyle);
+        if (document.documentElement.scrollHeight > document.documentElement.clientHeight) {
+            document.documentElement.style.setProperty("margin-right", "1px");
+        }
     });
-    document.body.addEventListener("mouseout", () => {
-        document.body.appendChild(hideScrollbarStyle);
+    document.documentElement.addEventListener("mouseout", () => {
+        // hide the scrollbar
+        document.documentElement.appendChild(hideScrollbarStyle);
+        document.documentElement.style.setProperty("margin-right", "0px");
     });
 
     window.addEventListener('click', (event) => {
