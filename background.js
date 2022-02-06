@@ -150,14 +150,14 @@ chrome.storage.onChanged.addListener((storedData, namespace) => {
         // check for each channel if it's already in the storedData,
         // if not, show notification and update the badge.
         for (const channelNew of storedData.liveChannels.newValue) {
-            let notification_status  = true;
             const liveChannelCounter = storedData.liveChannels.newValue.length;
+            let notificationStatus   = true;
 
-            if (storedData.liveChannels.oldValue.length > 0)
+            if (storedData.liveChannels.oldValue?.length > 0)
             {
                 for (const channelOld of storedData.liveChannels.oldValue) {
                     if (channelNew.name === channelOld.name) {
-                        notification_status = false;
+                        notificationStatus = false;
                         break;
                     }
                 }
@@ -169,7 +169,7 @@ chrome.storage.onChanged.addListener((storedData, namespace) => {
                 }
             });
 
-            if(notification_status) showNotification(channelNew);
+            if(notificationStatus) showNotification(channelNew);
         }
     }
 });

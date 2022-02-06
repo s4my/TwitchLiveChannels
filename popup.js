@@ -7,9 +7,7 @@
 
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (result) => {
-            result.liveChannels.sort((a, b) => {
-                return (a.viewers > b.viewers) ? -1:1;
-            });
+            result.liveChannels.sort((a, b) => (a.viewers > b.viewers) ? -1:1);
 
             // if there are no channels live set badge to '0'
             if (result.liveChannels.length === 0) {
