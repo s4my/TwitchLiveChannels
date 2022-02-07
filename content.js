@@ -1,3 +1,6 @@
+// Copyright (C) 2022 s4my <samy.hacker@gmail.com>
+// See end of file for extended copyright information.
+
 window.onload = function() {
     const channel       = document.URL.split('=')[1].split('&')[0];
     const playerButtons = document.getElementsByClassName('player-controls__right-control-group');
