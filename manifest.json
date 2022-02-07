@@ -1,9 +1,9 @@
 {
-  "name": "TTV live channels",
+  "name": "TTV live",
   "version": "1.0",
-  "description": "TTV live channels extension displays who is live in user's follow list",
+  "description": "TTV live extension helps you keep track of who is live out of the channels you follow on twitch.tv",
   "browser_action": {
-    "default_title": "TTV live channels",
+    "default_title": "TTV live",
     "default_icon": "icons/icon.png",
     "default_popup": "popup.html"
   },

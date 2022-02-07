@@ -100,7 +100,7 @@ async function showNotification(channel) {
     // TODO: look for a way to round images in js
 
     const notificationOptions = {
-        title:    'TTV live channels',
+        title:    'TTV live',
         priority: 0,
         type:     'list',
         message:  ``,
