@@ -29,8 +29,7 @@
       "matches": [
         "*://*.player.twitch.tv/?*"
       ],
-      "js": ["content.js",
-             "/scripts/tmi.min.js"]
+      "js": ["content.js"]
     }
   ],
   "options_page": "options.html",
