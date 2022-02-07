@@ -79,7 +79,7 @@ window.onload = function() {
 // TTV live extension helps you keep track of who is live out of the
 // channels you follow on twitch.tv
 //
-// Copyright (C) 2022 s4my
+// Copyright (C) 2022 s4my <samy.hacker@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
