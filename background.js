@@ -1,6 +1,8 @@
 // Copyright (C) 2022 s4my <samy.hacker@gmail.com>
 // See end of file for extended copyright information.
 
+let userID = (async () => await getUserID())();
+
 async function GETRequest(URL) {
     try {
         const response = await fetch (
@@ -33,8 +35,7 @@ async function updateLiveChannels() {
     console.log("[~] Fetching update...");
     // fetch list of all followed channels
     try {
-        const userID = await getUserID();
-        const URL = `https://api.twitch.tv/kraken/users/${userID}/follows/channels?limit=100&offset=0`;
+        const URL = `https://api.twitch.tv/kraken/users/${await userID}/follows/channels?limit=100&offset=0`;
 
         const followedChannels = await GETRequest(URL);
         let liveChannels = [];
