@@ -1,11 +1,8 @@
 // Copyright (C) 2022 s4my <samy.hacker@gmail.com>
 // See end of file for extended copyright information.
 
-async function updateLiveChannels() {
-    console.log("[~] Fetching update...");
-    // fetch list of all followed channels
+async function GETRequest(URL) {
     try {
-        const URL = 'https://api.twitch.tv/kraken/users/123144592/follows/channels?limit=100&offset=0';
         const response = await fetch (
             URL,
             {
@@ -17,7 +14,29 @@ async function updateLiveChannels() {
             }
         );
 
-        const followedChannels = await response.json();
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getUserID() {
+    // TODO: get the username from the options
+    const username = "s4my_h4ck3r";
+    const URL = `https://api.twitch.tv/kraken/users?login=${username}`;
+
+    const response = await GETRequest(URL);
+    return response["users"][0]["_id"];
+}
+
+async function updateLiveChannels() {
+    console.log("[~] Fetching update...");
+    // fetch list of all followed channels
+    try {
+        const userID = await getUserID();
+        const URL = `https://api.twitch.tv/kraken/users/${userID}/follows/channels?limit=100&offset=0`;
+
+        const followedChannels = await GETRequest(URL);
         let liveChannels = [];
 
         for (const channel of followedChannels.follows) {
@@ -27,18 +46,8 @@ async function updateLiveChannels() {
             // fetch live status for each followed channel
             try {
                 const liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
-                const response = await fetch(
-                    liveURL,
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Accept':    'application/vnd.twitchtv.v5+json',
-                            'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
-                        }
-                    }
-                );
+                const channelStatus = await GETRequest(liveURL);
 
-                const channelStatus = await response.json();
                 if (channelStatus.stream !== null) {
                     let stream_type = '';
                     if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
@@ -99,8 +108,6 @@ async function showNotification(channel) {
             console.error(error);
             return chrome.runtime.getURL("icons/icon-48.png");
         });
-
-    // TODO: look for a way to round images in js
 
     const notificationOptions = {
         title:    'TTV live',
