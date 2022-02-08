@@ -48,6 +48,17 @@
 
     // update the UI every time the popup is opened
     updateUI();
+    chrome.storage.local.get(['settings'], (storage) => {
+        if (storage.settings !== undefined) {
+            if (storage.settings["theme"] === 2) {
+                document.body.classList.add('dark-theme');
+            } else {
+                if (document.body.classList.contains("dark-theme")) {
+                    document.body.classList.remove("dark-theme");
+                }
+            }
+        }
+    });
 
     // update the UI if the message "updateUI" is received from background.js
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
