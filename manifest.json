@@ -32,6 +32,9 @@
       "js": ["content.js"]
     }
   ],
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
   "manifest_version": 2
 }

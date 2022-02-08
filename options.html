@@ -1,36 +1,80 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>TTV live - Options</title>
-    <style>
-      .save_btn{
-        background: #a250f4;
-        padding: 10px;
-        color: #ffffff;
-        font-weight: bold;
-        border: 0px;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-      .save_btn:active{
-        background: #b48cdc;
-      }
-      .save_msg{
-        display: inline-block;
-        color: #4ece37;
-        opacity: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div style="display: inline-block;">
-      <span>Twitch user name:  <input type="text" class="username"></span>
-    </div><br>
-    <div style="display: inline-block;">
-      <span><input type="checkbox">Open streams in a popup window</span><br>
-      <span><input type="checkbox">Show Notifications</span><br>
-      <span><input type="checkbox">Do Not Display Re-Streams</span><br>
-    </div><br>
-    <span><button class="save_btn">SAVE</button> <p class="save_msg">Options Saved.</p></span>
-  </body>
+    <head>
+        <title>TTV live - Settings</title>
+        <style>
+            body {
+                background: #f7f7f8;
+                font-family: Inter,Roobert,Helvetica Neue,Helvetica,Arial,sans-serif;
+            }
+            #save-btn {
+                background: #a251f4;
+                padding: 11px;
+                color: #ffffff;
+                font-weight: bold;
+                border: 1px;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            #save-btn:hover {
+                background: #7400ea;
+            }
+            #save-btn:active {
+                background: #8e2fff;
+            }
+            #save-msg {
+                display: inline-block;
+                font-size: 14px;
+                color: #5ece37;
+                visibility: hidden;
+            }
+            #username {
+                background-color: rgba(1, 0, 0, 0.1);
+                border-radius: 6px;
+                border: 1px solid rgba(1, 0, 0, 0.1);
+                padding: 6px 8px;
+                font-size: 15px;
+                color: #1e0e10;
+                width: 230px;
+            }
+            #username-text {
+                font-size: 16px;
+                display: inline;
+            }
+            #theme-selection {
+                background-color: rgba(1, 0, 0, 0.1);
+                border-radius: 6px;
+                border: 1px solid rgba(1, 0, 0, 0.1);
+                padding: 3px 1px;
+                font-size: 13px;
+                color: #1e0e10;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="form">
+            <div>
+                <label for="username" id="username-text">Twitch user name: </label>
+                <input type="text" id="username" minlength="3" maxlength="25" autocomplete="username"
+                       placeholder="username" autofocus required>
+            </div>
+            <div style="margin: 11px 0 10px 0px;">
+                <span><input id="cb-popup" type="checkbox" checked>Open streams in a popup window</span><br>
+                <span><input id="cb-notification" type="checkbox" checked>Show Notifications</span><br>
+                <span><input id="cb-restreams" type="checkbox" checked>Do Not Display Re-Streams</span><br>
+                <span style="margin-left: 5px; font-size: 14px">Theme:
+                    <select id="theme-selection">
+                        <option value="Auto">Auto</option>
+                        <option value="Light">Light</option>
+                        <option value="Dark">Dark</option>
+                    </select>
+            </div>
+            <span>
+                <button id="save-btn" title="save changes">SAVE</button>
+                <p id="save-msg">Settings Saved.</p>
+            </span>
+        </form>
+        <script src="options.js"></script>
+    </body>
 </html>

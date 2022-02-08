@@ -23,9 +23,9 @@ async function GETRequest(URL) {
 }
 
 async function getUserID() {
-    // TODO: get the username from the options
+    // TODO: get the username from the options (i.e from storage where it is save by `options.js`)
     const username = "s4my_h4ck3r";
-    const URL = `https://api.twitch.tv/kraken/users?login=${username}`;
+    const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
 
     const response = await GETRequest(URL);
     return response["users"][0]["_id"];
