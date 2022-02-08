@@ -83,8 +83,13 @@ saveButton.addEventListener("click", (e) => {
                     "restreams":     restreams,
                     "theme":         selectedTheme
                 };
-                chrome.storage.local.set({'settings': settings});
-                window.close();
+                chrome.storage.local.set({'settings': settings}, () => {
+                    saveMsg.innerHTML               = "Settings saved";
+                    saveMsg.style.visibility        = 'visible';
+                    saveMsg.style.color             = '#5ece37';
+                    usernameInput.style.borderColor = "rgba(1, 0, 0, 0.1)";
+                    setTimeout(() => window.close(), 1000);
+                });
             }
         })();
         e.preventDefault();
