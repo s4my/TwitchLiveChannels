@@ -143,16 +143,23 @@ async function showNotification(channel) {
     chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
         if (ID === notificationID) {
             if (btnID === 0) {
-                const popupWidth  = 900;
-                const popupHeight = 650;
-                const left        = (screen.width/2) - (popupWidth/2);
-                const top         = (screen.height/2) - (popupHeight/2);
+                chrome.storage.local.get(['settings'], (storage) => {
+                    if (storage.settings !== undefined) {
+                        if (!storage.settings["popup"]) {
+                            window.open("https://www.twitch.tv/"+name, "_about");
+                        } else {
+                            const popupWidth  = 900;
+                            const popupHeight = 650;
+                            const left        = (screen.width/2) - (popupWidth/2);
+                            const top         = (screen.height/2) - (popupHeight/2);
 
-                // open the popout window of the stream and close the notification
-                window.open('https://player.twitch.tv/?channel='+name+
-                            "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                            '_about', 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top);
-                window.close();
+                            // open the popout window of the stream and close the notification
+                            window.open("https://player.twitch.tv/?channel="+name+
+                                        "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                        "_about", "width="+popupWidth+",height="+popupHeight+",left="+left+",top="+top);
+                        }
+                    }
+                });
 
                 chrome.notifications.clear(notificationID);
             }
