@@ -50,12 +50,16 @@
     updateUI();
     chrome.storage.local.get(['settings'], (storage) => {
         if (storage.settings !== undefined) {
-            if (storage.settings["theme"] === 2) {
-                document.body.classList.add('dark-theme');
-            } else {
-                if (document.body.classList.contains("dark-theme")) {
+            if (storage.settings["theme"] === 0/*Auto*/) {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-theme');
+                } else {
                     document.body.classList.remove("dark-theme");
                 }
+            } else if (storage.settings["theme"] === 1/*Light*/) {
+                document.body.classList.remove("dark-theme");
+            } else /*Dark*/{
+                document.body.classList.add('dark-theme');
             }
         }
     });

@@ -204,7 +204,9 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
 
             chrome.storage.local.get(['settings'], (storage) => {
                 if (storage.settings !== undefined) {
-                    if (storage.settings["notifications"] && notificationStatus) showNotification(channelNew);
+                    if (storage.settings["notifications"] && notificationStatus) {
+                        showNotification(channelNew);
+                    }
                 }
             });
         }
