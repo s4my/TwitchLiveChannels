@@ -61,7 +61,7 @@ saveButton.addEventListener("click", (e) => {
     const openInPopup       = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
     const restreams         = restreamsCheckbox.checked;
-    const selectedTheme     = themeSelection.value;
+    const selectedTheme     = themeSelection.selectedIndex;
 
     const usernameValidity = usernameInput.validity;
     if (!(usernameValidity.valueMissing || usernameValidity.tooShort || usernameValidity.tooLong)) {
@@ -91,8 +91,13 @@ saveButton.addEventListener("click", (e) => {
     }
 });
 
-chrome.storage.local.get(function(data) {
-  console.log(data["settings"]);
+document.addEventListener('DOMContentLoaded', () => {
+    chrome.storage.local.get((storedData) => {
+        const settings = storedData["settings"];
+        usernameInput.value          = settings["username"];
+        popupCheckbox.checked        = settings["popup"];
+        notificationCheckbox.checked = settings["notifications"];
+        restreamsCheckbox.checked    = settings["restreams"];
+        themeSelection.selectedIndex = settings["theme"];
+    });
 });
-
-// TODO: load settings from storage
