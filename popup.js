@@ -9,11 +9,12 @@
     }
 
     function updateUI() {
-        chrome.storage.local.get(['liveChannels'], (result) => {
-            result.liveChannels.sort((a, b) => (a.viewers > b.viewers) ? -1:1);
+        chrome.storage.local.get(['liveChannels'], (storage) => {
+            if (storage.liveChannels === undefined) return;
+            storage.liveChannels.sort((a, b) => (a.viewers > b.viewers) ? -1:1);
 
             // if there are no channels live set badge to '0'
-            if (result.liveChannels.length === 0) {
+            if (storage.liveChannels.length === 0) {
                 chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
                 chrome.browserAction.setBadgeText({'text': '0'});
             } else {
@@ -23,7 +24,7 @@
 
             document.getElementById("content").innerHTML = "";
 
-            for (const channel of result.liveChannels) {
+            for (const channel of storage.liveChannels) {
                 const name     = channel.name;
                 const category = channel.category;
                 const viewers  = numberWithCommas(channel.viewers);
