@@ -171,17 +171,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
-chrome.storage.onChanged.addListener((storedData, namespace) => {
-    if(storedData.liveChannels !== undefined) {
-        // check for each channel if it's already in the storedData,
+chrome.storage.onChanged.addListener((storage, namespace) => {
+    if(storage.liveChannels !== undefined) {
+        // check for each channel if it's already in the storage,
         // if not, show notification and update the badge.
-        for (const channelNew of storedData.liveChannels.newValue) {
-            const liveChannelCounter = storedData.liveChannels.newValue.length;
+        for (const channelNew of storage.liveChannels.newValue) {
+            const liveChannelCounter = storage.liveChannels.newValue.length;
             let notificationStatus   = true;
 
-            if (storedData.liveChannels.oldValue?.length > 0)
+            if (storage.liveChannels.oldValue?.length > 0)
             {
-                for (const channelOld of storedData.liveChannels.oldValue) {
+                for (const channelOld of storage.liveChannels.oldValue) {
                     if (channelNew.name === channelOld.name) {
                         notificationStatus = false;
                         break;
@@ -195,7 +195,11 @@ chrome.storage.onChanged.addListener((storedData, namespace) => {
                 }
             });
 
-            if(notificationStatus) showNotification(channelNew);
+            chrome.storage.local.get(['settings'], (storage) => {
+                if (storage.settings !== undefined) {
+                    if (storage.settings["notifications"] && notificationStatus) showNotification(channelNew);
+                }
+            });
         }
     }
 });
