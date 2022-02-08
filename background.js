@@ -13,9 +13,9 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 async function getUserID() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get((storedData) => {
-            if (storedData["settings"] === undefined) reject();
-            else resolve(storedData["settings"]["userID"]);
+        chrome.storage.local.get(['settings'], (storage) => {
+            if (storage.settings === undefined) reject();
+            else resolve(storage.settings["userID"]);
         });
     });
 };

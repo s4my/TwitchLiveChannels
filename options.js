@@ -99,14 +99,13 @@ saveButton.addEventListener("click", (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    chrome.storage.local.get((storedData) => {
-        if (storedData["settings"] !== undefined) {
-            const settings = storedData["settings"];
-            usernameInput.value          = settings["username"];
-            popupCheckbox.checked        = settings["popup"];
-            notificationCheckbox.checked = settings["notifications"];
-            restreamsCheckbox.checked    = settings["restreams"];
-            themeSelection.selectedIndex = settings["theme"];
+    chrome.storage.local.get(['settings'], (storage) => {
+        if (storage.settings !== undefined) {
+            usernameInput.value          = storage.settings["username"];
+            popupCheckbox.checked        = storage.settings["popup"];
+            notificationCheckbox.checked = storage.settings["notifications"];
+            restreamsCheckbox.checked    = storage.settings["restreams"];
+            themeSelection.selectedIndex = storage.settings["theme"];
         }
     });
 });
