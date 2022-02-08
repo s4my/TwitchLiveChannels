@@ -90,6 +90,8 @@ saveButton.addEventListener("click", (e) => {
                     usernameInput.style.borderColor = "rgba(1, 0, 0, 0.1)";
                     setTimeout(() => window.close(), 1000);
                 });
+
+                chrome.runtime.sendMessage({"message": "update"});
             }
         })();
         e.preventDefault();

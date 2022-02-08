@@ -49,6 +49,7 @@
                 font-size: 13px;
                 color: #1e0e10;
                 margin-top: 10px;
+                cursor: pointer;
             }
         </style>
     </head>
@@ -57,7 +58,7 @@
             <div>
                 <label for="username" id="username-text">Twitch user name: </label>
                 <input type="text" id="username" minlength="3" maxlength="25" autocomplete="username"
-                       placeholder="username" autofocus required>
+                       spellcheck="false" placeholder="username" autofocus required>
             </div>
             <div style="margin: 11px 0 10px 0px;">
                 <span><input id="cb-popup" type="checkbox" checked>Open streams in a popup window</span><br>

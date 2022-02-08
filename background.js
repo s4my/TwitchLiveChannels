@@ -1,7 +1,24 @@
 // Copyright (C) 2022 s4my <samy.hacker@gmail.com>
 // See end of file for extended copyright information.
 
-let userID = (async () => await getUserID())();
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === "install") {
+        if (chrome.runtime.openOptionsPage) {
+            chrome.runtime.openOptionsPage();
+        } else {
+            window.open(chrome.runtime.getURL('options.html'));
+        }
+    }
+});
+
+async function getUserID() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get((storedData) => {
+            if (storedData["settings"] === undefined) reject();
+            else resolve(storedData["settings"]["userID"]);
+        });
+    });
+};
 
 async function GETRequest(URL) {
     try {
@@ -22,20 +39,12 @@ async function GETRequest(URL) {
     }
 }
 
-async function getUserID() {
-    // TODO: get the username from the options (i.e from storage where it is save by `options.js`)
-    const username = "s4my_h4ck3r";
-    const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
-
-    const response = await GETRequest(URL);
-    return response["users"][0]["_id"];
-}
-
 async function updateLiveChannels() {
     console.log("[~] Fetching update...");
     // fetch list of all followed channels
     try {
-        const URL = `https://api.twitch.tv/kraken/users/${await userID}/follows/channels?limit=100&offset=0`;
+        const userID = await getUserID();
+        const URL    = `https://api.twitch.tv/kraken/users/${userID}/follows/channels?limit=100&offset=0`;
 
         const followedChannels = await GETRequest(URL);
         let liveChannels = [];
@@ -88,7 +97,7 @@ async function updateLiveChannels() {
         console.log(liveChannels);
         console.log("Update done: "+new Date().toUTCString());
     } catch (error) {
-        console.error(error);
+        if (error !== undefined) console.error(error);
     }
 }
 
@@ -145,7 +154,7 @@ async function showNotification(channel) {
     });
 }
 
-//get list of all live channels every 2 min
+// get list of all live channels every 2 min
 updateLiveChannels();
 setInterval(updateLiveChannels, 60*1000*2/*2 min*/);
 
