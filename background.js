@@ -33,9 +33,11 @@ async function GETRequest(URL) {
             }
         );
 
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error(error);
+        return null;
     }
 }
 
@@ -47,6 +49,8 @@ async function updateLiveChannels() {
         const URL    = `https://api.twitch.tv/kraken/users/${userID}/follows/channels?limit=100&offset=0`;
 
         const followedChannels = await GETRequest(URL);
+        if (!followedChannels) throw new Error("failed to fetch followed list.");
+
         let liveChannels = [];
 
         for (const channel of followedChannels.follows) {
@@ -57,6 +61,7 @@ async function updateLiveChannels() {
             try {
                 const liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
                 const channelStatus = await GETRequest(liveURL);
+                if (!channelStatus) throw new Error("failed to fetch live channels.");
 
                 if (channelStatus.stream !== null) {
                     let stream_type = '';
@@ -83,6 +88,7 @@ async function updateLiveChannels() {
                 }
             } catch (error) {
                 console.error(error);
+                return;
             }
         }
 
