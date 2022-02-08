@@ -69,7 +69,7 @@ saveButton.addEventListener("click", (e) => {
             // making sure the username is valid
             const userID = await getUserID();
 
-            if (userID !== "error:unreachable" && !userID) {
+            if (userID === "error:unreachable" || !userID) {
                 saveMsg.innerHTML               = "*Invalid username.";
                 saveMsg.style.visibility        = 'visible';
                 saveMsg.style.color             = '#971311';
@@ -98,11 +98,13 @@ saveButton.addEventListener("click", (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get((storedData) => {
-        const settings = storedData["settings"];
-        usernameInput.value          = settings["username"];
-        popupCheckbox.checked        = settings["popup"];
-        notificationCheckbox.checked = settings["notifications"];
-        restreamsCheckbox.checked    = settings["restreams"];
-        themeSelection.selectedIndex = settings["theme"];
+        if (storedData["settings"] !== undefined) {
+            const settings = storedData["settings"];
+            usernameInput.value          = settings["username"];
+            popupCheckbox.checked        = settings["popup"];
+            notificationCheckbox.checked = settings["notifications"];
+            restreamsCheckbox.checked    = settings["restreams"];
+            themeSelection.selectedIndex = settings["theme"];
+        }
     });
 });
