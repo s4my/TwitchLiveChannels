@@ -32,28 +32,12 @@ async function GETRequest(URL) {
             }
         );
 
-        if (!response.ok) {
-            saveMsg.innerHTML        = `Failed to reach server: status (${response.status})`;
-            saveMsg.style.visibility = 'visible';
-            saveMsg.style.color      = '#971311';
-            return null;
-        }
-
+        if (!response.ok) return null;
         return await response.json();
+
     } catch (error) {
         console.error(error);
     }
-}
-
-async function getUserID() {
-    const username = usernameInput.value.trim();
-    const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
-
-    const response = await GETRequest(URL);
-
-    if (!response) return "error:unreachable";
-    else if (response["_total"] === 0) return null;
-    return response["users"][0]["_id"];
 }
 
 saveButton.addEventListener("click", (e) => {
@@ -65,14 +49,23 @@ saveButton.addEventListener("click", (e) => {
     if (!(usernameValidity.valueMissing || usernameValidity.tooShort || usernameValidity.tooLong)) {
         (async () => {
             // making sure the username is valid
-            const userID = await getUserID();
+            const username = usernameInput.value.trim();
+            const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
 
-            if (userID === "error:unreachable" || !userID) {
+            const response = await GETRequest(URL);
+
+            if (response !== null  && response["_total"] === 0) {
                 saveMsg.innerHTML               = "*Invalid username.";
                 saveMsg.style.visibility        = 'visible';
                 saveMsg.style.color             = '#971311';
                 usernameInput.style.borderColor = "#971311";
+            } else if (!response) {
+                saveMsg.innerHTML        = 'Error: failed to reach server';
+                saveMsg.style.visibility = 'visible';
+                saveMsg.style.color      = '#971311';
             } else {
+                const userID = response["users"][0]["_id"];
+
                 const isFirstRun = new Promise((resolve, reject) => {
                     chrome.storage.local.get(['settings'], (storage) => {
                         if (storage.settings === undefined) resolve(true);
