@@ -73,6 +73,13 @@ saveButton.addEventListener("click", (e) => {
                 saveMsg.style.color             = '#971311';
                 usernameInput.style.borderColor = "#971311";
             } else {
+                const isFirstRun = new Promise((resolve, reject) => {
+                    chrome.storage.local.get(['settings'], (storage) => {
+                        if (storage.settings === undefined) resolve(true);
+                        else reject();
+                    });
+                });
+
                 const settings = {
                     "username":      usernameInput.value.trim(),
                     "userID":        userID,
@@ -88,7 +95,11 @@ saveButton.addEventListener("click", (e) => {
                     setTimeout(() => window.close(), 1000);
                 });
 
-                chrome.runtime.sendMessage({"message": "update"});
+                isFirstRun.then((response) => {
+                    if (response) {
+                        chrome.runtime.sendMessage({"message": "update"});
+                    }
+                }).catch((error) => console.error(error));
             }
         })();
         e.preventDefault();
