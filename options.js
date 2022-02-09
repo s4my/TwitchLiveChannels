@@ -2,7 +2,6 @@ const usernameInput        = document.getElementById("username");
 const saveButton           = document.getElementById("save-btn");
 const popupCheckbox        = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
-const restreamsCheckbox    = document.getElementById("cb-restreams");
 const themeSelection       = document.getElementById("theme-selection");
 const saveMsg              = document.getElementById("save-msg");
 
@@ -60,7 +59,6 @@ async function getUserID() {
 saveButton.addEventListener("click", (e) => {
     const openInPopup       = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
-    const restreams         = restreamsCheckbox.checked;
     const selectedTheme     = themeSelection.selectedIndex;
 
     const usernameValidity = usernameInput.validity;
@@ -80,7 +78,6 @@ saveButton.addEventListener("click", (e) => {
                     "userID":        userID,
                     "popup":         openInPopup,
                     "notifications": showNotifications,
-                    "restreams":     restreams,
                     "theme":         selectedTheme
                 };
                 chrome.storage.local.set({'settings': settings}, () => {
@@ -104,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameInput.value          = storage.settings["username"];
             popupCheckbox.checked        = storage.settings["popup"];
             notificationCheckbox.checked = storage.settings["notifications"];
-            restreamsCheckbox.checked    = storage.settings["restreams"];
             themeSelection.selectedIndex = storage.settings["theme"];
         }
     });

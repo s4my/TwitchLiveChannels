@@ -211,6 +211,14 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
             });
         }
     }
+
+    if(storage.settings !== undefined) {
+        if (storage.settings.oldValue) {
+            if (storage.settings.oldValue.username !== storage.settings.newValue.username) {
+                updateLiveChannels();
+            }
+        }
+    }
 });
 
 // TTV live extension helps you keep track of who is live out of the
