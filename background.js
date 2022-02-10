@@ -44,6 +44,7 @@ async function GETRequest(URL) {
 async function updateLiveChannels() {
     console.log("[~] Fetching update...");
     // fetch list of all followed channels
+    chrome.storage.local.set({"status": "updating"});
     try {
         const userID = await getUserID();
         const URL    = `https://api.twitch.tv/kraken/users/${userID}/follows/channels?limit=100&offset=0`;
@@ -105,6 +106,8 @@ async function updateLiveChannels() {
     } catch (error) {
         if (error !== undefined) console.error(error);
     }
+
+    chrome.storage.local.set({"status": "done"});
 }
 
 function updateBadge(liveChannelCounter) {

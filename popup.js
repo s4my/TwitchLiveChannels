@@ -72,6 +72,22 @@
         }
     });
 
+    // update the UI according to the extension's `status`
+    chrome.storage.local.get(['status'], (storage) => {
+        if (storage.status !== undefined) {
+            const updateBtn = document.getElementById("updateBtn");
+            const nostream  = document.getElementById('nostream');
+
+            if (storage.status === "updating") {
+                nostream.innerHTML = "Fetching DATA please wait...";
+                updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
+            } else {
+                nostream.innerHTML = "None of the channels you follow are currently live.";
+                updateBtn.style.backgroundImage = "";
+            }
+        }
+    });
+
     // auto hide the scrollbar
     let hideScrollbarStyle = document.createElement('style');
     hideScrollbarStyle.id          = 'remove-scrollbar';
@@ -82,7 +98,9 @@
 
     document.documentElement.addEventListener("mouseover", () => {
         // show the scrollbar
-        if (document.documentElement.contains(hideScrollbarStyle)) document.documentElement.removeChild(hideScrollbarStyle);
+        if (document.documentElement.contains(hideScrollbarStyle)) {
+            document.documentElement.removeChild(hideScrollbarStyle);
+        }
         if (document.documentElement.scrollHeight > document.documentElement.clientHeight) {
             document.documentElement.style.setProperty("margin-right", "1px");
         }
