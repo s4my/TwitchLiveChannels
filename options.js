@@ -80,6 +80,7 @@ saveButton.addEventListener("click", (e) => {
                     "notifications": showNotifications,
                     "theme":         selectedTheme
                 };
+
                 chrome.storage.local.set({'settings': settings}, () => {
                     saveMsg.innerHTML               = "Settings saved";
                     saveMsg.style.visibility        = 'visible';
@@ -92,7 +93,7 @@ saveButton.addEventListener("click", (e) => {
                     if (response) {
                         chrome.runtime.sendMessage({"message": "update"});
                     }
-                }).catch((error) => console.error(error));
+                });
             }
         })();
         e.preventDefault();

@@ -76,7 +76,7 @@
     chrome.storage.local.get(['status'], (storage) => {
         if (storage.status !== undefined) {
             const updateBtn = document.getElementById("updateBtn");
-            const nostream  = document.getElementById('nostream');
+            const nostream  = document.getElementById("nostream");
 
             if (storage.status === "updating") {
                 nostream.innerHTML = "Fetching DATA please wait...";

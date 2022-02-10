@@ -120,13 +120,34 @@ async function showNotification(channel) {
     const name         = channel.name;
     const category     = channel.category;
 
-    const logo = await fetch(channel.logo)
-        .then(response => response.blob())
-        .then(blob => URL.createObjectURL(blob))
-        .catch(error => {
-            console.error(error);
-            return chrome.runtime.getURL("icons/icon-48.png");
-        });
+    const logo = await fetch(channel.logo.replace("300x300", "70x70"))
+                 .then(response => response.blob())
+                 .then(blob => {
+                     return new Promise((resolve, reject) => {
+                         let canvas = document.createElement('canvas');
+                         canvas.width  = 48;
+                         canvas.height = 48;
+                         let ctx = canvas.getContext('2d');
+
+                         const img = new Image();
+                         img.src = URL.createObjectURL(blob);
+
+                         img.onload = () => {
+                             ctx.save();
+                             ctx.beginPath();
+                             ctx.arc((canvas.width/2), (canvas.width/2), (canvas.width/2), 0,
+                                     Math.PI * 2, false);
+                             ctx.clip();
+                             ctx.drawImage(img, 0, 0, 48, 48);
+                             ctx.restore();
+                             resolve(canvas.toDataURL('image/png'));
+                         };
+                     });
+                 })
+                 .catch(error => {
+                     console.error(error);
+                     return chrome.runtime.getURL("icons/icon-48.png");
+                 });
 
     const notificationOptions = {
         title:    'TTV live',
