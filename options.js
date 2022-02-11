@@ -9,6 +9,7 @@ usernameInput.addEventListener("input", () => {
     usernameInput.setCustomValidity('');
     usernameInput.checkValidity();
 });
+
 usernameInput.addEventListener("invalid", () => {
     if (usernameInput.validity.valueMissing) {
         usernameInput.setCustomValidity("The username is required.");
@@ -18,27 +19,6 @@ usernameInput.addEventListener("invalid", () => {
         usernameInput.setCustomValidity('');
     }
 });
-
-async function GETRequest(URL) {
-    try {
-        const response = await fetch (
-            URL,
-            {
-                method: 'GET',
-                headers: {
-                    'Accept':    'application/vnd.twitchtv.v5+json',
-                    'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
-                }
-            }
-        );
-
-        if (!response.ok) return null;
-        return await response.json();
-
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 saveButton.addEventListener("click", (e) => {
     const openInPopup       = popupCheckbox.checked;
@@ -52,48 +32,67 @@ saveButton.addEventListener("click", (e) => {
             const username = usernameInput.value.trim();
             const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
 
-            const response = await GETRequest(URL);
-
-            if (response !== null  && response["_total"] === 0) {
-                saveMsg.innerHTML               = "*Invalid username.";
-                saveMsg.style.visibility        = 'visible';
-                saveMsg.style.color             = '#971311';
-                usernameInput.style.borderColor = "#971311";
-            } else if (!response) {
-                saveMsg.innerHTML        = 'Error: failed to reach server';
-                saveMsg.style.visibility = 'visible';
-                saveMsg.style.color      = '#971311';
-            } else {
-                const userID = response["users"][0]["_id"];
-
-                const isFirstRun = new Promise((resolve, reject) => {
-                    chrome.storage.local.get(['settings'], (storage) => {
-                        if (storage.settings === undefined) resolve(true);
-                        else reject();
-                    });
-                });
-
-                const settings = {
-                    "username":      usernameInput.value.trim(),
-                    "userID":        userID,
-                    "popup":         openInPopup,
-                    "notifications": showNotifications,
-                    "theme":         selectedTheme
-                };
-
-                chrome.storage.local.set({'settings': settings}, () => {
-                    saveMsg.innerHTML               = "Settings saved";
-                    saveMsg.style.visibility        = 'visible';
-                    saveMsg.style.color             = '#5ece37';
-                    usernameInput.style.borderColor = "rgba(1, 0, 0, 0.1)";
-                    setTimeout(() => window.close(), 1000);
-                });
-
-                isFirstRun.then((response) => {
-                    if (response) {
-                        chrome.runtime.sendMessage({"message": "update"});
+            try {
+                const response = await fetch (
+                    URL,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Accept':    'application/vnd.twitchtv.v5+json',
+                            'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
+                        }
                     }
-                });
+                );
+
+                if (!response.ok) {
+                    saveMsg.innerHTML        = `Error: failed to reach server (status code ${response.status})`;
+                    saveMsg.style.visibility = 'visible';
+                    saveMsg.style.color      = '#971311';
+                }
+
+                const jsonResponse = await response.json();
+
+                if (jsonResponse["_total"] === undefined) {
+                    throw new Error("could not verify the unsername validity");
+                } else if (jsonResponse["_total"] === 0) {
+                    saveMsg.innerHTML               = "*Invalid username.";
+                    saveMsg.style.visibility        = 'visible';
+                    saveMsg.style.color             = '#971311';
+                    usernameInput.style.borderColor = "#971311";
+                } else {
+                    const userID = jsonResponse["users"][0]["_id"];
+
+                    const isFirstRun = new Promise((resolve, reject) => {
+                        chrome.storage.local.get(['settings'], (storage) => {
+                            if (storage.settings === undefined) resolve(true);
+                            else reject();
+                        });
+                    });
+
+                    const settings = {
+                        "username":      usernameInput.value.trim(),
+                        "userID":        userID,
+                        "popup":         openInPopup,
+                        "notifications": showNotifications,
+                        "theme":         selectedTheme
+                    };
+
+                    chrome.storage.local.set({'settings': settings}, () => {
+                        saveMsg.innerHTML               = "Settings saved";
+                        saveMsg.style.visibility        = 'visible';
+                        saveMsg.style.color             = '#5ece37';
+                        usernameInput.style.borderColor = "rgba(1, 0, 0, 0.1)";
+                        setTimeout(() => window.close(), 1000);
+                    });
+
+                    isFirstRun.then((jsonResponse) => {
+                        if (jsonResponse) {
+                            chrome.runtime.sendMessage({"message": "update"});
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error(error);
             }
         })();
         e.preventDefault();
