@@ -22,7 +22,7 @@
                 document.getElementById('nostream').style.display = "none";
             }
 
-            document.getElementById("content").innerHTML = "";
+            document.getElementById("streams").innerHTML = "";
 
             for (const channel of storage.liveChannels) {
                 const name     = channel.name;
@@ -32,7 +32,7 @@
                 const type     = (channel.type === 'live') ? '':' VOD';
                 const logo     = channel.logo.replace("300x300", "70x70");
 
-                document.getElementById("content").innerHTML += `
+                document.getElementById("streams").innerHTML += `
                     <div class="stream" title="${title}">
                       <div class="logo">
                         <img src="${logo}" width="32px" height="32px" style="border-radius: 50%;"/>
@@ -91,8 +91,7 @@
     // auto hide the scrollbar
     let hideScrollbarStyle = document.createElement('style');
     hideScrollbarStyle.id          = 'remove-scrollbar';
-    hideScrollbarStyle.textContent = 'html::-webkit-scrollbar{display:none !important}' +
-                                     'body::-webkit-scrollbar{display:none !important}';
+    hideScrollbarStyle.textContent = '#streams::-webkit-scrollbar{display:none !important}';
 
     document.documentElement.appendChild(hideScrollbarStyle);
 
@@ -101,14 +100,10 @@
         if (document.documentElement.contains(hideScrollbarStyle)) {
             document.documentElement.removeChild(hideScrollbarStyle);
         }
-        if (document.documentElement.scrollHeight > document.documentElement.clientHeight) {
-            document.documentElement.style.setProperty("margin-right", "1px");
-        }
     });
     document.documentElement.addEventListener("mouseout", () => {
         // hide the scrollbar
         document.documentElement.appendChild(hideScrollbarStyle);
-        document.documentElement.style.setProperty("margin-right", "0px");
     });
 
     window.addEventListener('click', (event) => {

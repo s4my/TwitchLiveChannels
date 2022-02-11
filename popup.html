@@ -40,7 +40,12 @@
                 justify-content: space-between;
                 align-items: end;
                 padding: 4px 4px 4px 6px;
-                margin-bottom: 15px;
+                margin-bottom: 5px;
+            }
+            #streams {
+                overflow-x: hidden;
+                overflow-y: auto;
+                max-height: 440px;
             }
             .stream {
                 display: grid;
@@ -140,7 +145,7 @@
         <div id="title">LIVE CHANNELS <span id="updateBtn" title="update"></span></div>
         <div id="nostream">None of the channels you follow are currently live.</div>
 
-        <div id="content"></div>
+        <div id="streams"></div>
         <script src="popup.js"></script>
     </body>
 </html>
