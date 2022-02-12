@@ -4,10 +4,11 @@
 window.onload = function() {
     const channel       = document.URL.split('=')[1].split('&')[0];
     const playerButtons = document.getElementsByClassName('player-controls__right-control-group');
-    let button          = document.createElement('div');
-    button.className    = 'chatBtn';
-    button.style        = 'font-weight: bold;';
-    button.innerHTML    = `
+
+    let button = document.createElement('div');
+    button.className = 'chatBtn';
+    button.style     = 'font-weight: bold;';
+    button.innerHTML = `
     <div aria-describedby="ec3d0550c404c5736508b1ef6b8d4373" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 jrXOjD">
        <button class="ScCoreButton-sc-1qn4ixc-0 fVEFfF ScButtonIcon-sc-o7ndmn-0 jGcDiv"
        aria-label="Chat" data-a-target="player-clip-button">
