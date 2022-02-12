@@ -65,10 +65,6 @@ async function updateLiveChannels() {
                 if (!channelStatus) throw new Error("failed to fetch live channels.");
 
                 if (channelStatus.stream !== null) {
-                    let stream_type = '';
-                    if (channelStatus.stream.stream_type === 'playlist') {stream_type = 'VOD';}
-                    else if (channelStatus.stream.stream_type === 'live') {stream_type = 'live';}
-
                     const display_name = channelStatus.stream.channel.display_name;
                     const category     = (channelStatus.stream.channel.game === '') ?
                                          'UNDEFINED':channelStatus.stream.channel.game;
@@ -81,7 +77,6 @@ async function updateLiveChannels() {
                         'category': category,
                         'viewers':  viewers,
                         'title':    title,
-                        'type':     stream_type,
                         'logo':     logo
                     };
 

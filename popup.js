@@ -29,7 +29,6 @@
                 const category = channel.category;
                 const viewers  = numberWithCommas(channel.viewers);
                 const title    = channel.title.replace(/"/g, "&quot;");
-                const type     = (channel.type === 'live') ? '':' VOD';
                 const logo     = channel.logo.replace("300x300", "70x70");
 
                 document.getElementById("streams").innerHTML += `
@@ -51,7 +50,7 @@
     chrome.storage.local.get(['settings'], (storage) => {
         if (storage.settings !== undefined) {
             if (storage.settings["theme"] === 0/*Auto*/) {
-                window.matchMedia('(prefers-color-scheme: dark)').addListener((e) => {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", (e) => {
                     if (e.matches) {
                         document.body.classList.add('dark-theme');
                     } else {
