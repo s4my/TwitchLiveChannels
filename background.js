@@ -171,11 +171,12 @@ async function showNotification(channel) {
                             const top         = (screen.height/2) - (popupHeight/2);
 
                             // open the popout window of the stream and close the notification
-                            window.open("https://player.twitch.tv/?channel="+name+
+                            window.open("https://player.twitch.tv/?channel="+encodeURI(name)+
                                         "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                                        "_about", "width="+popupWidth+",height="+popupHeight+",left="+left+",top="+top);
+                                        "_about", "width="+encodeURI(popupWidth)+",height="+encodeURI(popupHeight)+
+                                        ",left="+encodeURI(left)+",top="+top);
                         } else {
-                            window.open("https://www.twitch.tv/"+name, "_about");
+                            window.open("https://www.twitch.tv/"+encodeURI(name), "_about");
                         }
                     }
                 });
