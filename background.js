@@ -47,7 +47,7 @@ async function updateLiveChannels() {
     chrome.storage.local.set({"status": "updating"});
     try {
         const userID = await getUserID();
-        const URL    = `https://api.twitch.tv/kraken/users/${userID}/follows/channels?limit=100&offset=0`;
+        const URL    = `https://api.twitch.tv/kraken/users/${encodeURI(userID)}/follows/channels?limit=100&offset=0`;
 
         const followedChannels = await GETRequest(URL);
         if (!followedChannels) throw new Error("failed to fetch followed list.");
@@ -60,7 +60,7 @@ async function updateLiveChannels() {
 
             // fetch live status for each followed channel
             try {
-                const liveURL = 'https://api.twitch.tv/kraken/streams/'+id;
+                const liveURL = 'https://api.twitch.tv/kraken/streams/'+encodeURI(id);
                 const channelStatus = await GETRequest(liveURL);
                 if (!channelStatus) throw new Error("failed to fetch live channels.");
 

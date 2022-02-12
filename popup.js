@@ -111,6 +111,12 @@
             // tell background.js to fetch an update.
             chrome.runtime.sendMessage({"message": "update"});
             document.getElementById("updateBtn").style.backgroundImage = "url('/icons/loading.gif')";
+        } else if (event.target.id === "settings") {
+            if (chrome.runtime.openOptionsPage) {
+                chrome.runtime.openOptionsPage();
+            } else {
+                window.open(chrome.runtime.getURL('options.html'));
+            }
         }
 
         // on click open the stream in a popup windows (centered on screen)

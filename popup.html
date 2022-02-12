@@ -15,6 +15,19 @@
                 color: #53535f;
                 margin: 15px 0px 15px 0px;
             }
+            #title {
+                background: #772fe8;
+                font-weight: bold;
+                font-size: 17px;
+                color: #ffffff;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                width: 96%;
+                padding: 4px 4px 4px 5px;
+                margin-bottom: 5px;
+                align-items: center;
+            }
             #updateBtn {
                 background: url('icons/update.png') no-repeat;
                 width: 24px;
@@ -23,26 +36,44 @@
                 display: flex;
                 vertical-align: middle;
                 color-scheme: only light;
-                box-shadow: rgba(60,64,67,.3) 0 1px 2px 0, rgba(60,64,67,.15) 0 2px 6px 2px;
-                border-radius: 42%;
             }
             #updateBtn:hover {
                 background-image: url('icons/update_hover.png');
             }
-            #title {
-                background: #772fe8;
-                font-weight: bold;
-                font-size: 17px;
-                color: #ffffff;
+            #more {
+                background: url("icons/more.png") no-repeat;
+                height: 24px;
+                width: 6px;
+                margin-left: 5px;
+            }
+            #more:hover {
+                background: url("icons/more_hover.png") no-repeat;
+            }
+            #dropdown {
                 display: flex;
-                flex-direction: row;
-                width: 96%;
-                align-content: center;
-                flex-wrap: nowrap;
-                justify-content: space-between;
-                align-items: end;
-                padding: 4px 4px 4px 6px;
-                margin-bottom: 5px;
+                vertical-align: middle;
+                cursor: pointer;
+            }
+            #settings {
+                background: #FFFFFF;
+                color: #404040;
+                font-size: 14px;
+                font-weight: normal;
+                display: none;
+                position: absolute;
+                overflow: none;
+                box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
+                cursor: pointer;
+                padding: 5px;
+                right: 0px;
+                top: 24px;
+                margin-top: 2px;
+            }
+            #settings:hover {
+                background: #f6f6f6;
+            }
+            #dropdown:hover #settings {
+                display: block;
             }
             #streams {
                 overflow-x: hidden;
@@ -143,7 +174,14 @@
         </style>
     </head>
     <body>
-        <div id="title">LIVE CHANNELS <span id="updateBtn" title="update"></span></div>
+        <div id="title">
+            <span style="width: 192px">LIVE CHANNELS</span>
+            <span id="updateBtn" title="update"></span>
+            <div id="dropdown">
+                <div id="more"></div>
+                <div id="settings">Settings</div>
+            </div>
+        </div>
         <div id="nostream">None of the channels you follow are currently live.</div>
 
         <div id="streams"></div>
