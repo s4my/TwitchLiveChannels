@@ -120,7 +120,6 @@
             }
         }
 
-        // on click open the stream in a popup windows (centered on screen)
         if (event.target.matches(".stream, .streamer, .logo, .viewers, .category")) {
             const name = event.target.closest(".stream").getElementsByClassName("streamer")[0].innerText.toLowerCase();
 

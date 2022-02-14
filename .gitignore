@@ -1,4 +1,5 @@
 *.swp
 TODO.md
 *.pur
-design
+design/
+screenshots/

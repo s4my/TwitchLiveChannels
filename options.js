@@ -20,6 +20,18 @@ usernameInput.addEventListener("invalid", () => {
     }
 });
 
+function sanitize(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    return string.replace(/[&<>"'/]/ig, (match)=>(map[match]));
+}
+
 saveButton.addEventListener("click", (e) => {
     const openInPopup       = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
@@ -29,7 +41,7 @@ saveButton.addEventListener("click", (e) => {
     if (!(usernameValidity.valueMissing || usernameValidity.tooShort || usernameValidity.tooLong)) {
         (async () => {
             // making sure the username is valid
-            const username = usernameInput.value.trim();
+            const username = sanitize(usernameInput.value.trim());
             const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
 
             try {
