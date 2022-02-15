@@ -187,6 +187,13 @@ async function showNotification(channel) {
     });
 }
 
+chrome.storage.local.get(['liveChannels'], (storage) => {
+    if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
+        chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
+        chrome.browserAction.setBadgeText({'text': '0'});
+    }
+});
+
 // get list of all live channels every 2 min
 updateLiveChannels();
 setInterval(updateLiveChannels, 60*1000*2/*2 min*/);

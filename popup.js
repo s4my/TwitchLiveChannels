@@ -10,17 +10,17 @@
 
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (storage) => {
-            if (storage.liveChannels === undefined) return;
-            storage.liveChannels.sort((a, b) => (a.viewers > b.viewers) ? -1:1);
-
             // if there are no channels live set badge to '0'
-            if (storage.liveChannels.length === 0) {
+            if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
                 chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
                 chrome.browserAction.setBadgeText({'text': '0'});
+                return;
             } else {
                 // hide the nostream div if there are streams online
                 document.getElementById('nostream').style.display = "none";
             }
+
+            storage.liveChannels.sort((a, b) => (a.viewers > b.viewers) ? -1:1);
 
             document.getElementById("streams").innerHTML = "";
 
@@ -48,16 +48,17 @@
     // update the UI every time the popup is opened
     updateUI();
     chrome.storage.local.get(['settings'], (storage) => {
+        // by default the theme is set to Auto
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove("dark-theme");
+        }
+
         if (storage.settings !== undefined) {
-            if (storage.settings["theme"] === 0/*Auto*/) {
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.body.classList.add('dark-theme');
-                } else {
-                    document.body.classList.remove("dark-theme");
-                }
-            } else if (storage.settings["theme"] === 1/*Light*/) {
+            if (storage.settings["theme"] === 1/*Light*/) {
                 document.body.classList.remove("dark-theme");
-            } else /*Dark*/{
+            } else if (storage.settings["theme"] === 2/*Dark*/) {
                 document.body.classList.add('dark-theme');
             }
         }
