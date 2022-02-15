@@ -91,7 +91,11 @@
     // auto hide the scrollbar
     let hideScrollbarStyle = document.createElement('style');
     hideScrollbarStyle.id          = 'remove-scrollbar';
-    hideScrollbarStyle.textContent = '#streams::-webkit-scrollbar{display:none !important}';
+    if (navigator.userAgent.indexOf("Chrome") > -1) {
+        hideScrollbarStyle.textContent = '#streams::-webkit-scrollbar{display:none !important}';
+    } else if (navigator.userAgent.indexOf("Firefox") > -1) {
+        hideScrollbarStyle.textContent = '#streams{scrollbar-width: none !important}';
+    }
 
     document.documentElement.appendChild(hideScrollbarStyle);
 
