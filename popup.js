@@ -133,8 +133,8 @@
 
                         window.open("https://player.twitch.tv/?channel=" + encodeURI(name) +
                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                            '_about', 'width='+encodeURI(popupWidth)+',height='+encodeURI(popupHeight)+
-                            ',left='+encodeURI(left)+',top='+top);
+                            '_about', 'width='+popupWidth+',height='+popupHeight+
+                            ',left='+left+',top='+top);
                     }
                 }
             });
