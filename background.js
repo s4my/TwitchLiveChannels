@@ -47,7 +47,7 @@ async function updateLiveChannels() {
     chrome.storage.local.set({"status": "updating"});
     try {
         const userID = await getUserID();
-        const URL    = `https://api.twitch.tv/kraken/users/${encodeURI(userID)}/follows/channels?limit=100&offset=0`;
+        const URL    = `https://api.twitch.tv/kraken/users/${encodeURIComponent(userID)}/follows/channels?limit=100&offset=0`;
 
         const followedChannels = await GETRequest(URL);
         if (!followedChannels) throw new Error("failed to fetch followed list.");
@@ -60,7 +60,7 @@ async function updateLiveChannels() {
 
             // fetch live status for each followed channel
             try {
-                const liveURL = 'https://api.twitch.tv/kraken/streams/'+encodeURI(id);
+                const liveURL = 'https://api.twitch.tv/kraken/streams/'+encodeURIComponent(id);
                 const channelStatus = await GETRequest(liveURL);
                 if (!channelStatus) throw new Error("failed to fetch live channels.");
 
@@ -182,11 +182,11 @@ async function showNotification(channel) {
                                 const top         = (screen.height/2) - (popupHeight/2);
 
                                 // open the popout window of the stream and close the notification
-                                window.open("https://player.twitch.tv/?channel="+encodeURI(name)+
+                                window.open("https://player.twitch.tv/?channel="+encodeURIComponent(name)+
                                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                             "_about", "width="+popupWidth+",height="+popupHeight+",left="+left+",top="+top);
                             } else {
-                                window.open("https://www.twitch.tv/"+encodeURI(name), "_about");
+                                window.open("https://www.twitch.tv/"+encodeURIComponent(name), "_about");
                             }
                         }
                     });

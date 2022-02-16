@@ -129,14 +129,14 @@
             chrome.storage.local.get(['settings'], (storage) => {
                 if (storage.settings !== undefined) {
                     if (!storage.settings["popup"]) {
-                        window.open("https://www.twitch.tv/"+encodeURI(name), "_about");
+                        window.open("https://www.twitch.tv/"+encodeURIComponent(name), "_about");
                     } else {
                         const popupWidth  = 900;
                         const popupHeight = 650;
                         const left        = (screen.width/2) - (popupWidth/2);
                         const top         = (screen.height/2) - (popupHeight/2);
 
-                        window.open("https://player.twitch.tv/?channel=" + encodeURI(name) +
+                        window.open("https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                             '_about', 'width='+popupWidth+',height='+popupHeight+
                             ',left='+left+',top='+top);

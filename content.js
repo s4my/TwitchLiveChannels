@@ -55,7 +55,7 @@ window.onload = function() {
             chat.id          = channel;
             chat.frameborder = 0;
             chat.scrolling   = 'no';
-            chat.src         = "https://www.twitch.tv/embed/"+encodeURI(channel)+"/chat/?darkpopout&parent=twitch.tv";
+            chat.src         = "https://www.twitch.tv/embed/"+encodeURIComponent(channel)+"/chat/?darkpopout&parent=twitch.tv";
             chat.height      = "100%";
             chat.width       = "350";
             chat.style       = "position: fixed; top: 0px; right: 0px;";
