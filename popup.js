@@ -15,13 +15,13 @@
 
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (storage) => {
-            // if there are no channels live set badge to '0'
+            // if there are no channels live set badge to '0' and hide the nostream div
+            // if there are streams online.
             if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
                 chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
                 chrome.browserAction.setBadgeText({'text': '0'});
                 return;
             } else {
-                // hide the nostream div if there are streams online
                 document.getElementById('nostream').style.display = "none";
             }
 
@@ -86,15 +86,15 @@
             const nostream  = document.getElementById("nostream");
 
             if (storage.status === "updating") {
-                nostream.innerText = "Fetching DATA please wait...";
+                nostream.textContent = "Fetching DATA please wait...";
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
-                updateBtn.style.cursor = "unset";
-                updateBtn.style.pointerEvents = "none";
+                updateBtn.style.cursor          = "unset";
+                updateBtn.style.pointerEvents   = "none";
             } else {
-                nostream.innerText = "None of the channels you follow are currently live.";
+                nostream.textContent = "None of the channels you follow are currently live.";
                 updateBtn.style.backgroundImage = "";
-                updateBtn.style.cursor = "pointer";
-                updateBtn.style.pointerEvents = "";
+                updateBtn.style.cursor          = "pointer";
+                updateBtn.style.pointerEvents   = "";
             }
         }
     });
@@ -142,7 +142,7 @@
         }
 
         if (event.target.matches(".stream, .streamer, .logo, .viewers, .category")) {
-            const name = event.target.closest(".stream").getElementsByClassName("streamer")[0].innerText.toLowerCase();
+            const name = event.target.closest(".stream").getElementsByClassName("streamer")[0].textContent.toLowerCase();
 
             chrome.storage.local.get(['settings'], (storage) => {
                 if (storage.settings !== undefined) {
@@ -156,8 +156,7 @@
 
                         window.open("https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                            '_about', 'width='+popupWidth+',height='+popupHeight+
-                            ',left='+left+',top='+top);
+                            '_about', 'width='+popupWidth+',height='+popupHeight+',left='+left+',top='+top);
                     }
                 }
             });

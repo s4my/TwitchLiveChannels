@@ -47,7 +47,7 @@ async function getUserID() {
         );
 
         if (!response.ok) {
-            saveMsg.innerText        = `Error: failed to reach server (status code ${sanitize(response.status)})`;
+            saveMsg.textContent      = `Error: failed to reach server (status code ${response.status})`;
             saveMsg.style.visibility = 'visible';
             saveMsg.style.color      = '#e16666';
             return null;
@@ -58,7 +58,7 @@ async function getUserID() {
         if (jsonResponse["_total"] === undefined) {
             throw new Error("could not verify the unsername validity");
         } else if (jsonResponse["_total"] === 0) {
-            saveMsg.innerText               = "*Invalid username.";
+            saveMsg.textContent             = "*Invalid username.";
             saveMsg.style.visibility        = 'visible';
             saveMsg.style.color             = '#e16666';
             usernameInput.style.borderColor = "#e16666";
@@ -74,7 +74,7 @@ async function getUserID() {
 
 function settingsSaved(settings) {
     chrome.storage.local.set({'settings': settings}, () => {
-        saveMsg.innerText               = "Settings saved";
+        saveMsg.textContent             = "Settings saved";
         saveMsg.style.visibility        = 'visible';
         saveMsg.style.color             = '#5ece37';
         usernameInput.style.borderColor = "rgba(1, 0, 0, 0.1)";
@@ -100,37 +100,23 @@ saveButton.addEventListener("click", (e) => {
                     };
 
                     settingsSaved(settings);
-                } else {
-                    const userID = await getUserID();
-
-                    if (userID != null) {
-                        const settings = {
-                            "username":      usernameInput.value.trim(),
-                            "userID":        userID,
-                            "popup":         openInPopup,
-                            "notifications": showNotifications,
-                            "theme":         selectedTheme
-                        };
-
-                        settingsSaved(settings);
-                        chrome.runtime.sendMessage({"message": "update"});
-                    }
+                    return;
                 }
-            } else {
-                const userID = await getUserID();
+            }
 
-                if (userID !== null) {
-                    const settings = {
-                        "username":      usernameInput.value.trim(),
-                        "userID":        userID,
-                        "popup":         openInPopup,
-                        "notifications": showNotifications,
-                        "theme":         selectedTheme
-                    };
+            const userID = await getUserID();
 
-                    settingsSaved(settings);
-                    chrome.runtime.sendMessage({"message": "update"});
-                }
+            if (userID !== null) {
+                const settings = {
+                    "username":      usernameInput.value.trim(),
+                    "userID":        userID,
+                    "popup":         openInPopup,
+                    "notifications": showNotifications,
+                    "theme":         selectedTheme
+                };
+
+                settingsSaved(settings);
+                chrome.runtime.sendMessage({"message": "update"});
             }
         })();
     });
