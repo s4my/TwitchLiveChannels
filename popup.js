@@ -8,6 +8,18 @@
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    function sanitize(string) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#x27;',
+            "/": '&#x2F;',
+        };
+        return string.replace(/[&<>"'/]/ig, (match)=>(map[match]));
+    }
+
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (storage) => {
             // if there are no channels live set badge to '0'
@@ -28,17 +40,17 @@
                 const name     = channel.name;
                 const category = channel.category;
                 const viewers  = numberWithCommas(channel.viewers);
-                const title    = channel.title.replace(/"/g, "&quot;");
+                const title    = channel.title;
                 const logo     = channel.logo.replace("300x300", "70x70");
 
                 document.getElementById("streams").innerHTML += `
-                    <div class="stream" title="${title}">
+                    <div class="stream" title="${sanitize(title)}">
                       <div class="logo">
-                        <img src="${logo}" width="32px" height="32px" style="border-radius: 50%;"/>
+                        <img src="${sanitize(logo)}" width="32px" height="32px" style="border-radius: 50%;"/>
                       </div>
-                      <div class="streamer">${name}</div>
-                      <div class="category">${category}</div>
-                      <div class="viewers"><span class="live-logo"></span>${viewers}</div>
+                      <div class="streamer">${sanitize(name)}</div>
+                      <div class="category">${sanitize(category)}</div>
+                      <div class="viewers"><span class="live-logo"></span>${sanitize(viewers)}</div>
                     </div>
                 `;
             }
@@ -79,10 +91,10 @@
             const nostream  = document.getElementById("nostream");
 
             if (storage.status === "updating") {
-                nostream.innerHTML = "Fetching DATA please wait...";
+                nostream.innerText = "Fetching DATA please wait...";
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
             } else {
-                nostream.innerHTML = "None of the channels you follow are currently live.";
+                nostream.innerText = "None of the channels you follow are currently live.";
                 updateBtn.style.backgroundImage = "";
             }
         }

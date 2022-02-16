@@ -57,7 +57,7 @@ saveButton.addEventListener("click", (e) => {
                 );
 
                 if (!response.ok) {
-                    saveMsg.innerHTML        = `Error: failed to reach server (status code ${response.status})`;
+                    saveMsg.innerText        = `Error: failed to reach server (status code ${sanitize(response.status)})`;
                     saveMsg.style.visibility = 'visible';
                     saveMsg.style.color      = '#971311';
                 }
@@ -67,7 +67,7 @@ saveButton.addEventListener("click", (e) => {
                 if (jsonResponse["_total"] === undefined) {
                     throw new Error("could not verify the unsername validity");
                 } else if (jsonResponse["_total"] === 0) {
-                    saveMsg.innerHTML               = "*Invalid username.";
+                    saveMsg.innerText               = "*Invalid username.";
                     saveMsg.style.visibility        = 'visible';
                     saveMsg.style.color             = '#971311';
                     usernameInput.style.borderColor = "#971311";
@@ -90,7 +90,7 @@ saveButton.addEventListener("click", (e) => {
                     };
 
                     chrome.storage.local.set({'settings': settings}, () => {
-                        saveMsg.innerHTML               = "Settings saved";
+                        saveMsg.innerText               = "Settings saved";
                         saveMsg.style.visibility        = 'visible';
                         saveMsg.style.color             = '#5ece37';
                         usernameInput.style.borderColor = "rgba(1, 0, 0, 0.1)";
