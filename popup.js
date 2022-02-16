@@ -9,14 +9,7 @@
     }
 
     function sanitize(string) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#x27;',
-            "/": '&#x2F;',
-        };
+        const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', "/": '&#x2F;'};
         return string.replace(/[&<>"'/]/ig, (match)=>(map[match]));
     }
 
@@ -81,6 +74,8 @@
         if (request.message === "updateUI") {
             updateUI();
             document.getElementById("updateBtn").style.backgroundImage = "";
+            document.getElementById("updateBtn").style.cursor = "pointer";
+            document.getElementById("updateBtn").style.pointerEvents = "";
         }
     });
 
@@ -93,9 +88,13 @@
             if (storage.status === "updating") {
                 nostream.innerText = "Fetching DATA please wait...";
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
+                updateBtn.style.cursor = "unset";
+                updateBtn.style.pointerEvents = "none";
             } else {
                 nostream.innerText = "None of the channels you follow are currently live.";
                 updateBtn.style.backgroundImage = "";
+                updateBtn.style.cursor = "pointer";
+                updateBtn.style.pointerEvents = "";
             }
         }
     });
@@ -124,9 +123,16 @@
 
     window.addEventListener('click', (event) => {
         if (event.target.id === "updateBtn") {
-            // tell background.js to fetch an update.
-            chrome.runtime.sendMessage({"message": "update"});
-            document.getElementById("updateBtn").style.backgroundImage = "url('/icons/loading.gif')";
+            chrome.storage.local.get(['status'], (storage) => {
+                if (storage.status === undefined || storage.status === "done") {
+                    // tell background.js to fetch an update.
+                    chrome.runtime.sendMessage({"message": "update"});
+
+                    document.getElementById("updateBtn").style.backgroundImage = "url('/icons/loading.gif')";
+                    document.getElementById("updateBtn").style.cursor = "unset";
+                    document.getElementById("updateBtn").style.pointerEvents = "none";
+                }
+            });
         } else if (event.target.id === "settings") {
             if (chrome.runtime.openOptionsPage) {
                 chrome.runtime.openOptionsPage();
