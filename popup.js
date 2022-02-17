@@ -8,11 +8,6 @@
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    function sanitize(string) {
-        const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', "/": '&#x2F;'};
-        return string.replace(/[&<>"'/]/ig, (match)=>(map[match]));
-    }
-
     function updateUI() {
         chrome.storage.local.get(['liveChannels'], (storage) => {
             // if there are no channels live set badge to '0' and hide the nostream div
@@ -36,16 +31,32 @@
                 const title    = channel.title;
                 const logo     = channel.logo.replace("300x300", "70x70");
 
-                document.getElementById("streams").innerHTML += `
-                    <div class="stream" title="${sanitize(title)}">
-                      <div class="logo">
-                        <img src="${sanitize(logo)}" width="32px" height="32px" style="border-radius: 50%;"/>
-                      </div>
-                      <div class="streamer">${sanitize(name)}</div>
-                      <div class="category">${sanitize(category)}</div>
-                      <div class="viewers"><span class="live-logo"></span>${sanitize(viewers)}</div>
+                const streamsDiv = document.getElementById("streams");
+                streamsDiv.innerHTML += `
+                    <div class="stream">
+                        <div class="logo">
+                            <img src="" width="32px" height="32px" style="border-radius: 50%;"/>
+                        </div>
+                        <div class="streamer"></div>
+                        <div class="category"></div>
+                        <div class="viewers"><span class="live-logo"></span><span></span></div>
                     </div>
                 `;
+
+                let streamDiv = Array.from(document.getElementsByClassName("stream")).pop();
+                streamDiv.title = title;
+
+                let logoDiv = Array.from(document.getElementsByClassName("logo")).pop();
+                logoDiv.children[0].src = logo;
+
+                let streamerDiv = Array.from(document.getElementsByClassName("streamer")).pop();
+                streamerDiv.textContent = name;
+
+                let categoryDiv = Array.from(document.getElementsByClassName("category")).pop();
+                categoryDiv.textContent = category;
+
+                let viewersDiv = Array.from(document.getElementsByClassName("viewers")).pop();
+                viewersDiv.children[1].textContent = viewers;
             }
         });
     }
@@ -101,7 +112,7 @@
 
     // auto hide the scrollbar
     let hideScrollbarStyle = document.createElement('style');
-    hideScrollbarStyle.id          = 'remove-scrollbar';
+    hideScrollbarStyle.id = 'remove-scrollbar';
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         hideScrollbarStyle.textContent = '#streams::-webkit-scrollbar{display:none !important}';
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
@@ -142,7 +153,8 @@
         }
 
         if (event.target.matches(".stream, .streamer, .logo, .viewers, .category")) {
-            const name = event.target.closest(".stream").getElementsByClassName("streamer")[0].textContent.toLowerCase();
+            const name = event.target.closest(".stream").getElementsByClassName("streamer")[0]
+                         .textContent.toLowerCase();
 
             chrome.storage.local.get(['settings'], (storage) => {
                 if (storage.settings !== undefined) {

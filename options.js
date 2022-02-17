@@ -32,7 +32,7 @@ async function getUserID() {
     }
 
     const username = sanitize(usernameInput.value.trim());
-    const URL      = `https://api.twitch.tv/kraken/users?login=${username}`;
+    const URL      = `https://api.twitch.tv/kraken/users?login=${encodeURIComponent(username)}`;
 
     try {
         const response = await fetch (
