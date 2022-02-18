@@ -1,4 +1,4 @@
-// Copyright (C) 2022 s4my <samy.hacker@gmail.com>
+// Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 // See end of file for extended copyright information.
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -254,7 +254,7 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
 // TTV live extension helps you keep track of who is live out of the
 // channels you follow on twitch.tv
 //
-// Copyright (C) 2022 s4my <samy.hacker@gmail.com>
+// Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

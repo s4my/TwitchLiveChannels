@@ -1,4 +1,4 @@
-// Copyright (C) 2022 s4my <samy.hacker@gmail.com>
+// Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 // See end of file for extended copyright information.
 
 (function () {
@@ -44,10 +44,10 @@
                 `;
 
                 let streamDiv = Array.from(document.getElementsByClassName("stream")).pop();
-                streamDiv.title = title;
+                streamDiv.setAttribute("title", title);
 
                 let logoDiv = Array.from(document.getElementsByClassName("logo")).pop();
-                logoDiv.children[0].src = logo;
+                logoDiv.children[0].setAttribute("src", logo);
 
                 let streamerDiv = Array.from(document.getElementsByClassName("streamer")).pop();
                 streamerDiv.textContent = name;
@@ -179,7 +179,7 @@
 // TTV live extension helps you keep track of who is live out of the
 // channels you follow on twitch.tv
 //
-// Copyright (C) 2022 s4my <samy.hacker@gmail.com>
+// Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
