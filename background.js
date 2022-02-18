@@ -20,6 +20,15 @@ async function getUserID() {
     });
 };
 
+async function getStreamType() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(['settings'], (storage) => {
+            if (storage.settings !== undefined && !storage.settings["reruns"]) resolve("live");
+            resolve("all");
+        });
+    });
+};
+
 async function GETRequest(URL) {
     try {
         const response = await fetch (
@@ -42,22 +51,23 @@ async function GETRequest(URL) {
 }
 
 async function updateLiveChannels() {
-    console.log("[~] Fetching update...");
     chrome.storage.local.set({"status": "updating"});
     try {
         // fetch list of all followed channels
-        const userID = await getUserID();
-        const URL    = `https://api.twitch.tv/kraken/users/${encodeURIComponent(userID)}/follows/channels?limit=100&offset=0`;
+        const URL = `https://api.twitch.tv/kraken/users/${encodeURIComponent(await getUserID())}/`+
+                    `follows/channels?limit=100`;
 
         const followedChannels = await GETRequest(URL);
         if (!followedChannels) throw new Error("failed to fetch followed list.");
 
         // get the list of all live streams
         let liveChannels = [];
-        let channel_ids = [];
+        let channel_ids  = [];
 
         for (const channel of followedChannels.follows) channel_ids.push(channel.channel._id);
-        const liveURL = 'https://api.twitch.tv/kraken/streams/?channel='+channel_ids.join(",")+'&limit=100';
+        const liveURL = `https://api.twitch.tv/kraken/streams/?channel=`+channel_ids.join(",")+
+                        `&limit=100&stream_type=${await getStreamType()}`;
+
         try {
             const response = await GETRequest(liveURL);
             if (!response) throw new Error("failed to fetch live channels.");
@@ -89,11 +99,10 @@ async function updateLiveChannels() {
             updateBadge(liveChannels.length.toString());
         });
 
+        console.log("Last time updated: "+new Date().toUTCString());
+
         // tell popup.js to update the UI
         chrome.runtime.sendMessage({"message": "updateUI"});
-
-        console.log(liveChannels);
-        console.log("Update done: "+new Date().toUTCString());
     } catch (error) {
         if (error !== undefined) console.error(error);
     }
@@ -177,7 +186,6 @@ async function showNotification(channel) {
                                 const left        = (screen.width/2) - (popupWidth/2);
                                 const top         = (screen.height/2) - (popupHeight/2);
 
-                                // open the popout window of the stream and close the notification
                                 window.open("https://player.twitch.tv/?channel="+encodeURIComponent(name)+
                                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                             "_about", "width="+popupWidth+",height="+popupHeight+",left="+left+",top="+top);

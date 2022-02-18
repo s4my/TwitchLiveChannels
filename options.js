@@ -5,6 +5,7 @@ const usernameInput        = document.getElementById("username");
 const saveButton           = document.getElementById("save-btn");
 const popupCheckbox        = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
+const rerunsCheckbox       = document.getElementById("cb-reruns");
 const themeSelection       = document.getElementById("theme-selection");
 const saveMsg              = document.getElementById("save-msg");
 
@@ -87,6 +88,7 @@ function settingsSaved(settings) {
 saveButton.addEventListener("click", (e) => {
     const openInPopup       = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
+    const showReruns        = rerunsCheckbox.checked;
     const selectedTheme     = themeSelection.selectedIndex;
 
     chrome.storage.local.get(['settings'], (storage) => {
@@ -98,6 +100,7 @@ saveButton.addEventListener("click", (e) => {
                         "userID":        storage.settings['userID'],
                         "popup":         openInPopup,
                         "notifications": showNotifications,
+                        "reruns":        showReruns,
                         "theme":         selectedTheme
                     };
 
@@ -114,6 +117,7 @@ saveButton.addEventListener("click", (e) => {
                     "userID":        userID,
                     "popup":         openInPopup,
                     "notifications": showNotifications,
+                    "reruns":        showReruns,
                     "theme":         selectedTheme
                 };
 
@@ -131,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameInput.value          = storage.settings["username"];
             popupCheckbox.checked        = storage.settings["popup"];
             notificationCheckbox.checked = storage.settings["notifications"];
+            rerunsCheckbox.checked       = storage.settings["reruns"];
             themeSelection.selectedIndex = storage.settings["theme"];
         }
     });
