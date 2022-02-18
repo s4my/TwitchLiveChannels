@@ -43,49 +43,45 @@ async function GETRequest(URL) {
 
 async function updateLiveChannels() {
     console.log("[~] Fetching update...");
-    // fetch list of all followed channels
     chrome.storage.local.set({"status": "updating"});
     try {
+        // fetch list of all followed channels
         const userID = await getUserID();
         const URL    = `https://api.twitch.tv/kraken/users/${encodeURIComponent(userID)}/follows/channels?limit=100&offset=0`;
 
         const followedChannels = await GETRequest(URL);
         if (!followedChannels) throw new Error("failed to fetch followed list.");
 
+        // get the list of all live streams
         let liveChannels = [];
+        let channel_ids = [];
 
-        for (const channel of followedChannels.follows) {
-            const id   = channel.channel._id;
-            const name = channel.channel.name;
+        for (const channel of followedChannels.follows) channel_ids.push(channel.channel._id);
+        const liveURL = 'https://api.twitch.tv/kraken/streams/?channel='+channel_ids.join(",")+'&limit=100';
+        try {
+            const response = await GETRequest(liveURL);
+            if (!response) throw new Error("failed to fetch live channels.");
 
-            // fetch live status for each followed channel
-            try {
-                const liveURL = 'https://api.twitch.tv/kraken/streams/'+encodeURIComponent(id);
-                const channelStatus = await GETRequest(liveURL);
-                if (!channelStatus) throw new Error("failed to fetch live channels.");
+            for (stream of response.streams) {
+                const display_name = stream.channel.display_name;
+                const category     = (stream.channel.game === '') ? 'UNDEFINED':stream.channel.game;
+                const viewers      = stream.viewers;
+                const title        = stream.channel.status;
+                const logo         = stream.channel.logo;
 
-                if (channelStatus.stream !== null) {
-                    const display_name = channelStatus.stream.channel.display_name;
-                    const category     = (channelStatus.stream.channel.game === '') ?
-                                         'UNDEFINED':channelStatus.stream.channel.game;
-                    const viewers      = channelStatus.stream.viewers;
-                    const title        = channelStatus.stream.channel.status;
-                    const logo         = channelStatus.stream.channel.logo;
+                const data = {
+                    'name':     display_name,
+                    'category': category,
+                    'viewers':  viewers,
+                    'title':    title,
+                    'logo':     logo
+                };
 
-                    const data = {
-                        'name':     display_name,
-                        'category': category,
-                        'viewers':  viewers,
-                        'title':    title,
-                        'logo':     logo
-                    };
-
-                    liveChannels.push(data);
-                }
-            } catch (error) {
-                console.error(error);
-                return;
+                liveChannels.push(data);
             }
+        } catch (error) {
+            console.error(error);
+            return;
         }
 
         chrome.storage.local.set({'liveChannels': liveChannels});
