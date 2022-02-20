@@ -29,6 +29,15 @@
                 font-size: 14px;
                 color: #5ece37;
                 visibility: hidden;
+                margin-left: 5px;
+            }
+            #loading {
+                background: url('icons/loading_flat.gif') no-repeat;
+                width: 32px;
+                height: 32px;
+                margin-left: 5px;
+                border: none;
+                display: none;
             }
             #username {
                 background-color: rgba(1, 0, 0, 0.1);
@@ -73,6 +82,9 @@
                 #username:active {
                     border-color: #a970ff;
                 }
+                #loading {
+                    filter: invert();
+                }
             }
         </style>
     </head>
@@ -86,7 +98,6 @@
             <div style="margin: 11px 0 10px 0px; font-size: 13px;">
                 <span><input id="cb-popup" type="checkbox" checked>Open streams in a popup window</span><br>
                 <span><input id="cb-notification" type="checkbox" checked>Show notifications</span><br>
-                <span><input id="cb-reruns" type="checkbox" checked>Show offline streams of VODs (Video on Demand)</span><br>
                 <span style="margin-left: 5px; font-size: 14px">Theme:
                     <select id="theme-selection">
                         <option value="Auto">Auto</option>
@@ -94,8 +105,9 @@
                         <option value="Dark">Dark</option>
                     </select>
             </div>
-            <span>
+            <span style="display: flex; align-items: center;">
                 <button id="save-btn" title="save changes">SAVE</button>
+                <button id="loading"></button>
                 <p id="save-msg">Settings Saved.</p>
             </span>
         </form>
@@ -105,7 +117,7 @@
 
 <!--
     TTV live extension helps you keep track of who is live out of the
-    channels you follow on twitch.tv
+    channels you follow on Twitch (https://www.twitch.tv/)
 
     Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 

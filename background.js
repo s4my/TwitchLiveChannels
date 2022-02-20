@@ -1,6 +1,8 @@
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 // See end of file for extended copyright information.
 
+const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
+
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
         if (chrome.runtime.openOptionsPage) {
@@ -11,20 +13,55 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
+function validateTOKEN() {
+    chrome.storage.local.get(['authentication'], (storage) => {
+        if (storage.authentication !== undefined || storage.authentication["access_token"] !== "") {
+            fetch ("https://id.twitch.tv/oauth2/validate", {
+                headers: {'Authorization': `Bearer ${storage.authentication["access_token"]}`}
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error("failed to verify access TOKEN validity (${response.status})");
+                }
+                return response.json();
+            }).then(response => {
+                if (response["expires_in"] === 0 && response["client_id"] !== CLIENT_ID) {
+                    chrome.identity.launchWebAuthFlow({
+                        url: `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}`+
+                             `&redirect_uri=${chrome.identity.getRedirectURL()}&response_type=token`+
+                             `&scope=user:read:follows&force_verify=true`,
+                        interactive: true
+                    }, (redirect_url) => {
+                        if (chrome.runtime.lastError || redirect_url.includes("error")) {
+                            console.error("failed to get Access TOKEN");
+                        } else {
+                            const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
+                            chrome.storage.local.set({'authentication': {"access_token": access_token}});
+                        }
+                    });
+                }
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    });
+}
+
+function getAuthToken() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(['authentication'], (storage) => {
+            const access_token = storage.authentication["access_token"];
+            if (storage.authentication !== undefined || access_token !== "") {
+                resolve(access_token);
+            } else reject();
+        });
+    });
+}
+
 async function getUserID() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(['settings'], (storage) => {
             if (storage.settings === undefined) reject();
             else resolve(storage.settings["userID"]);
-        });
-    });
-};
-
-async function getStreamType() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['settings'], (storage) => {
-            if (storage.settings !== undefined && !storage.settings["reruns"]) resolve("live");
-            resolve("all");
         });
     });
 };
@@ -36,8 +73,8 @@ async function GETRequest(URL) {
             {
                 method: 'GET',
                 headers: {
-                    'Accept':    'application/vnd.twitchtv.v5+json',
-                    'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
+                    'Client-ID':     CLIENT_ID,
+                    'Authorization': `Bearer ${await getAuthToken()}`
                 }
             }
         );
@@ -53,41 +90,52 @@ async function GETRequest(URL) {
 async function updateLiveChannels() {
     chrome.storage.local.set({"status": "updating"});
     try {
-        // fetch list of all followed channels
-        const URL = `https://api.twitch.tv/kraken/users/${encodeURIComponent(await getUserID())}/`+
-                    `follows/channels?limit=100`;
-
-        const followedChannels = await GETRequest(URL);
-        if (!followedChannels) throw new Error("failed to fetch followed list.");
-
         // get the list of all live streams
         let liveChannels = [];
-        let channel_ids  = [];
-
-        for (const channel of followedChannels.follows) channel_ids.push(channel.channel._id);
-        const liveURL = `https://api.twitch.tv/kraken/streams/?channel=`+channel_ids.join(",")+
-                        `&limit=100&stream_type=${await getStreamType()}`;
+        const URL = `https://api.twitch.tv/helix/streams/followed?user_id=${await getUserID()}`;
 
         try {
-            const response = await GETRequest(liveURL);
+            const response = await GETRequest(URL);
             if (!response) throw new Error("failed to fetch live channels.");
 
-            for (stream of response.streams) {
-                const display_name = stream.channel.display_name;
-                const category     = (stream.channel.game === '') ? 'UNDEFINED':stream.channel.game;
-                const viewers      = stream.viewers;
-                const title        = stream.channel.status;
-                const logo         = stream.channel.logo;
+            console.log(response);
+
+            let user_ids = [];
+            for (const stream of response.data) {
+                const user_id   = stream.user_id;
+                const user_name = stream.user_name;
+                const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
+                const viewers   = stream.viewer_count;
+                const title     = stream.title;
+
+                if (!user_id || !user_name || !category || !viewers || !title) continue;
+
+                user_ids.push(stream.user_id);
 
                 const data = {
-                    'name':     display_name,
+                    'id':       user_id,
+                    'name':     user_name,
                     'category': category,
                     'viewers':  viewers,
                     'title':    title,
-                    'logo':     logo
+                    // fall back profile picture
+                    'logo':     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
+                                "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
                 };
 
                 liveChannels.push(data);
+            }
+
+            // get profile pictures
+            const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
+            if (!getProfilePics) throw new Error(`failed to get profile pictures`);
+
+            for (const channel of liveChannels) {
+                for (const user_info of getProfilePics.data) {
+                    if (channel.id === user_info["id"]) {
+                        channel["logo"] = user_info["profile_image_url"];
+                    }
+                }
             }
         } catch (error) {
             console.error(error);
@@ -146,6 +194,7 @@ async function showNotification(channel) {
                  })
                  .catch(error => {
                      console.error(error);
+                     // fall back icon
                      return chrome.runtime.getURL("icons/icon-48.png");
                  });
     let notificationOptions = null;
@@ -209,9 +258,13 @@ chrome.storage.local.get(['liveChannels'], (storage) => {
     }
 });
 
+// validate access token every 60 min
+validateTOKEN();
+setInterval(validateTOKEN, 60*1000*60);
+
 // get list of all live channels every 2 min
 updateLiveChannels();
-setInterval(updateLiveChannels, 60*1000*2/*2 min*/);
+setInterval(updateLiveChannels, 60*1000*2);
 
 // update when the updateBtn is clicked on the popup.html
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -256,7 +309,7 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
 });
 
 // TTV live extension helps you keep track of who is live out of the
-// channels you follow on twitch.tv
+// channels you follow on Twitch (https://www.twitch.tv/)
 //
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //

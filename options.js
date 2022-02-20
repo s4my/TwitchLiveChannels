@@ -1,11 +1,12 @@
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 // See end of file for extended copyright information.
 
+const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
+
 const usernameInput        = document.getElementById("username");
 const saveButton           = document.getElementById("save-btn");
 const popupCheckbox        = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
-const rerunsCheckbox       = document.getElementById("cb-reruns");
 const themeSelection       = document.getElementById("theme-selection");
 const saveMsg              = document.getElementById("save-msg");
 
@@ -29,14 +30,44 @@ function sanitize(string) {
     return string.replace(/[&<>"'/]/ig, (match)=>(map[match]));
 }
 
+function getAuthToken() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(['authentication'], (storage) => {
+            if (storage.authentication === undefined || storage.authentication["access_token"] === "") {
+                document.getElementById("loading").style.display = "block";
+                chrome.identity.launchWebAuthFlow({
+                    url: `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}`+
+                         `&redirect_uri=${chrome.identity.getRedirectURL()}&response_type=token`+
+                         `&scope=user:read:follows&force_verify=true`,
+                    interactive: true
+                }, (redirect_url) => {
+                    if (chrome.runtime.lastError || redirect_url.includes("error")) {
+                        console.error(`failed to get Access TOKEN (redirect_url: ${redirect_url}`);
+                        document.getElementById("loading").style.display = "none";
+                        reject();
+                    } else {
+                        const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
+                        chrome.storage.local.set({'authentication': {"access_token": access_token}});
+                        document.getElementById("loading").style.display = "none";
+                        resolve(access_token);
+                    }
+                });
+            } else {
+                document.getElementById("loading").style.display = "none";
+                resolve(storage.authentication["access_token"]);
+            }
+        });
+    });
+}
+
 async function getUserID() {
-    const usernameValidity  = usernameInput.validity;
+    const usernameValidity = usernameInput.validity;
     if (usernameValidity.valueMissing || usernameValidity.tooShort || usernameValidity.tooLong) {
         return null;
     }
 
     const username = sanitize(usernameInput.value.trim());
-    const URL      = `https://api.twitch.tv/kraken/users?login=${encodeURIComponent(username)}`;
+    const URL      = `https://api.twitch.tv/helix/users?login=${encodeURIComponent(username)}`;
 
     try {
         const response = await fetch (
@@ -44,8 +75,8 @@ async function getUserID() {
             {
                 method: 'GET',
                 headers: {
-                    'Accept':    'application/vnd.twitchtv.v5+json',
-                    'Client-ID': 'haeyonp05j4wiphav3eppivtdsvlyoq'
+                    'Client-ID':     CLIENT_ID,
+                    'Authorization': `Bearer ${await getAuthToken()}`
                 }
             }
         );
@@ -59,9 +90,7 @@ async function getUserID() {
 
         const jsonResponse = await response.json();
 
-        if (jsonResponse["_total"] === undefined) {
-            throw new Error("could not verify the unsername validity");
-        } else if (jsonResponse["_total"] === 0) {
+        if (jsonResponse["data"].length === 0) {
             saveMsg.textContent             = "*Invalid username.";
             saveMsg.style.visibility        = 'visible';
             saveMsg.style.color             = '#e16666';
@@ -69,7 +98,7 @@ async function getUserID() {
             return null;
         }
 
-        return jsonResponse["users"][0]["_id"];
+        return jsonResponse["data"][0]["id"];
     } catch (error) {
         console.error(error);
         return null;
@@ -88,7 +117,6 @@ function settingsSaved(settings) {
 saveButton.addEventListener("click", (e) => {
     const openInPopup       = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
-    const showReruns        = rerunsCheckbox.checked;
     const selectedTheme     = themeSelection.selectedIndex;
 
     chrome.storage.local.get(['settings'], (storage) => {
@@ -100,7 +128,6 @@ saveButton.addEventListener("click", (e) => {
                         "userID":        storage.settings['userID'],
                         "popup":         openInPopup,
                         "notifications": showNotifications,
-                        "reruns":        showReruns,
                         "theme":         selectedTheme
                     };
 
@@ -117,7 +144,6 @@ saveButton.addEventListener("click", (e) => {
                     "userID":        userID,
                     "popup":         openInPopup,
                     "notifications": showNotifications,
-                    "reruns":        showReruns,
                     "theme":         selectedTheme
                 };
 
@@ -135,14 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameInput.value          = storage.settings["username"];
             popupCheckbox.checked        = storage.settings["popup"];
             notificationCheckbox.checked = storage.settings["notifications"];
-            rerunsCheckbox.checked       = storage.settings["reruns"];
             themeSelection.selectedIndex = storage.settings["theme"];
         }
     });
 });
 
 // TTV live extension helps you keep track of who is live out of the
-// channels you follow on twitch.tv
+// channels you follow on Twitch (https://www.twitch.tv/)
 //
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //
