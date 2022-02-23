@@ -24,12 +24,60 @@
             #save-btn:active {
                 background: #8e2fff;
             }
+            #save-btn:disabled {
+                background: #0000000d;
+                color: #0000004d;
+                cursor: not-allowed;
+            }
             #save-msg {
                 display: inline-block;
                 font-size: 14px;
                 color: #5ece37;
                 visibility: hidden;
                 margin-left: 5px;
+            }
+            #login-btn {
+                background: #a251f4 url('icons/twitch_white.svg') 5px center no-repeat;
+                background-size: 24px 24px;
+                padding: 11px 11px 11px 32px;
+                color: #ffffff;
+                font-weight: bold;
+                border: 1px;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            #login-btn:hover {
+                background-color: #7400ea;
+            }
+            #login-btn:active {
+                background-color: #8e2fff;
+            }
+            #logout-btn {
+                background: #FA2828 url('icons/twitch_white.svg') 5px center no-repeat;
+                background-size: 24px 24px;
+                padding: 11px 11px 11px 32px;
+                color: #ffffff;
+                font-weight: bold;
+                border: 1px;
+                border-radius: 4px;
+                cursor: pointer;
+                height: 37px;
+                display: none;
+            }
+            #logout-btn:hover {
+                background-color: #FC6675;
+            }
+            #logout-btn:active {
+                background-color: #d12424;
+            }
+            #profile-picture {
+                background:
+                    url("https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png") center no-repeat;
+                filter: grayscale(1) invert(1);
+                border-radius: 50%;
+                width: 70px;
+                height: 70px;
+                margin-right: 5px;
             }
             #loading {
                 background: url('icons/loading_flat.gif') no-repeat;
@@ -71,6 +119,10 @@
                     background: #18181B;
                     color: #efeff1;
                 }
+                #save-btn:disabled {
+                    background: #ffffff26;
+                    color: #ffffff80;
+                }
                 #theme-selection {
                     background: #464649;
                     color: #efeff1;
@@ -89,12 +141,12 @@
         </style>
     </head>
     <body>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <div id="profile-picture"></div>
+            <button id="login-btn" title="Log In">Log In</button>
+            <button id="logout-btn" title="Log Out">Log Out</button>
+        </div>
         <form id="form">
-            <div>
-                <label for="username" id="username-text">Twitch user name: </label>
-                <input type="text" id="username" minlength="3" maxlength="25" autocomplete="username"
-                       spellcheck="false" placeholder="username" autofocus required>
-            </div>
             <div style="margin: 11px 0 10px 0px; font-size: 13px;">
                 <span><input id="cb-popup" type="checkbox" checked>Open streams in a popup window</span><br>
                 <span><input id="cb-notification" type="checkbox" checked>Show notifications</span><br>
@@ -104,9 +156,10 @@
                         <option value="Light">Light</option>
                         <option value="Dark">Dark</option>
                     </select>
+                </span>
             </div>
             <span style="display: flex; align-items: center;">
-                <button id="save-btn" title="save changes">SAVE</button>
+                <button id="save-btn" title="save changes" disabled>SAVE</button>
                 <button id="loading"></button>
                 <p id="save-msg">Settings Saved.</p>
             </span>

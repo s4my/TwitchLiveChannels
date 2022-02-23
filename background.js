@@ -8,19 +8,19 @@ chrome.runtime.onInstalled.addListener((details) => {
         if (chrome.runtime.openOptionsPage) {
             chrome.runtime.openOptionsPage();
         } else {
-            window.open(chrome.runtime.getURL('options.html'));
+            window.open(chrome.runtime.getURL("options.html"));
         }
     }
 });
 
 function validateTOKEN() {
-    chrome.storage.local.get(['authentication'], (storage) => {
-        if (storage.authentication !== undefined || storage.authentication["access_token"] !== "") {
+    chrome.storage.local.get(["authentication"], (storage) => {
+        if (storage.authentication !== undefined || storage.authentication["access_token"]) {
             fetch ("https://id.twitch.tv/oauth2/validate", {
-                headers: {'Authorization': `Bearer ${storage.authentication["access_token"]}`}
+                headers: {"Authorization": `Bearer ${storage.authentication["access_token"]}`}
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error("failed to verify access TOKEN validity (${response.status})");
+                    throw ("failed to verify access TOKEN validity (${response.status})");
                 }
                 return response.json();
             }).then(response => {
@@ -35,7 +35,7 @@ function validateTOKEN() {
                             console.error("failed to get Access TOKEN");
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
-                            chrome.storage.local.set({'authentication': {"access_token": access_token}});
+                            chrome.storage.local.set({"authentication": {"access_token": access_token}});
                         }
                     });
                 }
@@ -48,7 +48,7 @@ function validateTOKEN() {
 
 function getAuthToken() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['authentication'], (storage) => {
+        chrome.storage.local.get(["authentication"], (storage) => {
             const access_token = storage.authentication["access_token"];
             if (storage.authentication !== undefined || access_token !== "") {
                 resolve(access_token);
@@ -59,7 +59,7 @@ function getAuthToken() {
 
 async function getUserID() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(['settings'], (storage) => {
+        chrome.storage.local.get(["settings"], (storage) => {
             if (storage.settings === undefined) reject();
             else resolve(storage.settings["userID"]);
         });
@@ -71,15 +71,16 @@ async function GETRequest(URL) {
         const response = await fetch (
             URL,
             {
-                method: 'GET',
+                method: "GET",
                 headers: {
-                    'Client-ID':     CLIENT_ID,
-                    'Authorization': `Bearer ${await getAuthToken()}`
+                    "Client-ID":     CLIENT_ID,
+                    "Authorization": `Bearer ${await getAuthToken()}`
                 }
             }
         );
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        // TODO: handle wrong/expired TOKEN (response.status === 401)
+        if (!response.ok) throw (`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error(error);
@@ -96,7 +97,7 @@ async function updateLiveChannels() {
 
         try {
             const response = await GETRequest(URL);
-            if (!response) throw new Error("failed to fetch live channels.");
+            if (!response) throw ("failed to fetch live channels.");
 
             console.log(response);
 
@@ -113,13 +114,13 @@ async function updateLiveChannels() {
                 user_ids.push(stream.user_id);
 
                 const data = {
-                    'id':       user_id,
-                    'name':     user_name,
-                    'category': category,
-                    'viewers':  viewers,
-                    'title':    title,
+                    "id":       user_id,
+                    "name":     user_name,
+                    "category": category,
+                    "viewers":  viewers,
+                    "title":    title,
                     // fall back profile picture
-                    'logo':     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
+                    "logo":     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
                                 "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
                 };
 
@@ -128,7 +129,7 @@ async function updateLiveChannels() {
 
             // get profile pictures
             const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
-            if (!getProfilePics) throw new Error(`failed to get profile pictures`);
+            if (!getProfilePics) throw ("failed to get profile pictures");
 
             for (const channel of liveChannels) {
                 for (const user_info of getProfilePics.data) {
@@ -142,7 +143,7 @@ async function updateLiveChannels() {
             return;
         }
 
-        chrome.storage.local.set({'liveChannels': liveChannels});
+        chrome.storage.local.set({"liveChannels": liveChannels});
         chrome.browserAction.getBadgeText({}, () => {
             updateBadge(liveChannels.length.toString());
         });
@@ -159,7 +160,7 @@ async function updateLiveChannels() {
 }
 
 function updateBadge(liveChannelCounter) {
-    chrome.browserAction.setBadgeBackgroundColor({color: '#6a75f2'});
+    chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
     chrome.browserAction.setBadgeText({"text": liveChannelCounter});
 }
 
@@ -172,10 +173,10 @@ async function showNotification(channel) {
                  .then(response => response.blob())
                  .then(blob => {
                      return new Promise((resolve, reject) => {
-                         let canvas = document.createElement('canvas');
+                         let canvas = document.createElement("canvas");
                          canvas.width  = 48;
                          canvas.height = 48;
-                         let ctx = canvas.getContext('2d');
+                         let ctx = canvas.getContext("2d");
 
                          const img = new Image();
                          img.src = URL.createObjectURL(blob);
@@ -188,7 +189,7 @@ async function showNotification(channel) {
                              ctx.clip();
                              ctx.drawImage(img, 0, 0, 48, 48);
                              ctx.restore();
-                             resolve(canvas.toDataURL('image/png'));
+                             resolve(canvas.toDataURL("image/png"));
                          };
                      });
                  })
@@ -200,9 +201,9 @@ async function showNotification(channel) {
     let notificationOptions = null;
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         notificationOptions = {
-            title:    'TTV live',
+            title:    "TTV live",
             priority: 0,
-            type:     'list',
+            type:     "list",
             message:  '',
             items:    [{
                 title   : name,
@@ -213,7 +214,7 @@ async function showNotification(channel) {
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
         notificationOptions = {
-            title:    'TTV live',
+            title:    "TTV live",
             priority: 0,
             type:     'basic',
             message:  `<b>${name}</b> is Live streaming ${category}`,
@@ -227,7 +228,7 @@ async function showNotification(channel) {
         chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
             if (ID === notificationID) {
                 if (btnID === 0) {
-                    chrome.storage.local.get(['settings'], (storage) => {
+                    chrome.storage.local.get(["settings"], (storage) => {
                         if (storage.settings !== undefined) {
                             if (storage.settings["popup"]) {
                                 const popupWidth  = 900;
@@ -251,10 +252,10 @@ async function showNotification(channel) {
     }
 }
 
-chrome.storage.local.get(['liveChannels'], (storage) => {
+chrome.storage.local.get(["liveChannels"], (storage) => {
     if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
         chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
-        chrome.browserAction.setBadgeText({'text': '0'});
+        chrome.browserAction.setBadgeText({"text": '0'});
     }
 });
 
@@ -281,8 +282,7 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
             const liveChannelCounter = storage.liveChannels.newValue.length;
             let notificationStatus   = true;
 
-            if (storage.liveChannels.oldValue?.length > 0)
-            {
+            if (storage.liveChannels.oldValue?.length > 0) {
                 for (const channelOld of storage.liveChannels.oldValue) {
                     if (channelNew.name === channelOld.name) {
                         notificationStatus = false;
@@ -297,7 +297,7 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
                 }
             });
 
-            chrome.storage.local.get(['settings'], (storage) => {
+            chrome.storage.local.get(["settings"], (storage) => {
                 if (storage.settings !== undefined) {
                     if (storage.settings["notifications"] && notificationStatus) {
                         showNotification(channelNew);

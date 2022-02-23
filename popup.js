@@ -9,18 +9,16 @@
     }
 
     function updateUI() {
-        chrome.storage.local.get(['liveChannels'], (storage) => {
-            // if there are no channels live set badge to '0' and hide the nostream div
-            // if there are streams online.
+        chrome.storage.local.get(["liveChannels"], (storage) => {
+            /* if there are no channels live set badge to '0', and if there are streams online
+             * hide the nostream div */
             if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
                 chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
-                chrome.browserAction.setBadgeText({'text': '0'});
+                chrome.browserAction.setBadgeText({"text": '0'});
                 return;
             } else {
-                document.getElementById('nostream').style.display = "none";
+                document.getElementById("nostream").style.display = "none";
             }
-
-            storage.liveChannels.sort((a, b) => (a.viewers > b.viewers) ? -1:1);
 
             document.getElementById("streams").innerHTML = "";
 
@@ -63,10 +61,10 @@
 
     // update the UI every time the popup is opened
     updateUI();
-    chrome.storage.local.get(['settings'], (storage) => {
+    chrome.storage.local.get(["settings"], (storage) => {
         // by default the theme is set to Auto
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.classList.add('dark-theme');
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.body.classList.add("dark-theme");
         } else {
             document.body.classList.remove("dark-theme");
         }
@@ -91,7 +89,7 @@
     });
 
     // update the UI according to the extension's `status`
-    chrome.storage.local.get(['status'], (storage) => {
+    chrome.storage.local.get(["status"], (storage) => {
         if (storage.status !== undefined) {
             const updateBtn = document.getElementById("updateBtn");
             const nostream  = document.getElementById("nostream");
@@ -111,12 +109,12 @@
     });
 
     // auto hide the scrollbar
-    let hideScrollbarStyle = document.createElement('style');
-    hideScrollbarStyle.id = 'remove-scrollbar';
+    let hideScrollbarStyle = document.createElement("style");
+    hideScrollbarStyle.id = "remove-scrollbar";
     if (navigator.userAgent.indexOf("Chrome") > -1) {
-        hideScrollbarStyle.textContent = '#streams::-webkit-scrollbar{display:none !important}';
+        hideScrollbarStyle.textContent = "#streams::-webkit-scrollbar{display:none !important}";
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
-        hideScrollbarStyle.textContent = '#streams{scrollbar-width: none !important}';
+        hideScrollbarStyle.textContent = "#streams{scrollbar-width: none !important}";
     }
 
     document.documentElement.appendChild(hideScrollbarStyle);
@@ -132,9 +130,9 @@
         document.documentElement.appendChild(hideScrollbarStyle);
     });
 
-    window.addEventListener('click', (event) => {
+    window.addEventListener("click", (event) => {
         if (event.target.id === "updateBtn") {
-            chrome.storage.local.get(['status'], (storage) => {
+            chrome.storage.local.get(["status"], (storage) => {
                 if (storage.status === undefined || storage.status === "done") {
                     // tell background.js to fetch an update.
                     chrome.runtime.sendMessage({"message": "update"});
@@ -148,7 +146,7 @@
             if (chrome.runtime.openOptionsPage) {
                 chrome.runtime.openOptionsPage();
             } else {
-                window.open(chrome.runtime.getURL('options.html'));
+                window.open(chrome.runtime.getURL("options.html"));
             }
         }
 
