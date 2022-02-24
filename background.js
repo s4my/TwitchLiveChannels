@@ -259,10 +259,6 @@ chrome.storage.local.get(["liveChannels"], (storage) => {
     }
 });
 
-// validate access token every 60 min
-validateTOKEN();
-setInterval(validateTOKEN, 60*1000*60);
-
 // get list of all live channels every 2 min
 updateLiveChannels();
 setInterval(updateLiveChannels, 60*1000*2);
@@ -271,6 +267,9 @@ setInterval(updateLiveChannels, 60*1000*2);
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "update") {
         updateLiveChannels();
+    } else if (request.message === "validate_token") {
+        // validate access token every 60 min
+        setInterval(validateTOKEN, 60*1000*60);
     }
 });
 

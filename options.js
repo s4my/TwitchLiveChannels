@@ -45,7 +45,7 @@ function getAuthToken() {
     });
 }
 
-function validateTOKEN() {
+function validateToken() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(["authentication"], (storage) => {
             if (storage.authentication !== undefined || storage.authentication["access_token"]) {
@@ -88,16 +88,16 @@ async function getUserInfo() {
         if (!response.ok) {
             saveMsg.textContent      = `Error: failed to reach server (status code ${response.status})`;
             saveMsg.style.visibility = "visible";
-            saveMsg.style.color      = "#e16666";
+            saveMsg.style.color      = "#b33030";
             return null;
         }
 
         const jsonResponse = await response.json();
 
         if (jsonResponse["data"].length === 0) {
-            saveMsg.textContent      = "*Invalid username."; //@@@
+            saveMsg.textContent      = "ERROR: Invalid username."; //@@@
             saveMsg.style.visibility = "visible";
-            saveMsg.style.color      = "#e16666";
+            saveMsg.style.color      = "#b33030";
             return null;
         }
 
@@ -122,7 +122,7 @@ saveButton.addEventListener("click", (e) => {
     const showNotifications = notificationCheckbox.checked;
     const selectedTheme     = themeSelection.selectedIndex;
 
-    chrome.storage.local.get(['settings'], (storage) => {
+    chrome.storage.local.get(['settings'], async (storage) => {
         if (storage.settings !== undefined) {
             const settings = {
                 "username":        storage.settings["username"],
@@ -137,23 +137,22 @@ saveButton.addEventListener("click", (e) => {
             return;
         }
 
-        (async () => {
-            const userInfo = await getUserInfo();
-            if (!userInfo) return;
+        const userInfo = await getUserInfo();
+        if (!userInfo) return;
 
-            const settings = {
-                "username":        userInfo.display_name,
-                "userID":          userInfo.id,
-                "profile_picture": userInfo.profile_image_url,
-                "popup":           openInPopup,
-                "notifications":   showNotifications,
-                "theme":           selectedTheme
-            };
+        const settings = {
+            "username":        userInfo.display_name,
+            "userID":          userInfo.id,
+            "profile_picture": userInfo.profile_image_url,
+            "popup":           openInPopup,
+            "notifications":   showNotifications,
+            "theme":           selectedTheme
+        };
 
-            settingsSaved(settings);
-            chrome.runtime.sendMessage({"message": "update"});
-        })();
+        settingsSaved(settings);
+        chrome.runtime.sendMessage({"message": "update"});
     });
+
     e.preventDefault();
 });
 
@@ -179,10 +178,15 @@ loginButton.addEventListener("click", async (e) => {
                     ` center no-repeat`;
             }
         });
-    }).catch(error => {
-        saveMsg.textContent      = "Failed to log in";
+        chrome.runtime.sendMessage({"message": "validate_token"});
+
+        saveMsg.textContent      = "Save the changes";
         saveMsg.style.visibility = "visible";
-        saveMsg.style.color      = "#e16666";
+        saveMsg.style.color      = "#e97e4f";
+    }).catch(error => {
+        saveMsg.textContent      = "ERROR: Failed to Log In";
+        saveMsg.style.visibility = "visible";
+        saveMsg.style.color      = "#b33030";
     });
 });
 
@@ -200,9 +204,9 @@ logoutButton.addEventListener("click", async (e) => {
     );
 
     if (!response.ok) {
-        saveMsg.textContent      = `failed to log out ${response.status}`;
+        saveMsg.textContent      = `ERROR: failed to log out ${response.status}`;
         saveMsg.style.visibility = "visible";
-        saveMsg.style.color      = "#e16666";
+        saveMsg.style.color      = "#b33030";
         return;
     }
 
@@ -219,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.get(["settings", "authentication"], async (storage) => {
         if (storage.settings !== undefined && storage.authentication !== undefined) {
             if (storage.settings["username"] && storage.authentication["access_token"]) {
-                if (await validateTOKEN()) {
+                if (await validateToken()) {
                     loginButton.style.display  = "none";
                     logoutButton.style.display = "block";
                     saveButton.disabled        = false;
