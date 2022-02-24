@@ -13,14 +13,14 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
-function validateTOKEN() {
+function validateToken() {
     chrome.storage.local.get(["authentication"], (storage) => {
         if (storage.authentication !== undefined || storage.authentication["access_token"]) {
             fetch ("https://id.twitch.tv/oauth2/validate", {
                 headers: {"Authorization": `Bearer ${storage.authentication["access_token"]}`}
             }).then(response => {
                 if (!response.ok) {
-                    throw ("failed to verify access TOKEN validity (${response.status})");
+                    throw "failed to verify access TOKEN validity (${response.status})";
                 }
                 return response.json();
             }).then(response => {
@@ -32,7 +32,7 @@ function validateTOKEN() {
                         interactive: true
                     }, (redirect_url) => {
                         if (chrome.runtime.lastError || redirect_url.includes("error")) {
-                            console.error("failed to get Access TOKEN");
+                            throw "failed to get Access TOKEN";
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
                             chrome.storage.local.set({"authentication": {"access_token": access_token}});
@@ -80,7 +80,7 @@ async function GETRequest(URL) {
         );
 
         // TODO: handle wrong/expired TOKEN (response.status === 401)
-        if (!response.ok) throw (`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw `HTTP error! status: ${response.status}`;
         return await response.json();
     } catch (error) {
         console.error(error);
@@ -97,7 +97,7 @@ async function updateLiveChannels() {
 
         try {
             const response = await GETRequest(URL);
-            if (!response) throw ("failed to fetch live channels.");
+            if (!response) throw "failed to fetch live channels.";
 
             console.log(response);
 
@@ -129,7 +129,7 @@ async function updateLiveChannels() {
 
             // get profile pictures
             const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
-            if (!getProfilePics) throw ("failed to get profile pictures");
+            if (!getProfilePics) throw "failed to get profile pictures";
 
             for (const channel of liveChannels) {
                 for (const user_info of getProfilePics.data) {
@@ -269,7 +269,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         updateLiveChannels();
     } else if (request.message === "validate_token") {
         // validate access token every 60 min
-        setInterval(validateTOKEN, 60*1000*60);
+        setInterval(validateToken, 60*1000*60);
     }
 });
 

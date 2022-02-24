@@ -3,6 +3,7 @@
 
 const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
 
+const form                 = document.getElementById("form");
 const loginButton          = document.getElementById("login-btn");
 const logoutButton         = document.getElementById("logout-btn");
 const saveButton           = document.getElementById("save-btn");
@@ -53,7 +54,7 @@ function validateToken() {
                     headers: {'Authorization': `Bearer ${storage.authentication["access_token"]}`}
                 }).then(response => {
                     if (!response.ok) {
-                        throw (`failed to verify access token validity (${response.status})`);
+                        throw `failed to verify access token validity (${response.status})`;
                     }
                     return response.json();
                 }).then(response => {
@@ -85,6 +86,7 @@ async function getUserInfo() {
         );
 
         // TODO: handle wrong/expired TOKEN (response.status === 401)
+
         if (!response.ok) {
             saveMsg.textContent      = `Error: failed to reach server (status code ${response.status})`;
             saveMsg.style.visibility = "visible";
@@ -153,6 +155,7 @@ saveButton.addEventListener("click", (e) => {
         chrome.runtime.sendMessage({"message": "update"});
     });
 
+    saveButton.disabled = true;
     e.preventDefault();
 });
 
@@ -183,6 +186,8 @@ loginButton.addEventListener("click", async (e) => {
         saveMsg.textContent      = "Save the changes";
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#e97e4f";
+
+        saveButton.disabled = false;
     }).catch(error => {
         saveMsg.textContent      = "ERROR: Failed to Log In";
         saveMsg.style.visibility = "visible";
@@ -219,6 +224,18 @@ logoutButton.addEventListener("click", async (e) => {
     profilePicture.style.filter     = "";
 });
 
+form.addEventListener("change", () => {
+    chrome.storage.local.get(["settings"], (storage) => {
+        if (storage.settings !== undefined) {
+            if (popupCheckbox.checked !== storage.settings["popup"] ||
+                notificationCheckbox.checked !== storage.settings["notifications"] ||
+                themeSelection.selectedIndex !== storage.settings["theme"]) {
+                saveButton.disabled = false;
+            } else saveButton.disabled = true;
+        }
+    });
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.get(["settings", "authentication"], async (storage) => {
         if (storage.settings !== undefined && storage.authentication !== undefined) {
@@ -226,7 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (await validateToken()) {
                     loginButton.style.display  = "none";
                     logoutButton.style.display = "block";
-                    saveButton.disabled        = false;
 
                     const profilePicture = document.getElementById("profile-picture");
                     profilePicture.style.background =
