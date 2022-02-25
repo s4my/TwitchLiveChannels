@@ -36,11 +36,14 @@ function validateToken() {
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
                             chrome.storage.local.set({"authentication": {"access_token": access_token}});
+                            chrome.storage.local.set({"loggedin": true});
                         }
                     });
                 }
             }).catch(error => {
                 console.error(error);
+                chrome.storage.local.set({"loggedin": false});
+                updateBadge("0");
             });
         }
     });
@@ -79,7 +82,11 @@ async function GETRequest(URL) {
             }
         );
 
-        // TODO: handle wrong/expired TOKEN (response.status === 401)
+        if (response.status === 401) {
+            throw "OAuth token is missing or expired.";
+            chrome.storage.local.set({"loggedin": false});
+            // TODO: update the popup and the badge
+        }
         if (!response.ok) throw `HTTP error! status: ${response.status}`;
         return await response.json();
     } catch (error) {
@@ -95,65 +102,58 @@ async function updateLiveChannels() {
         let liveChannels = [];
         const URL = `https://api.twitch.tv/helix/streams/followed?user_id=${await getUserID()}`;
 
-        try {
-            const response = await GETRequest(URL);
-            if (!response) throw "failed to fetch live channels.";
+        const response = await GETRequest(URL);
+        if (!response) throw "failed to fetch live channels.";
 
-            console.log(response);
+        console.log(response);
 
-            let user_ids = [];
-            for (const stream of response.data) {
-                const user_id   = stream.user_id;
-                const user_name = stream.user_name;
-                const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
-                const viewers   = stream.viewer_count;
-                const title     = stream.title;
+        let user_ids = [];
+        for (const stream of response.data) {
+            const user_id   = stream.user_id;
+            const user_name = stream.user_name;
+            const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
+            const viewers   = stream.viewer_count;
+            const title     = stream.title;
 
-                if (!user_id || !user_name || !category || !viewers || !title) continue;
+            if (!user_id || !user_name || !category || !viewers || !title) continue;
 
-                user_ids.push(stream.user_id);
+            user_ids.push(stream.user_id);
 
-                const data = {
-                    "id":       user_id,
-                    "name":     user_name,
-                    "category": category,
-                    "viewers":  viewers,
-                    "title":    title,
-                    // fall back profile picture
-                    "logo":     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
-                                "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
-                };
+            const data = {
+                "id":       user_id,
+                "name":     user_name,
+                "category": category,
+                "viewers":  viewers,
+                "title":    title,
+                // fall back profile picture
+                "logo":     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
+                            "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
+            };
 
-                liveChannels.push(data);
-            }
+            liveChannels.push(data);
+        }
 
-            // get profile pictures
-            const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
-            if (!getProfilePics) throw "failed to get profile pictures";
+        // get profile pictures
+        const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
+        if (!getProfilePics) throw "failed to get profile pictures";
 
-            for (const channel of liveChannels) {
-                for (const user_info of getProfilePics.data) {
-                    if (channel.id === user_info["id"]) {
-                        channel["logo"] = user_info["profile_image_url"];
-                    }
+        for (const channel of liveChannels) {
+            for (const user_info of getProfilePics.data) {
+                if (channel.id === user_info["id"]) {
+                    channel["logo"] = user_info["profile_image_url"];
                 }
             }
-        } catch (error) {
-            console.error(error);
-            return;
         }
 
         chrome.storage.local.set({"liveChannels": liveChannels});
-        chrome.browserAction.getBadgeText({}, () => {
-            updateBadge(liveChannels.length.toString());
-        });
+        updateBadge(liveChannels.length.toString());
 
         console.log("Last time updated: "+new Date().toUTCString());
 
         // tell popup.js to update the UI
         chrome.runtime.sendMessage({"message": "updateUI"});
     } catch (error) {
-        if (error !== undefined) console.error(error);
+        console.error(error);
     }
 
     chrome.storage.local.set({"status": "done"});
@@ -263,9 +263,9 @@ chrome.storage.local.get(["liveChannels"], (storage) => {
 updateLiveChannels();
 setInterval(updateLiveChannels, 60*1000*2);
 
-// update when the updateBtn is clicked on the popup.html
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "update") {
+        // update when the updateBtn is clicked on the popup.html
         updateLiveChannels();
     } else if (request.message === "validate_token") {
         // validate access token every 60 min

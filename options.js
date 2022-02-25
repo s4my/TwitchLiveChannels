@@ -12,6 +12,11 @@ const notificationCheckbox = document.getElementById("cb-notification");
 const themeSelection       = document.getElementById("theme-selection");
 const saveMsg              = document.getElementById("save-msg");
 
+function updateBadge(counter) {
+    chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
+    chrome.browserAction.setBadgeText({"text": counter});
+}
+
 function logIn() {
     document.getElementById("loading").style.display = "block";
 
@@ -60,10 +65,17 @@ function validateToken() {
                 }).then(response => {
                     if (response["expires_in"] === 0 && response["client_id"] !== client_id) {
                         resolve(false);
-                    } else resolve(true);
+                        chrome.storage.local.set({"loggedin": false});
+                        updateBadge("0");
+                    } else {
+                        resolve(true);
+                        chrome.storage.local.set({"loggedin": true});
+                    }
                 }).catch(error => {
                     console.error(error);
                     resolve(false);
+                    chrome.storage.local.set({"loggedin": false});
+                    updateBadge("0");
                 });
             }
         });
@@ -85,7 +97,21 @@ async function getUserInfo() {
             }
         );
 
-        // TODO: handle wrong/expired TOKEN (response.status === 401)
+        if (response.status === 401) {
+            loginButton.style.display  = "block";
+            logoutButton.style.display = "none";
+            saveButton.disabled        = true;
+
+            const profilePicture = document.getElementById("profile-picture");
+            profilePicture.style.background = "";
+            profilePicture.style.filter     = "";
+
+            saveMsg.textContent      = `Error: OAuth token is missing or expired`;
+            saveMsg.style.visibility = "visible";
+            saveMsg.style.color      = "#b33030";
+
+            return null;
+        }
 
         if (!response.ok) {
             saveMsg.textContent      = `Error: failed to reach server (status code ${response.status})`;
@@ -96,12 +122,7 @@ async function getUserInfo() {
 
         const jsonResponse = await response.json();
 
-        if (jsonResponse["data"].length === 0) {
-            saveMsg.textContent      = "ERROR: Invalid username."; //@@@
-            saveMsg.style.visibility = "visible";
-            saveMsg.style.color      = "#b33030";
-            return null;
-        }
+        if (jsonResponse["data"].length === 0) return null;
 
         return jsonResponse["data"][0];
     } catch (error) {
@@ -188,6 +209,7 @@ loginButton.addEventListener("click", async (e) => {
         saveMsg.style.color      = "#e97e4f";
 
         saveButton.disabled = false;
+        chrome.storage.local.set({"loggedin": true});
     }).catch(error => {
         saveMsg.textContent      = "ERROR: Failed to Log In";
         saveMsg.style.visibility = "visible";
@@ -218,6 +240,8 @@ logoutButton.addEventListener("click", async (e) => {
     loginButton.style.display  = "block";
     logoutButton.style.display = "none";
     saveButton.disabled        = true;
+    chrome.storage.local.set({"loggedin": false});
+    updateBadge("0");
 
     const profilePicture = document.getElementById("profile-picture");
     profilePicture.style.background = "";

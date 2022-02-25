@@ -8,19 +8,37 @@
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    function updateBadge(counter) {
+        chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
+        chrome.browserAction.setBadgeText({"text": counter});
+    }
+
     function updateUI() {
-        chrome.storage.local.get(["liveChannels"], (storage) => {
-            /* if there are no channels live set badge to '0', and if there are streams online
-             * hide the nostream div */
-            if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
-                chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
-                chrome.browserAction.setBadgeText({"text": '0'});
+        chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
+            const nostreamDiv = document.getElementById("nostream");
+
+            if (storage.loggedin === undefined || !storage.loggedin) {
+                updateBadge('0');
+
+                nostreamDiv.innerHTML =
+                    `You need to <a href="" id="login">Log In</a> to get the list of the
+                    channels you follow.`;
+
+                document.getElementById("streams").innerHTML = "";
                 return;
             } else {
-                document.getElementById("nostream").style.display = "none";
+                if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
+                    updateBadge('0');
+                    nostreamDiv.textContent = "None of the channels you follow are currently live."
+                    document.getElementById("streams").innerHTML = "";
+
+                    return;
+                } else document.getElementById("nostream").style.display = "none";
             }
 
             document.getElementById("streams").innerHTML = "";
+
+            updateBadge(storage.liveChannels.length.toString());
 
             for (const channel of storage.liveChannels) {
                 const name     = channel.name;
@@ -100,7 +118,13 @@
                 updateBtn.style.cursor          = "unset";
                 updateBtn.style.pointerEvents   = "none";
             } else {
-                nostream.textContent = "None of the channels you follow are currently live.";
+                if (storage.loggedin === undefined || !storage.loggedin) {
+                    nostream.innerHTML =
+                        `You need to <a href="" id="login">Log In</a> to get the list of the
+                        channels you follow.`
+                } else {
+                    nostream.textContent = "None of the channels you follow are currently live.";
+                }
                 updateBtn.style.backgroundImage = "";
                 updateBtn.style.cursor          = "pointer";
                 updateBtn.style.pointerEvents   = "";
@@ -147,6 +171,12 @@
                 chrome.runtime.openOptionsPage();
             } else {
                 window.open(chrome.runtime.getURL("options.html"));
+            }
+        } else if (event.target.id === "login") {
+            if (chrome.runtime.openOptionsPage) {
+                chrome.runtime.openOptionsPage();
+            } else {
+                window.open(chrome.runtime.getURL('options.html'));
             }
         }
 
