@@ -83,11 +83,9 @@ function validateToken() {
 }
 
 async function getUserInfo() {
-    const URL = "https://api.twitch.tv/helix/users";
-
     try {
         const response = await fetch (
-            URL,
+            "https://api.twitch.tv/helix/users",
             {
                 method: "GET",
                 headers: {

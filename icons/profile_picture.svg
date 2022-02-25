@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   id="svg901"
+   width="70"
+   height="70.176254"
+   viewBox="0 0 70 70.176254">
+  <metadata
+     id="metadata907">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs905" />
+  <g
+     id="layer1"
+     transform="translate(-0.13377778,-0.13974828)">
+    <rect
+       style="opacity:1;fill:#dedede;fill-opacity:1;stroke:none;stroke-width:5.69446;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect928"
+       width="70.2192"
+       height="70.176254"
+       x="0.13377778"
+       y="0.13974828" />
+  </g>
+  <g
+     id="g909"
+     transform="translate(-0.13377778,-0.13974828)">
+    <circle
+       style="opacity:1;fill:none;fill-opacity:0.980392;stroke:#000000;stroke-width:5.75244;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path913"
+       cx="34.890293"
+       cy="26.857533"
+       r="10.665702" />
+    <path
+       style="fill:none;fill-opacity:0.980392;stroke:#000000;stroke-width:5.29134;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 18.758005,55.20385 c -0.01387,-3.83325 -0.02775,-7.667424 2.159516,-8.806951 2.187265,-1.139526 6.574205,0.416234 9.322554,-0.610249 2.748349,-1.026484 3.859166,-4.63529 4.975593,-4.635009 1.116426,2.81e-4 2.237759,3.609089 4.98389,4.604082 2.746131,0.994993 7.116544,-0.622549 9.301606,0.505381 2.185063,1.127931 2.185063,5.000071 2.185063,8.871289"
+       id="path915" />
+  </g>
+</svg>
