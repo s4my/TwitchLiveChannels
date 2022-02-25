@@ -63,7 +63,7 @@ function getAuthToken() {
 async function getUserID() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(["settings"], (storage) => {
-            if (storage.settings === undefined) reject();
+            if (!storage.settings) reject();
             else resolve(storage.settings["userID"]);
         });
     });
@@ -85,7 +85,7 @@ async function GETRequest(URL) {
         if (response.status === 401) {
             throw "OAuth token is missing or expired.";
             chrome.storage.local.set({"loggedin": false});
-            // TODO: update the popup and the badge
+            updateBadge("0");
         }
         if (!response.ok) throw `HTTP error! status: ${response.status}`;
         return await response.json();
@@ -198,7 +198,9 @@ async function showNotification(channel) {
                      // fall back icon
                      return chrome.runtime.getURL("icons/icon-48.png");
                  });
+
     let notificationOptions = null;
+
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         notificationOptions = {
             title:    "TTV live",
@@ -253,9 +255,8 @@ async function showNotification(channel) {
 }
 
 chrome.storage.local.get(["liveChannels"], (storage) => {
-    if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
-        chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
-        chrome.browserAction.setBadgeText({"text": '0'});
+    if (!storage.liveChannels || storage.liveChannels.length === 0) {
+        updateBadge("0");
     }
 });
 

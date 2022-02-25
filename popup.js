@@ -17,17 +17,17 @@
         chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             const nostreamDiv = document.getElementById("nostream");
 
-            if (storage.loggedin === undefined || !storage.loggedin) {
+            if (!storage.loggedin || !storage.loggedin) {
                 updateBadge('0');
-
                 nostreamDiv.innerHTML =
-                    `You need to <a href="" id="login">Log In</a> to get the list of the
-                    channels you follow.`;
+                    `This extension requires your public twitch account information.<br/><br/>
+                    You need to <a href="" id="login">Log In</a> to give it authorization
+                    to get the list of channels you follow.`;
 
                 document.getElementById("streams").innerHTML = "";
                 return;
             } else {
-                if (storage.liveChannels === undefined || storage.liveChannels.length === 0) {
+                if (!storage.liveChannels || storage.liveChannels.length === 0) {
                     updateBadge('0');
                     nostreamDiv.textContent = "None of the channels you follow are currently live."
                     document.getElementById("streams").innerHTML = "";
@@ -113,15 +113,16 @@
             const nostream  = document.getElementById("nostream");
 
             if (storage.status === "updating") {
-                nostream.textContent = "Fetching DATA please wait...";
+                nostream.textContent = "Fetching update please wait...";
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
                 updateBtn.style.cursor          = "unset";
                 updateBtn.style.pointerEvents   = "none";
             } else {
-                if (storage.loggedin === undefined || !storage.loggedin) {
+                if (!storage.loggedin) {
                     nostream.innerHTML =
-                        `You need to <a href="" id="login">Log In</a> to get the list of the
-                        channels you follow.`
+                        `This extension requires your public twitch account information.<br/><br/>
+                        You need to <a href="" id="login">Log In</a> to give it authorization
+                        to get the list of channels you follow.`;
                 } else {
                     nostream.textContent = "None of the channels you follow are currently live.";
                 }
@@ -157,7 +158,7 @@
     window.addEventListener("click", (event) => {
         if (event.target.id === "updateBtn") {
             chrome.storage.local.get(["status"], (storage) => {
-                if (storage.status === undefined || storage.status === "done") {
+                if (!storage.status || storage.status === "done") {
                     // tell background.js to fetch an update.
                     chrome.runtime.sendMessage({"message": "update"});
 

@@ -37,6 +37,7 @@ window.onload = function() {
        direction="top">Chat</div>
     </div>`;
 
+
     // TODO: use my own style instead of relying on twitch's styles that are unstable
 
     playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
@@ -55,7 +56,8 @@ window.onload = function() {
             chat.id          = channel;
             chat.frameborder = 0;
             chat.scrolling   = 'no';
-            chat.src         = "https://www.twitch.tv/embed/"+encodeURIComponent(channel)+"/chat/?darkpopout&parent=twitch.tv";
+            chat.src         = "https://www.twitch.tv/embed/"+encodeURIComponent(channel)+
+                               "/chat/?darkpopout&parent=twitch.tv";
             chat.height      = "100%";
             chat.width       = "350";
             chat.style       = "position: fixed; top: 0px; right: 0px;";
@@ -66,7 +68,7 @@ window.onload = function() {
             let chat                 = document.getElementsByClassName('chat')[0];
             chat.parentNode.removeChild(chat);
         }
-    }, false);
+    });
 
     window.addEventListener('resize', () => {
         if (document.getElementsByClassName("chat").length === 1) {

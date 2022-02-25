@@ -44,7 +44,7 @@ function logIn() {
 function getAuthToken() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(["authentication"], (storage) => {
-            if (storage.authentication === undefined || storage.authentication["access_token"] === "") {
+            if (!storage.authentication || !storage.authentication["access_token"]) {
                 resolve(logIn());
             } else resolve(storage.authentication["access_token"]);
         });
@@ -64,18 +64,18 @@ function validateToken() {
                     return response.json();
                 }).then(response => {
                     if (response["expires_in"] === 0 && response["client_id"] !== client_id) {
-                        resolve(false);
                         chrome.storage.local.set({"loggedin": false});
                         updateBadge("0");
+                        resolve(false);
                     } else {
                         resolve(true);
                         chrome.storage.local.set({"loggedin": true});
                     }
                 }).catch(error => {
                     console.error(error);
-                    resolve(false);
                     chrome.storage.local.set({"loggedin": false});
                     updateBadge("0");
+                    resolve(false);
                 });
             }
         });
@@ -145,6 +145,8 @@ saveButton.addEventListener("click", (e) => {
     const showNotifications = notificationCheckbox.checked;
     const selectedTheme     = themeSelection.selectedIndex;
 
+    // when saving the settings for the 1st time tell background.js to call updateLiveChannels()
+    // other wise there's no need to fetch an update every time a setting is changed.
     chrome.storage.local.get(['settings'], async (storage) => {
         if (storage.settings !== undefined) {
             const settings = {
@@ -157,6 +159,10 @@ saveButton.addEventListener("click", (e) => {
             };
 
             settingsSaved(settings);
+            if (userJustLoggedIn) {
+                chrome.runtime.sendMessage({"message": "update"});
+                userJustLoggedIn = false;
+            }
             return;
         }
 
@@ -210,6 +216,7 @@ loginButton.addEventListener("click", async (e) => {
 
         saveButton.disabled = false;
         chrome.storage.local.set({"loggedin": true});
+        userJustLoggedIn = true;
     }).catch(error => {
         saveMsg.textContent      = "ERROR: Failed to Log In";
         saveMsg.style.visibility = "visible";
@@ -242,6 +249,7 @@ logoutButton.addEventListener("click", async (e) => {
     saveButton.disabled        = true;
     chrome.storage.local.set({"loggedin": false});
     updateBadge("0");
+    userJustLoggedIn = false;
 
     const profilePicture = document.getElementById("profile-picture");
     profilePicture.style.background = "";
