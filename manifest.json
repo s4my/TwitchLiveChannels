@@ -36,6 +36,7 @@
       "matches": [
         "*://*.player.twitch.tv/?*"
       ],
+      "css": ["content.css"],
       "js": ["content.js"]
     }
   ],

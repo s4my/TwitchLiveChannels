@@ -2,60 +2,41 @@
 // See end of file for extended copyright information.
 
 window.onload = function() {
-    const channel       = document.URL.split('=')[1].split('&')[0];
-    const playerButtons = document.getElementsByClassName('player-controls__right-control-group');
+    const channel        = document.URL.split('=')[1].split('&')[0];
+    const playerControls = document.getElementsByClassName("player-controls__right-control-group")[0];
 
-    let button = document.createElement('div');
-    button.className = 'chatBtn';
-    button.style     = 'font-weight: bold;';
+    let button = document.createElement("div");
+    button.id        = "chat-btn";
     button.innerHTML = `
-    <div aria-describedby="ec3d0550c404c5736508b1ef6b8d4373" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 jrXOjD">
-       <button class="ScCoreButton-sc-1qn4ixc-0 fVEFfF ScButtonIcon-sc-o7ndmn-0 jGcDiv"
-       aria-label="Chat" data-a-target="player-clip-button">
-          <div class="ScButtonIconFigure-sc-o7ndmn-1 fppMur">
-             <div class="ScIconLayout-sc-1bgeryd-0 cOOGTE tw-icon">
-                <div class="ScAspectRatio-sc-1sw3lwy-1 bneAWp tw-aspect">
-                   <div class="ScAspectSpacer-sc-1sw3lwy-0 gMCXS"></div>
-                   <svg version="1.1" class="ScIconSVG-sc-1bgeryd-1 cMQeyU"
-                       xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 6 65 65"
-                       style="enable-background:new 0 0 60 60;" xml:space="preserve" width="30px" height="30px"
-                       fill="#ffffff" stroke="#ffffff" stroke-width="0"><g id="IconsRepo_bgCarrier"></g>
-                       <path d="M44.348,12.793H2.652C1.189,12.793,0,13.982,0,15.445v43.762l9.414-9.414h34.934c1.463,0,
-                       2.652-1.19,2.652-2.653V15.445 C47,13.982,45.811,12.793,44.348,12.793z M10,35.777c-2.206,
-                       0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S12.206,35.777,10,35.777z M23,35.777c-2.206,
-                       0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S25.206,35.777,23,35.777z M36,35.777c-2.206,
-                       0-4-1.794-4-4s1.794-4,4-4 s4,1.794,4,4S38.206,35.777,36,35.777z"></path>
-                       <path d="M57.348,0.793H12.652C11.189,0.793,10,1.982,10,3.445v7.348h34.348c2.565,0,4.652,2.087,
-                       4.652,4.652v25.332h11V3.445 C60,1.982,58.811,0.793,57.348,0.793z"></path>
-                    </svg>
-                </div>
-             </div>
-          </div>
+       <button style="display: flex;">
+           <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+           <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+           xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.1" class="ScIconSVG-sc-1bgeryd-1 cMQeyU" x="0px"
+           y="0px" viewBox="0 6 43.333333 43.333333" xml:space="preserve" width="20" height="20" fill="#ffffff" stroke="#ffffff" stroke-width="0" id="svg887">
+           <metadata id="metadata893"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+                 rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+           id="defs891" /><g id="IconsRepo_bgCarrier" />
+              <path d="M 31.442425,16.189615 H 3.2846775 c -0.9879787,0 -1.7909226,0.802944 -1.7909226,1.790923 V 47.533472 L 7.8511278,41.176101 H 31.442425 c 0.987979,0 1.790923,-0.803619 1.790923,-1.791598 V 17.980538 c 0,-0.987979 -0.802944,-1.790923 -1.790923,-1.790923 z M 8.2468601,31.71095 c -1.4897344,0 -2.7012425,-1.211507 -2.7012425,-2.701241 0,-1.489736 1.2115081,-2.701243 2.7012425,-2.701243 1.4897349,0 2.7012429,1.211507 2.7012429,2.701243 0,1.489734 -1.211508,2.701241 -2.7012429,2.701241 z m 8.7790369,0 c -1.489734,0 -2.701241,-1.211507 -2.701241,-2.701241 0,-1.489736 1.211507,-2.701243 2.701241,-2.701243 1.489736,0 2.701243,1.211507 2.701243,2.701243 0,1.489734 -1.211507,2.701241 -2.701243,2.701241 z m 8.779037,0 c -1.489736,0 -2.701243,-1.211507 -2.701243,-2.701241 0,-1.489736 1.211507,-2.701243 2.701243,-2.701243 1.489734,0 2.701241,1.211507 2.701241,2.701243 0,1.489734 -1.211507,2.701241 -2.701241,2.701241 z" id="path883" style="stroke-width:0" />
+              <path d="M 40.221461,8.0858959 H 10.037784 c -0.98798,0 -1.7909239,0.8029439 -1.7909239,1.7909179 V 14.838994 H 31.442425 c 1.732172,0 3.141544,1.409373 3.141544,3.141544 v 17.106965 h 7.428415 V 9.8768138 c 0,-0.987974 -0.802944,-1.7909179 -1.790923,-1.7909179 z" id="path885" style="stroke-width:0" />
+           </svg>
        </button>
-       <div class="ScAttachedTooltip-sc-v8mg6d-1 kVzNwn tw-tooltip"
-       data-a-target="tw-tooltip-label" role="tooltip" id="ec3d0550c404c5736508b1ef6b8d4373"
-       direction="top">Chat</div>
-    </div>`;
+       <div id="chat-tooltip">Chat</div>`;
 
+    playerControls.insertBefore(button, playerControls.firstChild);
 
-    // TODO: use my own style instead of relying on twitch's styles that are unstable
-
-    playerButtons[0].insertBefore(button, playerButtons[0].firstChild);
-
-    let video_player = document.getElementsByClassName('video-player__container')[0];
+    let video_player = document.getElementsByClassName("video-player__container")[0];
 
     button.addEventListener("click", () => {
         video_player.style.position = "fixed";
         video_player.style.left     = "0px";
 
-        if(document.getElementsByClassName("chat").length === 0){
+        if(!document.getElementById("chat")) {
             video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
 
             let chat = document.createElement("iframe");
-            chat.className   = "chat";
-            chat.id          = channel;
+            chat.id          = "chat";
             chat.frameborder = 0;
-            chat.scrolling   = 'no';
+            chat.scrolling   = "no";
             chat.src         = "https://www.twitch.tv/embed/"+encodeURIComponent(channel)+
                                "/chat/?darkpopout&parent=twitch.tv";
             chat.height      = "100%";
@@ -65,13 +46,14 @@ window.onload = function() {
             document.body.append(chat);
         } else {
             video_player.style.width = (document.body.clientWidth).toString()+"px";
-            let chat                 = document.getElementsByClassName('chat')[0];
-            chat.parentNode.removeChild(chat);
+
+            let chat = document.getElementById("chat");
+            if (chat) document.body.removeChild(chat);
         }
     });
 
-    window.addEventListener('resize', () => {
-        if (document.getElementsByClassName("chat").length === 1) {
+    window.addEventListener("resize", () => {
+        if (document.getElementById("chat")) {
             video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
         } else {
             video_player.style.width = (document.body.clientWidth).toString()+"px";

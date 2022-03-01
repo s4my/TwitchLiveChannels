@@ -143,8 +143,9 @@ saveButton.addEventListener("click", (e) => {
     const showNotifications = notificationCheckbox.checked;
     const selectedTheme     = themeSelection.selectedIndex;
 
-    // when saving the settings for the 1st time tell background.js to call updateLiveChannels()
-    // other wise there's no need to fetch an update every time a setting is changed.
+    // when saving the settings, if the user just logged in, tell background.js to call
+    // updateLiveChannels(), other wise there's no need to fetch an update every time
+    // a setting is changed.
     chrome.storage.local.get(['settings'], async (storage) => {
         if (storage.settings !== undefined) {
             const settings = {
