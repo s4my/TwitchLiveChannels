@@ -12,6 +12,8 @@ const notificationCheckbox = document.getElementById("cb-notification");
 const themeSelection       = document.getElementById("theme-selection");
 const saveMsg              = document.getElementById("save-msg");
 
+const userJustLoggedIn = false;
+
 function updateBadge(counter) {
     chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
     chrome.browserAction.setBadgeText({"text": counter});
@@ -100,9 +102,7 @@ async function getUserInfo() {
             logoutButton.style.display = "none";
             saveButton.disabled        = true;
 
-            const profilePicture = document.getElementById("profile-picture");
-            profilePicture.style.background = "";
-            profilePicture.style.filter     = "";
+            document.getElementById("profile-picture").style.background = "";
 
             saveMsg.textContent      = `Error: OAuth token is missing or expired`;
             saveMsg.style.visibility = "visible";
@@ -192,7 +192,6 @@ loginButton.addEventListener("click", async (e) => {
         saveButton.disabled        = false;
 
         const profilePicture = document.getElementById("profile-picture");
-        profilePicture.style.filter = "none";
 
         chrome.storage.local.get(["settings"], async (storage) => {
             if (storage.settings !== undefined) {
@@ -217,9 +216,10 @@ loginButton.addEventListener("click", async (e) => {
         chrome.storage.local.set({"loggedin": true});
         userJustLoggedIn = true;
     }).catch(error => {
-        saveMsg.textContent      = "ERROR: Failed to Log In";
+        saveMsg.textContent      = "ERROR: something went wrong while trying to Log In";
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#b33030";
+        console.error(error);
     });
 });
 
@@ -237,7 +237,7 @@ logoutButton.addEventListener("click", async (e) => {
     );
 
     if (!response.ok) {
-        saveMsg.textContent      = `ERROR: failed to log out ${response.status}`;
+        saveMsg.textContent      = `ERROR: something went wrong while trying to log out ${response.status}`;
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#b33030";
         return;
@@ -250,9 +250,7 @@ logoutButton.addEventListener("click", async (e) => {
     updateBadge("0");
     userJustLoggedIn = false;
 
-    const profilePicture = document.getElementById("profile-picture");
-    profilePicture.style.background = "";
-    profilePicture.style.filter     = "";
+    document.getElementById("profile-picture").style.background = "";
 });
 
 form.addEventListener("change", () => {
@@ -271,19 +269,27 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.get(["settings", "authentication"], async (storage) => {
         if (storage.settings !== undefined && storage.authentication !== undefined) {
             if (storage.settings["username"] && storage.authentication["access_token"]) {
-                if (await validateToken()) {
-                    loginButton.style.display  = "none";
-                    logoutButton.style.display = "block";
+                loginButton.style.display  = "none";
+                logoutButton.style.display = "block";
 
-                    const profilePicture = document.getElementById("profile-picture");
-                    profilePicture.style.background =
-                        `url(${storage.settings["profile_picture"].replace("300x300", "70x70")})`+
-                        ` center no-repeat`;
-                    profilePicture.style.filter = "none";
+                const profilePicture = document.getElementById("profile-picture");
+                profilePicture.style.background =
+                    `url(${storage.settings["profile_picture"].replace("300x300", "70x70")})`+
+                    ` center no-repeat`;
 
-                    popupCheckbox.checked        = storage.settings["popup"];
-                    notificationCheckbox.checked = storage.settings["notifications"];
-                    themeSelection.selectedIndex = storage.settings["theme"];
+                popupCheckbox.checked        = storage.settings["popup"];
+                notificationCheckbox.checked = storage.settings["notifications"];
+                themeSelection.selectedIndex = storage.settings["theme"];
+
+                if (!await validateToken()) {
+                    loginButton.style.display  = "block";
+                    logoutButton.style.display = "none";
+
+                    profilePicture.style.background = "";
+
+                    popupCheckbox.checked        = true;
+                    notificationCheckbox.checked = true;
+                    themeSelection.selectedIndex = 0;
                 }
             }
         }
