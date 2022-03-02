@@ -17,7 +17,7 @@
         chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             const nostreamDiv = document.getElementById("nostream");
 
-            if (!storage.loggedin || !storage.loggedin) {
+            if (!storage.loggedin) {
                 updateBadge('0');
                 nostreamDiv.innerHTML =
                     `This extension requires your public twitch account information.<br/><br/>

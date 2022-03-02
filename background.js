@@ -20,7 +20,7 @@ function validateToken() {
                 headers: {"Authorization": `Bearer ${storage.authentication["access_token"]}`}
             }).then(response => {
                 if (!response.ok) {
-                    throw "failed to verify access TOKEN validity (${response.status})";
+                    throw "failed to verify Access Token validity (${response.status})";
                 }
                 return response.json();
             }).then(response => {
@@ -32,7 +32,7 @@ function validateToken() {
                         interactive: true
                     }, (redirect_url) => {
                         if (chrome.runtime.lastError || redirect_url.includes("error")) {
-                            throw "failed to get Access TOKEN";
+                            throw "failed to get Access Token: ("+chrome.runtime.lastError.message+")";
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
                             chrome.storage.local.set({"authentication": {"access_token": access_token}});
