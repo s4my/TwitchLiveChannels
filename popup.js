@@ -100,9 +100,11 @@
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.message === "updateUI") {
             updateUI();
-            document.getElementById("updateBtn").style.backgroundImage = "";
-            document.getElementById("updateBtn").style.cursor = "pointer";
-            document.getElementById("updateBtn").style.pointerEvents = "";
+
+            const updateBtn = document.getElementById("updateBtn");
+            updateBtn.style.backgroundImage = "";
+            updateBtn.style.cursor          = "pointer";
+            updateBtn.style.pointerEvents   = "";
         }
     });
 
@@ -126,6 +128,7 @@
                 } else {
                     nostream.textContent = "None of the channels you follow are currently live.";
                 }
+
                 updateBtn.style.backgroundImage = "";
                 updateBtn.style.cursor          = "pointer";
                 updateBtn.style.pointerEvents   = "";
@@ -162,23 +165,18 @@
                     // tell background.js to fetch an update.
                     chrome.runtime.sendMessage({"message": "update"});
 
-                    document.getElementById("updateBtn").style.backgroundImage = "url('/icons/loading.gif')";
-                    document.getElementById("updateBtn").style.cursor = "unset";
-                    document.getElementById("updateBtn").style.pointerEvents = "none";
+                    const updateBtn = document.getElementById("updateBtn");
+                    updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
+                    updateBtn.style.cursor          = "unset";
+                    updateBtn.style.pointerEvents   = "none";
                 }
             });
         } else if (event.target.id === "settings") {
-            if (chrome.runtime.openOptionsPage) {
-                chrome.runtime.openOptionsPage();
-            } else {
-                window.open(chrome.runtime.getURL("options.html"));
-            }
+            if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
+            else window.open(chrome.runtime.getURL("options.html"));
         } else if (event.target.id === "login") {
-            if (chrome.runtime.openOptionsPage) {
-                chrome.runtime.openOptionsPage();
-            } else {
-                window.open(chrome.runtime.getURL('options.html'));
-            }
+            if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
+            else window.open(chrome.runtime.getURL('options.html'));
         }
 
         if (event.target.matches(".stream, .streamer, .logo, .viewers, .category")) {
