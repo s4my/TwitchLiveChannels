@@ -52,9 +52,8 @@ function validateToken() {
 function getAuthToken() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(["authentication"], (storage) => {
-            const access_token = storage.authentication["access_token"];
-            if (storage.authentication !== undefined || access_token !== "") {
-                resolve(access_token);
+            if (storage.authentication !== undefined || storage.authentication["access_token"]) {
+                resolve(storage.authentication["access_token"]);
             } else reject();
         });
     });

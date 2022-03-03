@@ -12,7 +12,7 @@ const notificationCheckbox = document.getElementById("cb-notification");
 const themeSelection       = document.getElementById("theme-selection");
 const saveMsg              = document.getElementById("save-msg");
 
-const userJustLoggedIn = false;
+let userJustLoggedIn = false;
 
 function updateBadge(counter) {
     chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
