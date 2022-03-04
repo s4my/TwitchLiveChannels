@@ -1,12 +1,12 @@
 {
-  "name": "TTV Live",
+  "name": "Twitch Live Channels",
   "version": "1.0.0",
-  "description": "TTV Live extension helps you keep track of who is live out of the channels you follow on Twitch (https://www.twitch.tv/).",
+  "description": "Twitch Live Channels helps you keep track of who is live out of the channels you follow on Twitch (https://www.twitch.tv/).",
   "content_security_policy": "default-src 'self' https://id.twitch.tv/ https://api.twitch.tv https://static-cdn.jtvnw.net; script-src 'self'; img-src 'self' data: blob: https:; object-src 'self'; frame-ancestors 'none'; style-src 'unsafe-inline';",
   "manifest_version": 2,
 
   "browser_action": {
-    "default_title": "TTV live",
+    "default_title": "Twitch Live Channels",
     "default_icon": "icons/icon.png",
     "default_popup": "popup.html"
   },

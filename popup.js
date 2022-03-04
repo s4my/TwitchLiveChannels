@@ -20,7 +20,7 @@
             if (!storage.loggedin) {
                 updateBadge('0');
                 nostreamDiv.innerHTML =
-                    `This extension requires your public twitch account information.<br/><br/>
+                    `This extension requires your public Twitch account information.<br/><br/>
                     You need to <a href="" id="login">Log In</a> to give it authorization
                     to get the list of channels you follow.`;
 
@@ -122,7 +122,7 @@
             } else {
                 if (!storage.loggedin) {
                     nostream.innerHTML =
-                        `This extension requires your public twitch account information.<br/><br/>
+                        `This extension requires your public Twitch account information.<br/><br/>
                         You need to <a href="" id="login">Log In</a> to give it authorization
                         to get the list of channels you follow.`;
                 } else {
@@ -203,8 +203,8 @@
     });
 }());
 
-// TTV live extension helps you keep track of who is live out of the
-// channels you follow on Twitch (https://www.twitch.tv/)
+// Twitch Live Channels helps you keep track of who is live out of the channels you follow
+// on Twitch (https://www.twitch.tv/).
 //
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //

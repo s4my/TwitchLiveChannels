@@ -202,7 +202,7 @@ async function showNotification(channel) {
 
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         notificationOptions = {
-            title:    "TTV live",
+            title:    "Twitch Live Channels",
             priority: 0,
             type:     "list",
             message:  '',
@@ -215,7 +215,7 @@ async function showNotification(channel) {
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
         notificationOptions = {
-            title:    "TTV live",
+            title:    "Twitch Live Channels",
             priority: 0,
             type:     'basic',
             message:  `<b>${name}</b> is Live streaming ${category}`,
@@ -307,8 +307,8 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
     }
 });
 
-// TTV live extension helps you keep track of who is live out of the
-// channels you follow on Twitch (https://www.twitch.tv/)
+// Twitch Live Channels helps you keep track of who is live out of the channels you follow
+// on Twitch (https://www.twitch.tv/).
 //
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //

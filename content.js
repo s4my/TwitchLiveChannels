@@ -61,8 +61,8 @@ window.onload = function() {
     });
 }
 
-// TTV live extension helps you keep track of who is live out of the
-// channels you follow on Twitch (https://www.twitch.tv/)
+// Twitch Live Channels helps you keep track of who is live out of the channels you follow
+// on Twitch (https://www.twitch.tv/).
 //
 // Copyright (C) 2022 s4my <samydevacnt@gmail.com>
 //
