@@ -21,6 +21,7 @@
     "https://static-cdn.jtvnw.net/",
     "storage",
     "notifications",
+    "tabs",
     "activeTab",
     "identity"
   ],

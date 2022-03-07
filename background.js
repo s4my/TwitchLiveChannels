@@ -234,14 +234,19 @@ async function showNotification(channel) {
                             if (storage.settings["popup"]) {
                                 const popupWidth  = 900;
                                 const popupHeight = 650;
-                                const left        = (screen.width/2) - (popupWidth/2);
-                                const top         = (screen.height/2) - (popupHeight/2);
 
-                                window.open("https://player.twitch.tv/?channel="+encodeURIComponent(name)+
-                                            "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                                            "_about", "width="+popupWidth+",height="+popupHeight+",left="+left+",top="+top);
+                                chrome.windows.create({
+                                    url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                    width:   popupWidth,
+                                    height:  popupHeight,
+                                    left:    (screen.width/2) - (popupWidth/2),
+                                    top:     (screen.height/2) - (popupHeight/2),
+                                    focused: true,
+                                    type: "popup"
+                                });
                             } else {
-                                window.open("https://www.twitch.tv/"+encodeURIComponent(name), "_about");
+                                chrome.tabs.create({url: "https://www.twitch.tv/"+encodeURIComponent(name)});
                             }
                         }
                     });
