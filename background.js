@@ -214,13 +214,23 @@ async function showNotification(channel) {
             buttons:  [{title : 'Open'}]
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
-        notificationOptions = {
-            title:    "Twitch Live Channels",
-            priority: 0,
-            type:     'basic',
-            message:  `<b>${name}</b> is Live streaming ${category}`,
-            iconUrl:  logo
-        };
+        if (navigator.userAgent.indexOf("Win") > -1) {
+            notificationOptions = {
+                title:    "Twitch Live Channels",
+                priority: 0,
+                type:     'basic',
+                message:  `${name} is Live streaming ${category}`,
+                iconUrl:  logo
+            };
+        } else {
+            notificationOptions = {
+                title:    "Twitch Live Channels",
+                priority: 0,
+                type:     'basic',
+                message:  `<b>${name}</b> is Live streaming ${category}`,
+                iconUrl:  logo
+            };
+        }
     }
 
     chrome.notifications.create("", notificationOptions, (ID) => notificationID = ID);
