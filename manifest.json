@@ -11,6 +11,12 @@
     "default_popup": "popup.html"
   },
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{d3d2a327-1ae0-4fd6-b732-0844d0b7fd4c}"
+    }
+  },
+
   "icons":{
     "16":  "icons/icon-16.png",
     "48":  "icons/icon-48.png",
