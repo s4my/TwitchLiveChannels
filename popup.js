@@ -188,19 +188,29 @@
                     if (!storage.settings["popup"]) {
                         chrome.tabs.create({url: "https://www.twitch.tv/"+encodeURIComponent(name)});
                     } else {
-                        const popupWidth  = 900;
-                        const popupHeight = 650;
+                        if (navigator.userAgent.indexOf("Chrome") > -1) {
+                            const popupWidth  = 900;
+                            const popupHeight = 650;
 
-                        chrome.windows.create({
-                            url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
-                                     "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                            width:   popupWidth,
-                            height:  popupHeight,
-                            left:    (screen.width/2) - (popupWidth/2),
-                            top:     (screen.height/2) - (popupHeight/2),
-                            focused: true,
-                            type: "popup"
-                        });
+                            chrome.windows.create({
+                                url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                         "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                width:   popupWidth,
+                                height:  popupHeight,
+                                left:    (screen.width/2) - (popupWidth/2),
+                                top:     (screen.height/2) - (popupHeight/2),
+                                focused: true,
+                                type: "popup"
+                            });
+                        } else if (navigator.userAgent.indexOf("Firefox") > -1) {
+                            chrome.windows.create({
+                                url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                         "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                focused: true,
+                                state:   "maximized",
+                                type:    "popup"
+                            });
+                        }
                     }
                 }
             });

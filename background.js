@@ -243,7 +243,7 @@ async function showNotification(channel) {
                                     left:    (screen.width/2) - (popupWidth/2),
                                     top:     (screen.height/2) - (popupHeight/2),
                                     focused: true,
-                                    type: "popup"
+                                    type:    "popup"
                                 });
                             } else {
                                 chrome.tabs.create({url: "https://www.twitch.tv/"+encodeURIComponent(name)});
