@@ -215,11 +215,11 @@ async function showNotification(channel) {
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
         notificationOptions = {
-            title:    "Twitch Live Channels",
+            title:    navigator.userAgent.indexOf("Win") > -1 ? `${name} is LIVE`:"Twitch Live Channels",
             priority: 0,
             type:     'basic',
             message:  navigator.userAgent.indexOf("Win") > -1 ?
-                      `${name} is Live streaming ${category}`:`<b>${name}</b> is Live streaming ${category}`,
+                      `Streaming ${category}`:`<b>${name}</b> is Live streaming ${category}`,
             iconUrl:  logo
         };
     }

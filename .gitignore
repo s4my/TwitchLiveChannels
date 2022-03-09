@@ -3,6 +3,7 @@ TODO.md
 *.pur
 design/
 screenshots/
+Releases/
 build/
 make.sh
 release_notes.txt
