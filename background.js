@@ -294,7 +294,7 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
                         break;
                     }
                 }
-            }
+            } else notificationStatus = false;
 
             chrome.browserAction.getBadgeText({}, (oldbadgetext) => {
                 if (oldbadgetext !== liveChannelCounter) {
