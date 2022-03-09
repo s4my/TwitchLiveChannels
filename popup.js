@@ -197,8 +197,8 @@
                                          "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                 width:   popupWidth,
                                 height:  popupHeight,
-                                left:    (screen.width/2) - (popupWidth/2),
-                                top:     (screen.height/2) - (popupHeight/2),
+                                left:    parseInt((screen.width/2) - (popupWidth/2)),
+                                top:     parseInt((screen.height/2) - (popupHeight/2)),
                                 focused: true,
                                 type: "popup"
                             });
