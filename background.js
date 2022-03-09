@@ -2,6 +2,7 @@
 // See end of file for extended copyright information.
 
 const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
+let isFirstRun  = true;
 
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -215,7 +216,7 @@ async function showNotification(channel) {
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
         notificationOptions = {
-            title:    navigator.userAgent.indexOf("Win") > -1 ? `${name} is LIVE`:"Twitch Live Channels",
+            title:    navigator.userAgent.indexOf("Win") > -1 ? `${name} just went LIVE`:"Twitch Live Channels",
             priority: 0,
             type:     'basic',
             message:  navigator.userAgent.indexOf("Win") > -1 ?
@@ -294,13 +295,15 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
                         break;
                     }
                 }
-            } else notificationStatus = false;
+            }
 
             chrome.browserAction.getBadgeText({}, (oldbadgetext) => {
                 if (oldbadgetext !== liveChannelCounter) {
                     updateBadge(liveChannelCounter.toString());
                 }
             });
+
+            if (isFirstRun) notificationStatus = false;
 
             chrome.storage.local.get(["settings"], (storage) => {
                 if (storage.settings !== undefined) {
@@ -310,6 +313,8 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
                 }
             });
         }
+
+        isFirstRun = false;
     }
 });
 
