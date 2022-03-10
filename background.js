@@ -261,9 +261,7 @@ async function showNotification(channel) {
 }
 
 chrome.storage.local.get(["liveChannels"], (storage) => {
-    if (!storage.liveChannels || storage.liveChannels.length === 0) {
-        updateBadge("0");
-    }
+    if (!storage.liveChannels || storage.liveChannels.length === 0) updateBadge("0");
 });
 
 // get list of all live channels every 2 min
@@ -282,11 +280,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 chrome.storage.onChanged.addListener((storage, namespace) => {
     if(storage.liveChannels !== undefined) {
-        // check for each channel if it's already in the storage,
-        // if not, show notification and update the badge.
+        // check for each channel if it's already in the storage, if not, show notification
+        // and update the badge.
         for (const channelNew of storage.liveChannels.newValue) {
-            const liveChannelCounter = storage.liveChannels.newValue.length;
-            let notificationStatus   = true;
+            let notificationStatus = true;
 
             if (storage.liveChannels.oldValue?.length > 0) {
                 for (const channelOld of storage.liveChannels.oldValue) {
@@ -296,12 +293,6 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
                     }
                 }
             }
-
-            chrome.browserAction.getBadgeText({}, (oldbadgetext) => {
-                if (oldbadgetext !== liveChannelCounter) {
-                    updateBadge(liveChannelCounter.toString());
-                }
-            });
 
             if (isFirstRun) notificationStatus = false;
 
@@ -313,6 +304,8 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
                 }
             });
         }
+
+        updateBadge(storage.liveChannels.newValue.length.toString());
 
         isFirstRun = false;
     }
