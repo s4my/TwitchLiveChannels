@@ -158,6 +158,10 @@
         document.documentElement.appendChild(hideScrollbarStyle);
     });
 
+    if (navigator.userAgent.indexOf("Win") > -1) {
+        document.getElementById("streams").style.scrollbarWidth = "thin";
+    }
+
     window.addEventListener("click", (event) => {
         if (event.target.id === "updateBtn") {
             chrome.storage.local.get(["status"], (storage) => {
