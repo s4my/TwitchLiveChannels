@@ -10,6 +10,7 @@ const saveButton           = document.getElementById("save-btn");
 const popupCheckbox        = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
 const themeSelection       = document.getElementById("theme-selection");
+const profilePicture       = document.getElementById("profile-picture");
 const saveMsg              = document.getElementById("save-msg");
 
 let userJustLoggedIn = false;
@@ -20,7 +21,8 @@ function updateBadge(counter) {
 }
 
 function logIn() {
-    document.getElementById("loading").style.display = "block";
+    const loadingDiv = document.getElementById("loading");
+    loadingDiv.style.display = "block";
 
     return new Promise((resolve, reject) => {
         chrome.identity.launchWebAuthFlow({
@@ -31,12 +33,12 @@ function logIn() {
         }, (redirect_url) => {
             if (chrome.runtime.lastError || redirect_url.includes("error")) {
                 console.error(`failed to get Access Token (redirect_url: ${redirect_url}`);
-                document.getElementById("loading").style.display = "none";
+                loadingDiv.style.display = "none";
                 reject();
             } else {
                 const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
                 chrome.storage.local.set({"authentication": {"access_token": access_token}});
-                document.getElementById("loading").style.display = "none";
+                loadingDiv.style.display = "none";
                 resolve(access_token);
             }
         });
@@ -191,8 +193,6 @@ loginButton.addEventListener("click", async (e) => {
         logoutButton.style.display = "block";
         saveButton.disabled        = false;
 
-        const profilePicture = document.getElementById("profile-picture");
-
         chrome.storage.local.get(["settings"], async (storage) => {
             if (storage.settings !== undefined) {
                 profilePicture.style.background =
@@ -272,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 loginButton.style.display  = "none";
                 logoutButton.style.display = "block";
 
-                const profilePicture = document.getElementById("profile-picture");
                 profilePicture.style.background =
                     `url(${storage.settings["profile_picture"].replace("300x300", "70x70")})`+
                     ` center no-repeat`;
@@ -282,14 +281,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 themeSelection.selectedIndex = storage.settings["theme"];
 
                 if (!await validateToken()) {
-                    loginButton.style.display  = "block";
-                    logoutButton.style.display = "none";
-
+                    loginButton.style.display       = "block";
+                    logoutButton.style.display      = "none";
                     profilePicture.style.background = "";
-
-                    popupCheckbox.checked        = true;
-                    notificationCheckbox.checked = true;
-                    themeSelection.selectedIndex = 0;
+                    popupCheckbox.checked           = true;
+                    notificationCheckbox.checked    = true;
+                    themeSelection.selectedIndex    = 0;
                 }
             }
         }

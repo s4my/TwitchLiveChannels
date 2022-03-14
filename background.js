@@ -248,7 +248,7 @@ async function showNotification(channel) {
                                     type:    "popup"
                                 });
                             } else {
-                                chrome.tabs.create({url: "https://www.twitch.tv/"+encodeURIComponent(name)});
+                                chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
                             }
                         }
                     });

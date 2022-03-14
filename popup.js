@@ -16,6 +16,7 @@
     function updateUI() {
         chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             const nostreamDiv = document.getElementById("nostream");
+            const streamsDiv  = document.getElementById("streams");
 
             if (!storage.loggedin) {
                 updateBadge('0');
@@ -24,19 +25,19 @@
                     You need to <a href="" id="login">Log In</a> to give it authorization
                     to get the list of channels you follow.`;
 
-                document.getElementById("streams").innerHTML = "";
+                streamsDiv.innerHTML = "";
                 return;
             } else {
                 if (!storage.liveChannels || storage.liveChannels.length === 0) {
                     updateBadge('0');
                     nostreamDiv.textContent = "None of the channels you follow are currently live."
-                    document.getElementById("streams").innerHTML = "";
+                    streamsDiv.innerHTML    = "";
 
                     return;
-                } else document.getElementById("nostream").style.display = "none";
+                } else nostreamDiv.style.display = "none";
             }
 
-            document.getElementById("streams").innerHTML = "";
+            streamsDiv.innerHTML = "";
 
             updateBadge(storage.liveChannels.length.toString());
 
@@ -47,7 +48,6 @@
                 const title    = channel.title;
                 const logo     = channel.logo.replace("300x300", "70x70");
 
-                const streamsDiv = document.getElementById("streams");
                 streamsDiv.innerHTML += `
                     <div class="stream">
                         <div class="logo">
@@ -115,7 +115,7 @@
             const nostream  = document.getElementById("nostream");
 
             if (storage.status === "updating") {
-                nostream.textContent = "Fetching update please wait...";
+                nostream.textContent            = "Fetching update please wait...";
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
                 updateBtn.style.cursor          = "unset";
                 updateBtn.style.pointerEvents   = "none";
@@ -190,7 +190,7 @@
             chrome.storage.local.get(['settings'], (storage) => {
                 if (storage.settings !== undefined) {
                     if (!storage.settings["popup"]) {
-                        chrome.tabs.create({url: "https://www.twitch.tv/"+encodeURIComponent(name)});
+                        chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
                     } else {
                         if (navigator.userAgent.indexOf("Chrome") > -1) {
                             const popupWidth  = 900;

@@ -31,13 +31,13 @@ window.onload = function() {
         video_player.style.left     = "0px";
 
         if(!document.getElementById("chat")) {
-            video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
+            video_player.style.width = (document.body.clientWidth - 350).toString() + "px";
 
             let chat = document.createElement("iframe");
             chat.id          = "chat";
             chat.frameborder = 0;
             chat.scrolling   = "no";
-            chat.src         = "https://www.twitch.tv/embed/"+encodeURIComponent(channel)+
+            chat.src         = "https://www.twitch.tv/embed/" + encodeURIComponent(channel) +
                                "/chat/?darkpopout&parent=twitch.tv";
             chat.height      = "100%";
             chat.width       = "350";
@@ -45,7 +45,7 @@ window.onload = function() {
 
             document.body.append(chat);
         } else {
-            video_player.style.width = (document.body.clientWidth).toString()+"px";
+            video_player.style.width = (document.body.clientWidth).toString() + "px";
 
             let chat = document.getElementById("chat");
             if (chat) document.body.removeChild(chat);
@@ -54,9 +54,9 @@ window.onload = function() {
 
     window.addEventListener("resize", () => {
         if (document.getElementById("chat")) {
-            video_player.style.width = (document.body.clientWidth - 350).toString()+"px";
+            video_player.style.width = (document.body.clientWidth - 350).toString() + "px";
         } else {
-            video_player.style.width = (document.body.clientWidth).toString()+"px";
+            video_player.style.width = (document.body.clientWidth).toString() + "px";
         }
     });
 }
