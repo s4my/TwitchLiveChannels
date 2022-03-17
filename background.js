@@ -105,7 +105,7 @@ async function updateLiveChannels() {
         const response = await GETRequest(URL);
         if (!response) throw "failed to fetch live channels.";
 
-        console.log(response);
+        //console.log(response);
 
         let user_ids = [];
         for (const stream of response.data) {
@@ -148,7 +148,8 @@ async function updateLiveChannels() {
         chrome.storage.local.set({"liveChannels": liveChannels});
         updateBadge(liveChannels.length.toString());
 
-        console.log("Last time updated: "+new Date().toUTCString());
+        //console.log(liveChannels);
+        //console.log("Last time updated: "+new Date().toUTCString());
 
         // tell popup.js to update the UI
         chrome.runtime.sendMessage({"message": "updateUI"});

@@ -1,0 +1,81 @@
+{
+    "title": {
+        "message": "LIVE-KANÄLE"
+    },
+    "update_btn": {
+        "message": "Aktualisieren"
+    },
+    "settings_btn": {
+        "message": "Einstellungen"
+    },
+    "nostream_loggedout_01": {
+        "message": "Für diese Erweiterung sind Ihre öffentlichen Twitch-Kontoinformationen erforderlich.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_02": {
+        "message": " Sie müssen sich ",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_03": {
+        "message": "Anmelden",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_04": {
+        "message": " um ihr die Berechtigung zum Abrufen der Liste der Kanäle, denen du folgst.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedin": {
+        "message": "Keiner der Kanäle, denen du folgst, ist derzeit live."
+    },
+    "nostream_updating": {
+        "message": "Aktualisierung wird abgerufen, bitte warten..."
+    },
+    "settings_login_btn": {
+        "message": "Anmelden"
+    },
+    "settings_logout_btn": {
+        "message": "Abmeldon"
+    },
+    "settings_popup_option": {
+        "message": "Streams in einem Popup-Fenster öffnen"
+    },
+    "settings_notifications": {
+        "message": "Zeige Benachrichtigungen"
+    },
+    "settings_theme": {
+        "message": "Thema:"
+    },
+    "settings_auto_theme": {
+        "message": "Auto"
+    },
+    "settings_light_theme": {
+        "message": "Hell"
+    },
+    "settings_dark_theme": {
+        "message": "Dunkel"
+    },
+    "settings_save_btn": {
+        "message": "Speichern"
+    },
+    "settings_save_changes": {
+        "message": "Änderungen speichern"
+    },
+    "settings_saved": {
+        "message": "Einstellungen gespeichert"
+    },
+    "settings_error_01": {
+        "message": "Fehler: OAuth-Token fehlt oder ist abgelaufen"
+    },
+    "settings_error_02": {
+        "message": "Fehler: Server konnte nicht erreicht werden"
+    },
+    "settings_error_03": {
+        "message": "Fehler: Beim Anmeldeversuch ist etwas schief gelaufen"
+    },
+    "settings_error_04": {
+        "message": "Fehler: Beim Versuch, sich abzumelden, ist etwas schief gelaufen"
+    },
+    "chat_tooltip": {
+        "message": "Chat"
+    }
+}

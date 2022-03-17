@@ -1,0 +1,96 @@
+{
+    "title": {
+        "message": "LIVE CHANNELS",
+        "description": "title in the popup"
+    },
+    "update_btn": {
+        "message": "Update",
+        "description": "update button in the popup"
+    },
+    "settings_btn": {
+        "message": "Settings",
+        "description": "the settings button in the popup"
+    },
+    "nostream_loggedout_01": {
+        "message": "This extension requires your public Twitch account information.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_02": {
+        "message": " You need to ",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_03": {
+        "message": "Log In",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_04": {
+        "message": " to give it authorization to get the list of channels you follow.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedin": {
+        "message": "None of the channels you follow are currently live.",
+        "description": "the message displayed in the popup when the user is logged in, but no channels are online"
+    },
+    "nostream_updating": {
+        "message": "Fetching update please wait...",
+        "description": "the message displayed in the popup when an update is undergoing"
+    },
+    "settings_login_btn": {
+        "message": "Log In",
+        "description": "the log in button in the settings"
+    },
+    "settings_logout_btn": {
+        "message": "Log Out",
+        "description": "the log out button in the settings"
+    },
+    "settings_popup_option": {
+        "message": "Open streams in a popup window",
+        "description": "the 1st checkbox in the settings"
+    },
+    "settings_notifications": {
+        "message": "Show notifications",
+        "description": "the 2nd checkbox in the settings"
+    },
+    "settings_theme": {
+        "message": "Theme: ",
+        "description": "the theme selection in the settings"
+    },
+    "settings_auto_theme": {
+        "message": "Auto",
+        "description": "the auto theme option in the settings"
+    },
+    "settings_light_theme": {
+        "message": "Light",
+        "description": "the light theme option in the settings"
+    },
+    "settings_dark_theme": {
+        "message": "Dark",
+        "description": "the dark theme option in the settings"
+    },
+    "settings_save_btn": {
+        "message": "Save",
+        "description": "the save button in the settings"
+    },
+    "settings_save_changes": {
+        "message": "Save the changes"
+    },
+    "settings_saved": {
+        "message": "Settings saved"
+    },
+    "settings_error_01": {
+        "message": "Error: OAuth token is missing or expired"
+    },
+    "settings_error_02": {
+        "message": "Error: failed to reach the server"
+    },
+    "settings_error_03": {
+        "message": "Error: something went wrong while trying to Log In"
+    },
+    "settings_error_04": {
+        "message": "Error: something went wrong while trying to log out"
+    },
+    "chat_tooltip": {
+        "message": "Chat",
+        "description": "the tooltip of the chat button in the video player"
+    }
+}

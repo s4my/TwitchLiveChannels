@@ -1,0 +1,81 @@
+{
+    "title": {
+        "message": "CHAÎNES LIVE"
+    },
+    "update_btn": {
+        "message": "Réactualiser"
+    },
+    "settings_btn": {
+        "message": "Paramètre"
+    },
+    "nostream_loggedout_01": {
+        "message": "Cette extension nécessite les informations public de votre compte Twitch.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_02": {
+        "message": " Vous devez vous ",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_03": {
+        "message": "Connecté",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_04": {
+        "message": " pour lui donner l'autorisation d'obtenir la liste des chaînes que vous suivez.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedin": {
+        "message": "Aucune des chaînes que vous suivez n'est actuellement en direct."
+    },
+    "nostream_updating": {
+        "message": "Récupération de mise à jour, veuillez patienter..."
+    },
+    "settings_login_btn": {
+        "message": "Se connecter"
+    },
+    "settings_logout_btn": {
+        "message": "Se déconnecter"
+    },
+    "settings_popup_option": {
+        "message": "Ouvrir les stream dans une fenêtre contextuelle(pop-ups)"
+    },
+    "settings_notifications": {
+        "message": "Afficher les notifications"
+    },
+    "settings_theme": {
+        "message": "Thème: "
+    },
+    "settings_auto_theme": {
+        "message": "Auto"
+    },
+    "settings_light_theme": {
+        "message": "Clair"
+    },
+    "settings_dark_theme": {
+        "message": "Sombre"
+    },
+    "settings_save_btn": {
+        "message": "Sauvegarder"
+    },
+    "settings_save_changes": {
+        "message": "Sauvegarder les changements"
+    },
+    "settings_saved": {
+        "message": "Paramètre Sauvegarder"
+    },
+    "settings_error_01": {
+        "message": "Erreur: le jeton OAuth est manquant ou a expiré"
+    },
+    "settings_error_02": {
+        "message": "Erreur: impossible d'atteindre le serveur"
+    },
+    "settings_error_03": {
+        "message": "Erreur: une erreur s'est produite lors de la tentative de connexion"
+    },
+    "settings_error_04": {
+        "message": "Erreur: une erreur s'est produite lors de la tentative de déconnexion"
+    },
+    "chat_tooltip": {
+        "message": "Chat"
+    }
+}

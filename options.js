@@ -10,10 +10,21 @@ const saveButton           = document.getElementById("save-btn");
 const popupCheckbox        = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
 const themeSelection       = document.getElementById("theme-selection");
+const theme                = document.getElementById("theme");
 const profilePicture       = document.getElementById("profile-picture");
 const saveMsg              = document.getElementById("save-msg");
 
 let userJustLoggedIn = false;
+
+loginButton.textContent                                  = chrome.i18n.getMessage("settings_login_btn");
+logoutButton.textContent                                 = chrome.i18n.getMessage("settings_logout_btn");
+saveButton.textContent                                   = chrome.i18n.getMessage("settings_save_btn");
+popupCheckbox.parentElement.lastChild.textContent        = chrome.i18n.getMessage("settings_popup_option");
+notificationCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_notifications");
+theme.firstChild.textContent                             = chrome.i18n.getMessage("settings_theme");
+themeSelection.children[0].textContent                   = chrome.i18n.getMessage("settings_auto_theme");
+themeSelection.children[1].textContent                   = chrome.i18n.getMessage("settings_light_theme");
+themeSelection.children[2].textContent                   = chrome.i18n.getMessage("settings_dark_theme");
 
 function updateBadge(counter) {
     chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
@@ -106,7 +117,7 @@ async function getUserInfo() {
 
             document.getElementById("profile-picture").style.background = "";
 
-            saveMsg.textContent      = `Error: OAuth token is missing or expired`;
+            saveMsg.textContent      = chrome.i18n.getMessage("settings_error_01");
             saveMsg.style.visibility = "visible";
             saveMsg.style.color      = "#b33030";
 
@@ -114,7 +125,7 @@ async function getUserInfo() {
         }
 
         if (!response.ok) {
-            saveMsg.textContent      = `Error: failed to reach server (status code ${response.status})`;
+            saveMsg.textContent      = `${chrome.i18n.getMessage("settings_error_02")} (status code:${response.status})`;
             saveMsg.style.visibility = "visible";
             saveMsg.style.color      = "#b33030";
             return null;
@@ -133,7 +144,7 @@ async function getUserInfo() {
 
 function settingsSaved(settings) {
     chrome.storage.local.set({"settings": settings}, () => {
-        saveMsg.textContent      = "Settings saved";
+        saveMsg.textContent      = chrome.i18n.getMessage("settings_saved");
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#5ece37";
         setTimeout(() => saveMsg.style.visibility = "hidden", 1000);
@@ -208,7 +219,7 @@ loginButton.addEventListener("click", async (e) => {
         });
         chrome.runtime.sendMessage({"message": "validate_token"});
 
-        saveMsg.textContent      = "Save the changes";
+        saveMsg.textContent      = chrome.i18n.getMessage("settings_save_changes");
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#e97e4f";
 
@@ -216,7 +227,7 @@ loginButton.addEventListener("click", async (e) => {
         chrome.storage.local.set({"loggedin": true});
         userJustLoggedIn = true;
     }).catch(error => {
-        saveMsg.textContent      = "ERROR: something went wrong while trying to Log In";
+        saveMsg.textContent      = chrome.i18n.getMessage("settings_error_03");
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#b33030";
         console.error(error);
@@ -237,7 +248,7 @@ logoutButton.addEventListener("click", async (e) => {
     );
 
     if (!response.ok) {
-        saveMsg.textContent      = `ERROR: something went wrong while trying to log out ${response.status}`;
+        saveMsg.textContent      = `${chrome.i18n.getMessage("settings_error_04")} (status code:${response.status})`;
         saveMsg.style.visibility = "visible";
         saveMsg.style.color      = "#b33030";
         return;

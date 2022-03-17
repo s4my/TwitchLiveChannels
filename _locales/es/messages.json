@@ -1,0 +1,81 @@
+{
+    "title": {
+        "message": "CANALES VIVOS"
+    },
+    "update_btn": {
+        "message": "Actualización"
+    },
+    "settings_btn": {
+        "message": "Configuración"
+    },
+    "nostream_loggedout_01": {
+        "message": "Esta prórroga requiere vuestro público Twitch información de cuenta.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_02": {
+        "message": " Necesitas ",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_03": {
+        "message": "Iniciar sesión",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedout_04": {
+        "message": " para darlo autorización para conseguir la lista de canales sigues.",
+        "description": "the message displayed in the popup when the user hasn't login yet"
+    },
+    "nostream_loggedin": {
+        "message": "Ninguno de los canales sigues es actualmente vivo."
+    },
+    "nostream_updating": {
+        "message": "Obteniendo actualización por favor espere..."
+    },
+    "settings_login_btn": {
+        "message": "Iniciar sesión"
+    },
+    "settings_logout_btn": {
+        "message": "Cerrar sesión"
+    },
+    "settings_popup_option": {
+        "message": "Corrientes abiertas en un popup ventana"
+    },
+    "settings_notifications": {
+        "message": "Notificaciones de espectáculo"
+    },
+    "settings_theme": {
+        "message": "Tema: "
+    },
+    "settings_auto_theme": {
+        "message": "Auto"
+    },
+    "settings_light_theme": {
+        "message": "Claro"
+    },
+    "settings_dark_theme": {
+        "message": "Oscuro"
+    },
+    "settings_save_btn": {
+        "message": "Guardar"
+    },
+    "settings_save_changes": {
+        "message": "Guardar los cambios"
+    },
+    "settings_saved": {
+        "message": "Configuración guardados"
+    },
+    "settings_error_01": {
+        "message": "Error: OAuth token falta o expiró"
+    },
+    "settings_error_02": {
+        "message": "Error: fallado para lograr el servidor"
+    },
+    "settings_error_03": {
+        "message": "Error: algo fue mal mientras probando a Registro En"
+    },
+    "settings_error_04": {
+        "message": "Error: algo fue mal mientras probando a registro fuera"
+    },
+    "chat_tooltip": {
+        "message": "Chat"
+    }
+}

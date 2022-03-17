@@ -13,6 +13,10 @@
                 margin: 0px;
                 overflow-x: hidden;
             }
+            #title_txt {
+                width: 192px;
+                padding-top: 3px;
+            }
             #login {
                 color: #772fe8;
                 font-weight: bold;
@@ -23,7 +27,7 @@
                 font-size: 13px;
                 text-align: center;
                 color: #53535f;
-                padding: 15px 0px 15px 0px;
+                padding: 15px 3px 15px 3px;
             }
             #title {
                 background: #772fe8;
@@ -211,14 +215,18 @@
     </head>
     <body>
         <div id="title">
-            <span style="width: 192px; padding-top: 3px;">LIVE CHANNELS</span>
+            <span id="title_txt">LIVE CHANNELS</span>
             <span id="updateBtn" title="update"></span>
             <div id="dropdown">
                 <div id="more"></div>
                 <div id="settings">Settings</div>
             </div>
         </div>
-        <div id="nostream"></div>
+        <div id="nostream">
+            This extension requires your public Twitch account information.<br/><br/>
+            You need to <a href="" id="login">Log In</a> to give it authorization
+            to get the list of channels you follow.
+        </div>
         <div id="streams"></div>
         <script src="popup.js"></script>
     </body>

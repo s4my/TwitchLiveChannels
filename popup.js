@@ -4,6 +4,12 @@
 (function () {
     "use strict";
 
+    const settingsBtn = document.getElementById("settings");
+    const updateBtn   = document.getElementById("updateBtn");
+    const title       = document.getElementById("title_txt");
+    const nostreamDiv = document.getElementById("nostream");
+    const streamsDiv  = document.getElementById("streams");
+
     function numberWithCommas(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -14,23 +20,24 @@
     }
 
     function updateUI() {
-        chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
-            const nostreamDiv = document.getElementById("nostream");
-            const streamsDiv  = document.getElementById("streams");
+        settingsBtn.textContent = chrome.i18n.getMessage("settings_btn");
+        updateBtn.title         = chrome.i18n.getMessage("update_btn");
+        title.textContent       = chrome.i18n.getMessage("title");
 
+        chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             if (!storage.loggedin) {
                 updateBadge('0');
-                nostreamDiv.innerHTML =
-                    `This extension requires your public Twitch account information.<br/><br/>
-                    You need to <a href="" id="login">Log In</a> to give it authorization
-                    to get the list of channels you follow.`;
+                nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
+                nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
+                nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
+                nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
 
                 streamsDiv.innerHTML = "";
                 return;
             } else {
                 if (!storage.liveChannels || storage.liveChannels.length === 0) {
                     updateBadge('0');
-                    nostreamDiv.textContent = "None of the channels you follow are currently live."
+                    nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggein");
                     streamsDiv.innerHTML    = "";
 
                     return;
@@ -101,7 +108,6 @@
         if (request.message === "updateUI") {
             updateUI();
 
-            const updateBtn = document.getElementById("updateBtn");
             updateBtn.style.backgroundImage = "";
             updateBtn.style.cursor          = "pointer";
             updateBtn.style.pointerEvents   = "";
@@ -111,22 +117,19 @@
     // update the UI according to the extension's `status`
     chrome.storage.local.get(["status"], (storage) => {
         if (storage.status !== undefined) {
-            const updateBtn = document.getElementById("updateBtn");
-            const nostream  = document.getElementById("nostream");
-
             if (storage.status === "updating") {
-                nostream.textContent            = "Fetching update please wait...";
+                nostream.textContent            = chrome.i18n.getMessage("nostream_updating");
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
                 updateBtn.style.cursor          = "unset";
                 updateBtn.style.pointerEvents   = "none";
             } else {
                 if (!storage.loggedin) {
-                    nostream.innerHTML =
-                        `This extension requires your public Twitch account information.<br/><br/>
-                        You need to <a href="" id="login">Log In</a> to give it authorization
-                        to get the list of channels you follow.`;
+                    nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
+                    nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
+                    nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
+                    nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
                 } else {
-                    nostream.textContent = "None of the channels you follow are currently live.";
+                    nostream.textContent = chrome.i18n.getMessage("nostream_loggedin");
                 }
 
                 updateBtn.style.backgroundImage = "";

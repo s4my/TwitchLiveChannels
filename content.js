@@ -23,6 +23,7 @@ window.onload = function() {
        <div id="chat-tooltip">Chat</div>`;
 
     playerControls.insertBefore(button, playerControls.firstChild);
+    document.getElementById("chat-tooltip").textContent = chrome.i18n.getMessage("chat_tooltip");
 
     let video_player = document.getElementsByClassName("video-player__container")[0];
 
