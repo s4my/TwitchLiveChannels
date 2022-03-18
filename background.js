@@ -115,7 +115,7 @@ async function updateLiveChannels() {
             const viewers   = stream.viewer_count;
             const title     = stream.title;
 
-            if (!user_id || !user_name || !category || !viewers || !title) continue;
+            if (!user_id || !user_name || !category || !title) continue;
 
             user_ids.push(stream.user_id);
 
