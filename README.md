@@ -15,7 +15,7 @@
 __Twitch Live Channels__ is a browser extension that will help you keep track of who is 🔴 LIVE out of the channels you follow on [__Twitch__](https://twitch.tv/).
 
 <p align="center">
-	<img src="https://user-images.githubusercontent.com/16526701/157587151-ad5264ab-fa87-46ba-b001-c8762e518bc2.png"/>
+	<img src="https://user-images.githubusercontent.com/16526701/159105535-0b25c5c4-51e6-4f8b-8ac1-64ff15d9957b.png"/>
 </p>
 
 Once installed, you'll be prompted with the settings page, where you'll need to Log In with your Twitch account to authorize __Twitch Live Channels__ to get the list of channels you follow. Here you can configure the extension to send you 🔔 _Notifications_ whenever a channel you follow goes Live.
