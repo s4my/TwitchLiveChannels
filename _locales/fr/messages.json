@@ -9,20 +9,16 @@
         "message": "Paramètre"
     },
     "nostream_loggedout_01": {
-        "message": "Cette extension nécessite les informations public de votre compte Twitch.",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": "Cette extension nécessite les informations public de votre compte Twitch."
     },
     "nostream_loggedout_02": {
-        "message": " Vous devez vous ",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": " Vous devez vous "
     },
     "nostream_loggedout_03": {
-        "message": "Connecté",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": "Connecté"
     },
     "nostream_loggedout_04": {
-        "message": " pour lui donner l'autorisation d'obtenir la liste des chaînes que vous suivez.",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": " pour lui donner l'autorisation d'obtenir la liste des chaînes que vous suivez."
     },
     "nostream_loggedin": {
         "message": "Aucune des chaînes que vous suivez n'est actuellement en direct."

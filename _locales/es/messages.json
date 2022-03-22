@@ -9,20 +9,16 @@
         "message": "Configuración"
     },
     "nostream_loggedout_01": {
-        "message": "Esta prórroga requiere vuestro público Twitch información de cuenta.",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": "Esta prórroga requiere vuestro público Twitch información de cuenta."
     },
     "nostream_loggedout_02": {
-        "message": " Necesitas ",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": " Necesitas "
     },
     "nostream_loggedout_03": {
-        "message": "Iniciar sesión",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": "Iniciar sesión"
     },
     "nostream_loggedout_04": {
-        "message": " para darlo autorización para conseguir la lista de canales sigues.",
-        "description": "the message displayed in the popup when the user hasn't login yet"
+        "message": " para darlo autorización para conseguir la lista de canales sigues."
     },
     "nostream_loggedin": {
         "message": "Ninguno de los canales sigues es actualmente vivo."
