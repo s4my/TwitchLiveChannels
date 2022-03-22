@@ -8,14 +8,9 @@
                 background: #f7f7f8;
                 font-family: Inter,Roobert,Helvetica Neue,Helvetica,Arial,sans-serif;
                 min-width: 235px;
-                max-width: 235px;
                 min-height: 75px;
                 margin: 0px;
                 overflow-x: hidden;
-            }
-            #title_txt {
-                width: 192px;
-                padding-top: 3px;
             }
             #login {
                 color: #772fe8;
@@ -37,21 +32,33 @@
                 display: flex;
                 flex-direction: row;
                 flex-wrap: nowrap;
-                width: 96%;
                 padding: 4px 4px 4px 5px;
                 align-items: center;
+            }
+            #title_txt {
+                padding-top: 3px;
+                flex: auto;
             }
             #updateBtn {
                 background: url('icons/update.svg') no-repeat;
                 width: 24px;
                 height: 24px;
                 cursor: pointer;
-                display: flex;
                 vertical-align: middle;
                 color-scheme: only light;
+                flex: 24px;
+                flex-grow: 0;
             }
             #updateBtn:hover {
                 background-image: url('icons/update_hover.svg');
+            }
+            #dropdown {
+                background: #772fe8;
+                display: flex;
+                vertical-align: middle;
+                cursor: pointer;
+                flex: 6px;
+                flex-grow: 0;
             }
             #more {
                 background: url("icons/more.svg") no-repeat;
@@ -61,12 +68,6 @@
             }
             #more:hover {
                 background: url("icons/more_hover.svg") no-repeat;
-            }
-            #dropdown {
-                background: #772fe8;
-                display: flex;
-                vertical-align: middle;
-                cursor: pointer;
             }
             #settings {
                 background: #FFFFFF;
@@ -111,6 +112,11 @@
             }
             .stream:active {
                 background: #e6e6ea;
+            }
+            @media (width: 425px) {
+                .stream {
+                    grid-template-columns: 35px auto 68px;
+                }
             }
             .logo {
                 grid-column: 1 / 2;
