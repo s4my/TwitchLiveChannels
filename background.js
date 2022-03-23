@@ -15,10 +15,10 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 function validateToken() {
-    chrome.storage.local.get(["authentication"], (storage) => {
-        if (storage.authentication !== undefined || storage.authentication["access_token"]) {
+    chrome.storage.local.get(["access_token"], (storage) => {
+        if (storage.access_token !== undefined || storage.access_token) {
             fetch ("https://id.twitch.tv/oauth2/validate", {
-                headers: {"Authorization": `Bearer ${storage.authentication["access_token"]}`}
+                headers: {"Authorization": `Bearer ${storage.access_token}`}
             }).then(response => {
                 if (!response.ok) {
                     throw "failed to verify Access Token validity (${response.status})";
@@ -36,7 +36,7 @@ function validateToken() {
                             throw "failed to get Access Token: ("+chrome.runtime.lastError.message+")";
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
-                            chrome.storage.local.set({"authentication": {"access_token": access_token}});
+                            chrome.storage.local.set({"access_token": access_token});
                             chrome.storage.local.set({"loggedin": true});
                         }
                     });
@@ -52,9 +52,9 @@ function validateToken() {
 
 function getAuthToken() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["authentication"], (storage) => {
-            if (storage.authentication !== undefined || storage.authentication["access_token"]) {
-                resolve(storage.authentication["access_token"]);
+        chrome.storage.local.get(["access_token"], (storage) => {
+            if (storage.access_token !== undefined || storage.access_token) {
+                resolve(storage.access_token);
             } else reject();
         });
     });
@@ -84,8 +84,8 @@ async function GETRequest(URL) {
 
         if (response.status === 401) {
             chrome.storage.local.set({"loggedin": false});
+            chrome.storage.local.set({"access_token": ""});
             updateBadge("0");
-            chrome.storage.local.set({"authentication": {"access_token": ""}});
             throw "OAuth token is missing or expired.";
         }
         if (!response.ok) throw `HTTP error! status: ${response.status}`;

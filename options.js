@@ -48,7 +48,7 @@ function logIn() {
                 reject();
             } else {
                 const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
-                chrome.storage.local.set({"authentication": {"access_token": access_token}});
+                chrome.storage.local.set({"access_token": access_token});
                 loadingDiv.style.display = "none";
                 resolve(access_token);
             }
@@ -58,20 +58,20 @@ function logIn() {
 
 function getAuthToken() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["authentication"], (storage) => {
-            if (!storage.authentication || !storage.authentication["access_token"]) {
+        chrome.storage.local.get(["access_token"], (storage) => {
+            if (storage.access_token === undefined || !storage.access_token) {
                 resolve(logIn());
-            } else resolve(storage.authentication["access_token"]);
+            } else resolve(storage.access_token);
         });
     });
 }
 
 function validateToken() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["authentication"], (storage) => {
-            if (storage.authentication !== undefined || storage.authentication["access_token"]) {
+        chrome.storage.local.get(["access_token"], (storage) => {
+            if (storage.access_token !== undefined || storage.access_token) {
                 fetch ("https://id.twitch.tv/oauth2/validate", {
-                    headers: {'Authorization': `Bearer ${storage.authentication["access_token"]}`}
+                    headers: {'Authorization': `Bearer ${storage.access_token}`}
                 }).then(response => {
                     if (!response.ok) {
                         throw `failed to verify access token validity (${response.status})`;
@@ -277,9 +277,9 @@ form.addEventListener("change", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    chrome.storage.local.get(["settings", "authentication"], async (storage) => {
-        if (storage.settings !== undefined && storage.authentication !== undefined) {
-            if (storage.settings["username"] && storage.authentication["access_token"]) {
+    chrome.storage.local.get(["settings", "access_token"], async (storage) => {
+        if (storage.settings !== undefined && storage.access_token !== undefined) {
+            if (storage.settings["username"] && storage.access_token) {
                 loginButton.style.display  = "none";
                 logoutButton.style.display = "block";
 

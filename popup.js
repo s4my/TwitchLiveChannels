@@ -88,7 +88,7 @@
     // update the UI every time the popup is opened
     updateUI();
     chrome.storage.local.get(["settings"], (storage) => {
-        // by default the theme is set to Auto
+        // by default the theme is set to Auto before the settings are even set.
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             document.body.classList.add("dark-theme");
         } else {
