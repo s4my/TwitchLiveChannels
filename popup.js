@@ -37,8 +37,9 @@
             } else {
                 if (!storage.liveChannels || storage.liveChannels.length === 0) {
                     updateBadge('0');
-                    nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
-                    streamsDiv.innerHTML    = "";
+                    nostreamDiv.textContent   = chrome.i18n.getMessage("nostream_loggedin");
+                    nostreamDiv.style.display = "block";
+                    streamsDiv.innerHTML      = "";
 
                     return;
                 } else nostreamDiv.style.display = "none";

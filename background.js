@@ -107,40 +107,42 @@ async function updateLiveChannels() {
 
         console.log(response);
 
-        let user_ids = [];
-        for (const stream of response.data) {
-            const user_id   = stream.user_id;
-            const user_name = stream.user_name;
-            const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
-            const viewers   = stream.viewer_count;
-            const title     = stream.title;
+        if (response.data.length > 0) {
+            let user_ids = [];
+            for (const stream of response.data) {
+                const user_id   = stream.user_id;
+                const user_name = stream.user_name;
+                const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
+                const viewers   = stream.viewer_count;
+                const title     = stream.title;
 
-            if (!user_id || !user_name || !category || !title) continue;
+                if (!user_id || !user_name || !category || !title) continue;
 
-            user_ids.push(stream.user_id);
+                user_ids.push(stream.user_id);
 
-            const data = {
-                "id":       user_id,
-                "name":     user_name,
-                "category": category,
-                "viewers":  viewers,
-                "title":    title,
-                // fall back profile picture
-                "logo":     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
-                            "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
-            };
+                const data = {
+                    "id":       user_id,
+                    "name":     user_name,
+                    "category": category,
+                    "viewers":  viewers,
+                    "title":    title,
+                    // fall back profile picture
+                    "logo":     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
+                                "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
+                };
 
-            liveChannels.push(data);
-        }
+                liveChannels.push(data);
+            }
 
-        // get profile pictures
-        const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
-        if (!getProfilePics) throw "failed to get profile pictures";
+            // get profile pictures
+            const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
+            if (!getProfilePics) throw "failed to get profile pictures";
 
-        for (const channel of liveChannels) {
-            for (const user_info of getProfilePics.data) {
-                if (channel.id === user_info["id"]) {
-                    channel["logo"] = user_info["profile_image_url"];
+            for (const channel of liveChannels) {
+                for (const user_info of getProfilePics.data) {
+                    if (channel.id === user_info["id"]) {
+                        channel["logo"] = user_info["profile_image_url"];
+                    }
                 }
             }
         }
