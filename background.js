@@ -83,9 +83,10 @@ async function GETRequest(URL) {
         );
 
         if (response.status === 401) {
-            throw "OAuth token is missing or expired.";
             chrome.storage.local.set({"loggedin": false});
             updateBadge("0");
+            chrome.storage.local.set({"authentication": {"access_token": ""}});
+            throw "OAuth token is missing or expired.";
         }
         if (!response.ok) throw `HTTP error! status: ${response.status}`;
         return await response.json();
