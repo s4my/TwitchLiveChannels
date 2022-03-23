@@ -37,7 +37,7 @@
             } else {
                 if (!storage.liveChannels || storage.liveChannels.length === 0) {
                     updateBadge('0');
-                    nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggein");
+                    nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
                     streamsDiv.innerHTML    = "";
 
                     return;
@@ -129,7 +129,7 @@
                     nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
                     nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
                 } else {
-                    nostream.textContent = chrome.i18n.getMessage("nostream_loggedin");
+                    nostream.textContent = chrome.i18n.getmessage("nostream_loggedin");
                 }
 
                 updateBtn.style.backgroundImage = "";
