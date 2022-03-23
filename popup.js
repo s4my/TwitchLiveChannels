@@ -115,23 +115,28 @@
         }
     });
 
-    // update the UI according to the extension's `status`
-    chrome.storage.local.get(["status"], (storage) => {
+    // update the UI according to the extension's `status` when fetching an update in the
+    // background.
+    chrome.storage.onChanged.addListener((storage, namespace) => {
         if (storage.status !== undefined) {
-            if (storage.status === "updating") {
+            if (storage.status.newValue === "updating") {
                 nostream.textContent            = chrome.i18n.getMessage("nostream_updating");
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
                 updateBtn.style.cursor          = "unset";
                 updateBtn.style.pointerEvents   = "none";
             } else {
-                if (!storage.loggedin) {
-                    nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
-                    nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
-                    nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
-                    nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
-                } else {
-                    nostream.textContent = chrome.i18n.getmessage("nostream_loggedin");
-                }
+                chrome.storage.local.get(["loggedin"], (storage) => {
+                    if (storage.loggedin !== undefined) {
+                        if (!storage.loggedin) {
+                            nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
+                            nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
+                            nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
+                            nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
+                        } else {
+                            nostream.textContent = chrome.i18n.getMessage("nostream_loggedin");
+                        }
+                    }
+                 });
 
                 updateBtn.style.backgroundImage = "";
                 updateBtn.style.cursor          = "pointer";
