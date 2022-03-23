@@ -106,13 +106,7 @@
 
     // update the UI if the message "updateUI" is received from background.js
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        if (request.message === "updateUI") {
-            updateUI();
-
-            updateBtn.style.backgroundImage = "";
-            updateBtn.style.cursor          = "pointer";
-            updateBtn.style.pointerEvents   = "";
-        }
+        if (request.message === "updateUI") updateUI();
     });
 
     // update the UI according to the extension's `status` when fetching an update in the
@@ -177,11 +171,6 @@
                 if (!storage.status || storage.status === "done") {
                     // tell background.js to fetch an update.
                     chrome.runtime.sendMessage({"message": "update"});
-
-                    const updateBtn = document.getElementById("updateBtn");
-                    updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
-                    updateBtn.style.cursor          = "unset";
-                    updateBtn.style.pointerEvents   = "none";
                 }
             });
         } else if (event.target.id === "settings") {
