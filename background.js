@@ -112,12 +112,31 @@ async function updateLiveChannels() {
             let user_ids = [];
             for (const stream of response.data) {
                 const user_id   = stream.user_id;
-                const user_name = stream.user_name;
                 const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
                 const viewers   = stream.viewer_count;
                 const title     = stream.title;
 
-                if (!user_id || !user_name || !category || !title) continue;
+                if (!user_id || !category || !title) continue;
+
+                //sometimes the `user_name` is empty for fault of the twitch API
+                //(https://github.com/twitchdev/issues/issues/500) which causes false positive
+                //notifications.
+
+                let user_name = stream.user_name;
+                if (!user_name) {
+                    chrome.storage.local.get(["liveChannels"], (storage) => {
+                        if (storage.liveChannels !== undefined) {
+                            for (const channel of storage.liveChannels) {
+                                if (channel.user_id === user_id) {
+                                    user_name = channel.user_name;
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if (!user_name) continue;
 
                 user_ids.push(stream.user_id);
 
