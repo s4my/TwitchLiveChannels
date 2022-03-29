@@ -3,28 +3,28 @@
 
 const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
 
-const form                 = document.getElementById("form");
-const loginButton          = document.getElementById("login-btn");
-const logoutButton         = document.getElementById("logout-btn");
-const saveButton           = document.getElementById("save-btn");
-const popupCheckbox        = document.getElementById("cb-popup");
+const form = document.getElementById("form");
+const loginButton = document.getElementById("login-btn");
+const logoutButton = document.getElementById("logout-btn");
+const saveButton = document.getElementById("save-btn");
+const popupCheckbox = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
-const themeSelection       = document.getElementById("theme-selection");
-const theme                = document.getElementById("theme");
-const profilePicture       = document.getElementById("profile-picture");
-const saveMsg              = document.getElementById("save-msg");
+const themeSelection = document.getElementById("theme-selection");
+const theme = document.getElementById("theme");
+const profilePicture = document.getElementById("profile-picture");
+const saveMsg = document.getElementById("save-msg");
 
 let userJustLoggedIn = false;
 
-loginButton.textContent                                  = chrome.i18n.getMessage("settings_login_btn");
-logoutButton.textContent                                 = chrome.i18n.getMessage("settings_logout_btn");
-saveButton.textContent                                   = chrome.i18n.getMessage("settings_save_btn");
-popupCheckbox.parentElement.lastChild.textContent        = chrome.i18n.getMessage("settings_popup_option");
+loginButton.textContent = chrome.i18n.getMessage("settings_login_btn");
+logoutButton.textContent = chrome.i18n.getMessage("settings_logout_btn");
+saveButton.textContent = chrome.i18n.getMessage("settings_save_btn");
+popupCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_popup_option");
 notificationCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_notifications");
-theme.firstChild.textContent                             = chrome.i18n.getMessage("settings_theme");
-themeSelection.children[0].textContent                   = chrome.i18n.getMessage("settings_auto_theme");
-themeSelection.children[1].textContent                   = chrome.i18n.getMessage("settings_light_theme");
-themeSelection.children[2].textContent                   = chrome.i18n.getMessage("settings_dark_theme");
+theme.firstChild.textContent = chrome.i18n.getMessage("settings_theme");
+themeSelection.children[0].textContent = chrome.i18n.getMessage("settings_auto_theme");
+themeSelection.children[1].textContent = chrome.i18n.getMessage("settings_light_theme");
+themeSelection.children[2].textContent = chrome.i18n.getMessage("settings_dark_theme");
 
 function updateBadge(counter) {
     chrome.browserAction.setBadgeBackgroundColor({color: "#6a75f2"});
@@ -39,7 +39,7 @@ function logIn() {
         chrome.identity.launchWebAuthFlow({
             url: `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}`+
                  `&redirect_uri=${chrome.identity.getRedirectURL()}&response_type=token`+
-                 `&scope=user:read:follows&force_verify=true`,
+                 "&scope=user:read:follows&force_verify=true",
             interactive: true
         }, (redirect_url) => {
             if (chrome.runtime.lastError || redirect_url.includes("error")) {
@@ -71,14 +71,14 @@ function validateToken() {
         chrome.storage.local.get(["access_token"], (storage) => {
             if (storage.access_token !== undefined || storage.access_token) {
                 fetch ("https://id.twitch.tv/oauth2/validate", {
-                    headers: {'Authorization': `Bearer ${storage.access_token}`}
+                    headers: {"Authorization": `Bearer ${storage.access_token}`}
                 }).then(response => {
                     if (!response.ok) {
-                        throw `failed to verify access token validity (${response.status})`;
+                        throw Error(`failed to verify access token validity (${response.status})`);
                     }
                     return response.json();
                 }).then(response => {
-                    if (response["expires_in"] === 0 && response["client_id"] !== client_id) {
+                    if (response["expires_in"] === 0 && response["client_id"] !== CLIENT_ID) {
                         chrome.storage.local.set({"loggedin": false});
                         updateBadge("0");
                         resolve(false);
@@ -87,10 +87,9 @@ function validateToken() {
                         chrome.storage.local.set({"loggedin": true});
                     }
                 }).catch(error => {
-                    console.error(error);
                     chrome.storage.local.set({"loggedin": false});
                     updateBadge("0");
-                    resolve(false);
+                    reject(error);
                 });
             }
         });
@@ -104,30 +103,30 @@ async function getUserInfo() {
             {
                 method: "GET",
                 headers: {
-                    "Client-ID":     CLIENT_ID,
+                    "Client-ID": CLIENT_ID,
                     "Authorization": `Bearer ${await getAuthToken()}`
                 }
             }
         );
 
         if (response.status === 401) {
-            loginButton.style.display  = "block";
+            loginButton.style.display = "block";
             logoutButton.style.display = "none";
-            saveButton.disabled        = true;
+            saveButton.disabled = true;
 
             document.getElementById("profile-picture").style.background = "";
 
-            saveMsg.textContent      = chrome.i18n.getMessage("settings_error_01");
+            saveMsg.textContent = chrome.i18n.getMessage("settings_error_01");
             saveMsg.style.visibility = "visible";
-            saveMsg.style.color      = "#b33030";
+            saveMsg.style.color = "#b33030";
 
             return null;
         }
 
         if (!response.ok) {
-            saveMsg.textContent      = `${chrome.i18n.getMessage("settings_error_02")} (status code:${response.status})`;
+            saveMsg.textContent = `${chrome.i18n.getMessage("settings_error_02")} (status code:${response.status})`;
             saveMsg.style.visibility = "visible";
-            saveMsg.style.color      = "#b33030";
+            saveMsg.style.color = "#b33030";
             return null;
         }
 
@@ -144,30 +143,30 @@ async function getUserInfo() {
 
 function settingsSaved(settings) {
     chrome.storage.local.set({"settings": settings}, () => {
-        saveMsg.textContent      = chrome.i18n.getMessage("settings_saved");
+        saveMsg.textContent = chrome.i18n.getMessage("settings_saved");
         saveMsg.style.visibility = "visible";
-        saveMsg.style.color      = "#5ece37";
+        saveMsg.style.color = "#5ece37";
         setTimeout(() => saveMsg.style.visibility = "hidden", 1000);
     });
 }
 
 saveButton.addEventListener("click", (e) => {
-    const openInPopup       = popupCheckbox.checked;
+    const openInPopup = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
-    const selectedTheme     = themeSelection.selectedIndex;
+    const selectedTheme = themeSelection.selectedIndex;
 
     // when saving the settings, if the user just logged in, tell background.js to call
-    // updateLiveChannels(), other wise there's no need to fetch an update every time
+    // updateLiveChannels(), otherwise there's no need to fetch an update every time
     // a setting is changed.
-    chrome.storage.local.get(['settings'], async (storage) => {
+    chrome.storage.local.get(["settings"], async (storage) => {
         if (storage.settings !== undefined) {
             const settings = {
-                "username":        storage.settings["username"],
-                "userID":          storage.settings["userID"],
+                "username": storage.settings["username"],
+                "userID": storage.settings["userID"],
                 "profile_picture": storage.settings["profile_picture"],
-                "popup":           openInPopup,
-                "notifications":   showNotifications,
-                "theme":           selectedTheme
+                "popup": openInPopup,
+                "notifications": showNotifications,
+                "theme": selectedTheme
             };
 
             settingsSaved(settings);
@@ -182,12 +181,12 @@ saveButton.addEventListener("click", (e) => {
         if (!userInfo) return;
 
         const settings = {
-            "username":        userInfo.display_name,
-            "userID":          userInfo.id,
+            "username": userInfo.display_name,
+            "userID": userInfo.id,
             "profile_picture": userInfo.profile_image_url,
-            "popup":           openInPopup,
-            "notifications":   showNotifications,
-            "theme":           selectedTheme
+            "popup": openInPopup,
+            "notifications": showNotifications,
+            "theme": selectedTheme
         };
 
         settingsSaved(settings);
@@ -198,43 +197,43 @@ saveButton.addEventListener("click", (e) => {
     e.preventDefault();
 });
 
-loginButton.addEventListener("click", async (e) => {
+loginButton.addEventListener("click", async () => {
     await logIn().then(response => {
-        loginButton.style.display  = "none";
+        loginButton.style.display = "none";
         logoutButton.style.display = "block";
-        saveButton.disabled        = false;
+        saveButton.disabled = false;
 
         chrome.storage.local.get(["settings"], async (storage) => {
             if (storage.settings !== undefined) {
                 profilePicture.style.background =
                     `url(${storage.settings["profile_picture"].replace("300x300", "70x70")})`+
-                    ` center no-repeat`;
+                    " center no-repeat";
             } else {
                 const userInfo = await getUserInfo();
                 if (!userInfo) return;
                 profilePicture.style.background =
                     `url(${userInfo.profile_image_url.replace("300x300", "70x70")})`+
-                    ` center no-repeat`;
+                    " center no-repeat";
             }
         });
         chrome.runtime.sendMessage({"message": "validate_token"});
 
-        saveMsg.textContent      = chrome.i18n.getMessage("settings_save_changes");
+        saveMsg.textContent = chrome.i18n.getMessage("settings_save_changes");
         saveMsg.style.visibility = "visible";
-        saveMsg.style.color      = "#e97e4f";
+        saveMsg.style.color = "#e97e4f";
 
         saveButton.disabled = false;
         chrome.storage.local.set({"loggedin": true});
         userJustLoggedIn = true;
     }).catch(error => {
-        saveMsg.textContent      = chrome.i18n.getMessage("settings_error_03");
+        saveMsg.textContent = chrome.i18n.getMessage("settings_error_03");
         saveMsg.style.visibility = "visible";
-        saveMsg.style.color      = "#b33030";
+        saveMsg.style.color = "#b33030";
         console.error(error);
     });
 });
 
-logoutButton.addEventListener("click", async (e) => {
+logoutButton.addEventListener("click", async () => {
     let formData = new FormData();
     formData.append("client_id", CLIENT_ID);
     formData.append("token", await getAuthToken());
@@ -248,15 +247,15 @@ logoutButton.addEventListener("click", async (e) => {
     );
 
     if (!response.ok) {
-        saveMsg.textContent      = `${chrome.i18n.getMessage("settings_error_04")} (status code:${response.status})`;
+        saveMsg.textContent = `${chrome.i18n.getMessage("settings_error_04")} (status code:${response.status})`;
         saveMsg.style.visibility = "visible";
-        saveMsg.style.color      = "#b33030";
+        saveMsg.style.color = "#b33030";
         return;
     }
 
-    loginButton.style.display  = "block";
+    loginButton.style.display = "block";
     logoutButton.style.display = "none";
-    saveButton.disabled        = true;
+    saveButton.disabled = true;
     chrome.storage.local.set({"loggedin": false});
     updateBadge("0");
     userJustLoggedIn = false;
@@ -280,24 +279,28 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.get(["settings", "access_token"], async (storage) => {
         if (storage.settings !== undefined && storage.access_token !== undefined) {
             if (storage.settings["username"] && storage.access_token) {
-                loginButton.style.display  = "none";
+                loginButton.style.display = "none";
                 logoutButton.style.display = "block";
 
                 profilePicture.style.background =
                     `url(${storage.settings["profile_picture"].replace("300x300", "70x70")})`+
-                    ` center no-repeat`;
+                    " center no-repeat";
 
-                popupCheckbox.checked        = storage.settings["popup"];
+                popupCheckbox.checked = storage.settings["popup"];
                 notificationCheckbox.checked = storage.settings["notifications"];
                 themeSelection.selectedIndex = storage.settings["theme"];
 
-                if (!await validateToken()) {
-                    loginButton.style.display       = "block";
-                    logoutButton.style.display      = "none";
+                try {
+                    await validateToken();
+                } catch (error) {
+                    if (error) console.error(error);
+
+                    loginButton.style.display = "block";
+                    logoutButton.style.display = "none";
                     profilePicture.style.background = "";
-                    popupCheckbox.checked           = true;
-                    notificationCheckbox.checked    = true;
-                    themeSelection.selectedIndex    = 0;
+                    popupCheckbox.checked = true;
+                    notificationCheckbox.checked = true;
+                    themeSelection.selectedIndex = 0;
                 }
             }
         }

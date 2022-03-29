@@ -5,10 +5,10 @@
     "use strict";
 
     const settingsBtn = document.getElementById("settings");
-    const updateBtn   = document.getElementById("updateBtn");
-    const title       = document.getElementById("title_txt");
+    const updateBtn = document.getElementById("updateBtn");
+    const title = document.getElementById("title_txt");
     const nostreamDiv = document.getElementById("nostream");
-    const streamsDiv  = document.getElementById("streams");
+    const streamsDiv = document.getElementById("streams");
 
     function numberWithCommas(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -21,12 +21,12 @@
 
     function updateUI() {
         settingsBtn.textContent = chrome.i18n.getMessage("settings_btn");
-        updateBtn.title         = chrome.i18n.getMessage("update_btn");
-        title.textContent       = chrome.i18n.getMessage("title");
+        updateBtn.title = chrome.i18n.getMessage("update_btn");
+        title.textContent = chrome.i18n.getMessage("title");
 
         chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             if (!storage.loggedin) {
-                updateBadge('0');
+                updateBadge("0");
                 nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
                 nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
                 nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
@@ -36,10 +36,10 @@
                 return;
             } else {
                 if (!storage.liveChannels || storage.liveChannels.length === 0) {
-                    updateBadge('0');
-                    nostreamDiv.textContent   = chrome.i18n.getMessage("nostream_loggedin");
+                    updateBadge("0");
+                    nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
                     nostreamDiv.style.display = "block";
-                    streamsDiv.innerHTML      = "";
+                    streamsDiv.innerHTML = "";
 
                     return;
                 } else nostreamDiv.style.display = "none";
@@ -50,11 +50,11 @@
             updateBadge(storage.liveChannels.length.toString());
 
             for (const channel of storage.liveChannels) {
-                const name     = channel.name;
+                const name = channel.name;
                 const category = channel.category;
-                const viewers  = numberWithCommas(channel.viewers);
-                const title    = channel.title;
-                const logo     = channel.logo.replace("300x300", "70x70");
+                const viewers = numberWithCommas(channel.viewers);
+                const title = channel.title;
+                const logo = channel.logo.replace("300x300", "70x70");
 
                 streamsDiv.innerHTML += `
                     <div class="stream">
@@ -99,7 +99,7 @@
             if (storage.settings["theme"] === 1/*Light*/) {
                 document.body.classList.remove("dark-theme");
             } else if (storage.settings["theme"] === 2/*Dark*/) {
-                document.body.classList.add('dark-theme');
+                document.body.classList.add("dark-theme");
             }
         }
     });
@@ -114,10 +114,10 @@
     chrome.storage.onChanged.addListener((storage, namespace) => {
         if (storage.status !== undefined) {
             if (storage.status.newValue === "updating") {
-                nostream.textContent            = chrome.i18n.getMessage("nostream_updating");
+                nostreamDiv.textContent = chrome.i18n.getMessage("nostream_updating");
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
-                updateBtn.style.cursor          = "unset";
-                updateBtn.style.pointerEvents   = "none";
+                updateBtn.style.cursor = "unset";
+                updateBtn.style.pointerEvents = "none";
             } else {
                 chrome.storage.local.get(["loggedin"], (storage) => {
                     if (storage.loggedin !== undefined) {
@@ -127,14 +127,14 @@
                             nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
                             nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
                         } else {
-                            nostream.textContent = chrome.i18n.getMessage("nostream_loggedin");
+                            nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
                         }
                     }
-                 });
+                });
 
                 updateBtn.style.backgroundImage = "";
-                updateBtn.style.cursor          = "pointer";
-                updateBtn.style.pointerEvents   = "";
+                updateBtn.style.cursor = "pointer";
+                updateBtn.style.pointerEvents = "";
             }
         }
     });
@@ -178,42 +178,43 @@
             else window.open(chrome.runtime.getURL("options.html"));
         } else if (event.target.id === "login") {
             if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
-            else window.open(chrome.runtime.getURL('options.html'));
+            else window.open(chrome.runtime.getURL("options.html"));
         }
 
         if (event.target.matches(".stream, .streamer, .logo, .viewers, .category")) {
             const name = event.target.closest(".stream").getElementsByClassName("streamer")[0]
-                         .textContent.toLowerCase();
+                .textContent.toLowerCase();
 
-            chrome.storage.local.get(['settings'], (storage) => {
+            chrome.storage.local.get(["settings"], (storage) => {
                 if (storage.settings !== undefined) {
                     if (!storage.settings["popup"]) {
                         chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
                     } else {
                         if (navigator.userAgent.indexOf("Chrome") > -1) {
-                            const popupWidth  = 900;
+                            const popupWidth = 900;
                             const popupHeight = 650;
 
                             chrome.windows.create({
-                                url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
-                                         "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                                width:   popupWidth,
-                                height:  popupHeight,
-                                left:    parseInt((screen.width/2) - (popupWidth/2)),
-                                top:     parseInt((screen.height/2) - (popupHeight/2)),
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                     "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                width: popupWidth,
+                                height: popupHeight,
+                                left: parseInt((screen.width/2) - (popupWidth/2)),
+                                top: parseInt((screen.height/2) - (popupHeight/2)),
                                 focused: true,
                                 type: "popup"
                             });
                         } else if (navigator.userAgent.indexOf("Firefox") > -1) {
                             chrome.windows.create({
-                                url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
-                                         "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                     "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                 focused: true,
-                                state:   "maximized",
-                                type:    "popup"
+                                state: "maximized",
+                                type: "popup"
                             });
                         }
                     }
+                    window.close();
                 }
             });
         }

@@ -8,3 +8,5 @@ build/
 make.sh
 release_notes.txt
 translations.txt
+.eslintrc.json
+package.json

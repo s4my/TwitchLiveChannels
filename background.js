@@ -2,7 +2,7 @@
 // See end of file for extended copyright information.
 
 const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
-let isFirstRun  = true;
+let isFirstRun = true;
 
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -14,14 +14,16 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
-function validateToken() {
-    chrome.storage.local.get(["access_token"], (storage) => {
-        if (storage.access_token !== undefined || storage.access_token) {
+async function validateToken() {
+    try {
+        const accessToken = await getStorageItem("access_token");
+
+        if (accessToken) {
             fetch ("https://id.twitch.tv/oauth2/validate", {
-                headers: {"Authorization": `Bearer ${storage.access_token}`}
+                headers: {"Authorization": `Bearer ${accessToken}`}
             }).then(response => {
                 if (!response.ok) {
-                    throw "failed to verify Access Token validity (${response.status})";
+                    throw Error("failed to verify Access Token validity (${response.status})");
                 }
                 return response.json();
             }).then(response => {
@@ -29,11 +31,11 @@ function validateToken() {
                     chrome.identity.launchWebAuthFlow({
                         url: `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}`+
                              `&redirect_uri=${chrome.identity.getRedirectURL()}&response_type=token`+
-                             `&scope=user:read:follows&force_verify=true`,
+                             "&scope=user:read:follows&force_verify=true",
                         interactive: true
                     }, (redirect_url) => {
                         if (chrome.runtime.lastError || redirect_url.includes("error")) {
-                            throw "failed to get Access Token: ("+chrome.runtime.lastError.message+")";
+                            throw Error("failed to get Access Token: ("+chrome.runtime.lastError.message+")");
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
                             chrome.storage.local.set({"access_token": access_token});
@@ -47,37 +49,33 @@ function validateToken() {
                 updateBadge("0");
             });
         }
-    });
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-function getAuthToken() {
+function getStorageItem(item) {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["access_token"], (storage) => {
-            if (storage.access_token !== undefined || storage.access_token) {
-                resolve(storage.access_token);
-            } else reject();
+        chrome.storage.local.get([item], (storage) => {
+            if (storage[item] !== undefined) resolve(storage[item]);
+            else {
+                if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
+                reject(`Error: could not find "${item}" in storage.`);
+            }
         });
     });
 }
-
-async function getUserID() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["settings"], (storage) => {
-            if (!storage.settings) reject();
-            else resolve(storage.settings["userID"]);
-        });
-    });
-};
 
 async function GETRequest(URL) {
     try {
+        const authToken = await getStorageItem("access_token");
         const response = await fetch (
             URL,
             {
                 method: "GET",
                 headers: {
-                    "Client-ID":     CLIENT_ID,
-                    "Authorization": `Bearer ${await getAuthToken()}`
+                    "Client-ID": CLIENT_ID,
+                    "Authorization": `Bearer ${authToken}`
                 }
             }
         );
@@ -86,9 +84,9 @@ async function GETRequest(URL) {
             chrome.storage.local.set({"loggedin": false});
             chrome.storage.local.set({"access_token": ""});
             updateBadge("0");
-            throw "OAuth token is missing or expired.";
+            throw Error("OAuth token is missing or expired.");
         }
-        if (!response.ok) throw `HTTP error! status: ${response.status}`;
+        if (!response.ok) throw Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error(error);
@@ -101,54 +99,57 @@ async function updateLiveChannels() {
     try {
         // get the list of all live streams
         let liveChannels = [];
-        const URL = `https://api.twitch.tv/helix/streams/followed?user_id=${await getUserID()}`;
+        const settings = await getStorageItem("settings");
+
+        const URL = `https://api.twitch.tv/helix/streams/followed?user_id=${settings["userID"]}`;
 
         const response = await GETRequest(URL);
-        if (!response) throw "failed to fetch live channels.";
+        if (!response) throw Error("failed to fetch live channels.");
 
         console.log(response);
 
         if (response.data.length > 0) {
             let user_ids = [];
             for (const stream of response.data) {
-                const user_id   = stream.user_id;
-                const category  = (stream.game_name === '') ? 'UNDEFINED':stream.game_name;
-                const viewers   = stream.viewer_count;
-                const title     = stream.title;
+                const user_id = stream.user_id;
+                const category = (stream.game_name === "") ? "UNDEFINED":stream.game_name;
+                const viewers = stream.viewer_count;
+                const title = stream.title;
 
-                if (!user_id || !category || !title) continue;
+                if (!user_id || !category) continue;
 
                 //sometimes the `user_name` is empty for fault of the twitch API
                 //(https://github.com/twitchdev/issues/issues/500) which causes false positive
                 //notifications.
 
                 let user_name = stream.user_name;
-                if (!user_name) {
-                    chrome.storage.local.get(["liveChannels"], (storage) => {
-                        if (storage.liveChannels !== undefined) {
-                            for (const channel of storage.liveChannels) {
-                                if (channel.user_id === user_id) {
-                                    user_name = channel.user_name;
-                                    break;
-                                }
+                if (user_name === "") {
+                    try {
+                        const liveChannels = await getStorageItem("liveChannels");
+                        for (const channel of liveChannels) {
+                            if (channel.id === user_id) {
+                                user_name = channel.name;
+                                break;
                             }
                         }
-                    });
+                    } catch (error) {
+                        continue;
+                    }
                 }
 
-                if (!user_name) continue;
+                if (user_name === "") continue;
 
                 user_ids.push(stream.user_id);
 
                 const data = {
-                    "id":       user_id,
-                    "name":     user_name,
+                    "id": user_id,
+                    "name": user_name,
                     "category": category,
-                    "viewers":  viewers,
-                    "title":    title,
+                    "viewers": viewers,
+                    "title": title,
                     // fall back profile picture
-                    "logo":     "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
-                                "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
+                    "logo": "https://static-cdn.jtvnw.net/user-default-pictures-uv/" +
+                            "cdd517fe-def4-11e9-948e-784f43822e80-profile_image-70x70.png"
                 };
 
                 liveChannels.push(data);
@@ -156,7 +157,7 @@ async function updateLiveChannels() {
 
             // get profile pictures
             const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
-            if (!getProfilePics) throw "failed to get profile pictures";
+            if (!getProfilePics) throw Error("failed to get profile pictures");
 
             for (const channel of liveChannels) {
                 for (const user_info of getProfilePics.data) {
@@ -189,103 +190,111 @@ function updateBadge(liveChannelCounter) {
 
 async function showNotification(channel) {
     let notificationID = null;
-    const name         = channel.name;
-    const category     = channel.category;
+    const name = channel.name;
+    const category = channel.category;
 
     const logo = await fetch(channel.logo.replace("300x300", "70x70"))
-                 .then(response => response.blob())
-                 .then(blob => {
-                     return new Promise((resolve, reject) => {
-                         let canvas = document.createElement("canvas");
-                         canvas.width  = 48;
-                         canvas.height = 48;
-                         let ctx = canvas.getContext("2d");
+        .then(response => response.blob())
+        .then(blob => {
+            return new Promise((resolve) => {
+                let canvas = document.createElement("canvas");
+                canvas.width = 48;
+                canvas.height = 48;
+                let ctx = canvas.getContext("2d");
 
-                         const img = new Image();
-                         img.src = URL.createObjectURL(blob);
+                const img = new Image();
+                img.src = URL.createObjectURL(blob);
 
-                         img.onload = () => {
-                             ctx.save();
-                             ctx.beginPath();
-                             ctx.arc((canvas.width/2), (canvas.width/2), (canvas.width/2), 0,
-                                     Math.PI * 2, false);
-                             ctx.clip();
-                             ctx.drawImage(img, 0, 0, 48, 48);
-                             ctx.restore();
-                             resolve(canvas.toDataURL("image/png"));
-                         };
-                     });
-                 })
-                 .catch(error => {
-                     console.error(error);
-                     // fall back icon
-                     return chrome.runtime.getURL("icons/icon-48.png");
-                 });
+                img.onload = () => {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc((canvas.width/2), (canvas.width/2), (canvas.width/2), 0,
+                        Math.PI * 2, false);
+                    ctx.clip();
+                    ctx.drawImage(img, 0, 0, 48, 48);
+                    ctx.restore();
+                    resolve(canvas.toDataURL("image/png"));
+                };
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            // fall back icon
+            return chrome.runtime.getURL("icons/icon-48.png");
+        });
 
     let notificationOptions = null;
 
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         notificationOptions = {
-            title:    "Twitch Live Channels",
+            title: "Twitch Live Channels",
             priority: 0,
-            type:     "list",
-            message:  '',
-            items:    [{
-                title   : name,
+            type: "list",
+            message: "",
+            items: [{
+                title : name,
                 message : ` is Live streaming ${category}`
             }],
-            iconUrl:  logo,
-            buttons:  [{title : 'Open'}]
+            iconUrl: logo,
+            buttons: [{title : "Open"}]
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
         notificationOptions = {
-            title:    navigator.userAgent.indexOf("Win") > -1 ? `${name} just went LIVE`:"Twitch Live Channels",
+            title: navigator.userAgent.indexOf("Win") > -1 ? `${name} just went LIVE`:"Twitch Live Channels",
             priority: 0,
-            type:     'basic',
-            message:  navigator.userAgent.indexOf("Win") > -1 ?
-                      `Streaming ${category}`:`<b>${name}</b> is Live streaming ${category}`,
-            iconUrl:  logo
+            type: "basic",
+            message: navigator.userAgent.indexOf("Win") > -1 ?
+                `Streaming ${category}`:`<b>${name}</b> is Live streaming ${category}`,
+            iconUrl: logo
         };
     }
 
     chrome.notifications.create("", notificationOptions, (ID) => notificationID = ID);
 
-    if (navigator.userAgent.indexOf("Chrome") > -1) {
-        chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
-            if (ID === notificationID) {
-                if (btnID === 0) {
-                    chrome.storage.local.get(["settings"], (storage) => {
-                        if (storage.settings !== undefined) {
-                            if (storage.settings["popup"]) {
-                                const popupWidth  = 900;
-                                const popupHeight = 650;
+    try {
+        const settings = await getStorageItem("settings");
 
-                                chrome.windows.create({
-                                    url:     "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
-                                             "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                                    width:   popupWidth,
-                                    height:  popupHeight,
-                                    left:    parseInt((screen.width/2) - (popupWidth/2)),
-                                    top:     parseInt((screen.height/2) - (popupHeight/2)),
-                                    focused: true,
-                                    type:    "popup"
-                                });
-                            } else {
-                                chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
-                            }
+        if (navigator.userAgent.indexOf("Chrome") > -1) {
+            chrome.notifications.onButtonClicked.addListener((ID, btnID) => {
+                if (ID === notificationID) {
+                    if (btnID === 0) {
+                        if (settings["popup"]) {
+                            const popupWidth = 900;
+                            const popupHeight = 650;
+
+                            chrome.windows.create({
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                     "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                width: popupWidth,
+                                height: popupHeight,
+                                left: parseInt((screen.width/2) - (popupWidth/2)),
+                                top: parseInt((screen.height/2) - (popupHeight/2)),
+                                focused: true,
+                                type: "popup"
+                            });
+                        } else {
+                            chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
                         }
-                    });
 
-                    chrome.notifications.clear(notificationID);
+                        chrome.notifications.clear(notificationID);
+                    }
                 }
-            }
-        });
+            });
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
 
-chrome.storage.local.get(["liveChannels"], (storage) => {
-    if (!storage.liveChannels || storage.liveChannels.length === 0) updateBadge("0");
-});
+(async () => {
+    try {
+        const liveChannels = await getStorageItem("liveChannels");
+        if (liveChannels.length === 0) updateBadge("0");
+    } catch (error) {
+        console.error(error);
+        updateBadge("0");
+    }
+})();
 
 // get list of all live channels every 2 min
 updateLiveChannels();
@@ -301,7 +310,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
-chrome.storage.onChanged.addListener((storage, namespace) => {
+chrome.storage.onChanged.addListener(async (storage, namespace) => {
     if(storage.liveChannels !== undefined) {
         // check for each channel if it's already in the storage, if not, show notification
         // and update the badge.
@@ -319,13 +328,10 @@ chrome.storage.onChanged.addListener((storage, namespace) => {
 
             if (isFirstRun) notificationStatus = false;
 
-            chrome.storage.local.get(["settings"], (storage) => {
-                if (storage.settings !== undefined) {
-                    if (storage.settings["notifications"] && notificationStatus) {
-                        showNotification(channelNew);
-                    }
-                }
-            });
+            const settings = await getStorageItem("settings");
+            if (settings["notifications"] && notificationStatus) {
+                showNotification(channelNew);
+            }
         }
 
         updateBadge(storage.liveChannels.newValue.length.toString());
