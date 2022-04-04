@@ -74,7 +74,7 @@ function validateToken() {
                     headers: {"Authorization": `Bearer ${storage.access_token}`}
                 }).then(response => {
                     if (!response.ok) {
-                        throw Error(`failed to verify access token validity (${response.status})`);
+                        throw new Error(`failed to verify access token validity (${response.status})`);
                     }
                     return response.json();
                 }).then(response => {

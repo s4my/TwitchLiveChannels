@@ -23,7 +23,7 @@ async function validateToken() {
                 headers: {"Authorization": `Bearer ${accessToken}`}
             }).then(response => {
                 if (!response.ok) {
-                    throw Error("failed to verify Access Token validity (${response.status})");
+                    throw new Error("failed to verify Access Token validity (${response.status})");
                 }
                 return response.json();
             }).then(response => {
@@ -35,7 +35,7 @@ async function validateToken() {
                         interactive: true
                     }, (redirect_url) => {
                         if (chrome.runtime.lastError || redirect_url.includes("error")) {
-                            throw Error("failed to get Access Token: ("+chrome.runtime.lastError.message+")");
+                            throw new Error("failed to get Access Token: ("+chrome.runtime.lastError.message+")");
                         } else {
                             const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
                             chrome.storage.local.set({"access_token": access_token});
@@ -84,9 +84,9 @@ async function GETRequest(URL) {
             chrome.storage.local.set({"loggedin": false});
             chrome.storage.local.set({"access_token": ""});
             updateBadge("0");
-            throw Error("OAuth token is missing or expired.");
+            throw new Error("OAuth token is missing or expired.");
         }
-        if (!response.ok) throw Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error(error);
@@ -104,7 +104,7 @@ async function updateLiveChannels() {
         const URL = `https://api.twitch.tv/helix/streams/followed?user_id=${settings["userID"]}`;
 
         const response = await GETRequest(URL);
-        if (!response) throw Error("failed to fetch live channels.");
+        if (!response) throw new Error("failed to fetch live channels.");
 
         console.log(response);
 
@@ -157,7 +157,7 @@ async function updateLiveChannels() {
 
             // get profile pictures
             const getProfilePics = await GETRequest(`https://api.twitch.tv/helix/users?id=${user_ids.join("&id=")}`);
-            if (!getProfilePics) throw Error("failed to get profile pictures");
+            if (!getProfilePics) throw new Error("failed to get profile pictures");
 
             for (const channel of liveChannels) {
                 for (const user_info of getProfilePics.data) {
