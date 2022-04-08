@@ -198,7 +198,7 @@ saveButton.addEventListener("click", (e) => {
 });
 
 loginButton.addEventListener("click", async () => {
-    await logIn().then(response => {
+    await logIn().then(() => {
         loginButton.style.display = "none";
         logoutButton.style.display = "block";
         saveButton.disabled = false;

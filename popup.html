@@ -3,6 +3,7 @@
 <!-- See end of file for extended copyright information. -->
 <html>
     <head>
+        <title>Twitch Live Channels - Popup</title>
         <style>
             body {
                 background: #f7f7f8;
@@ -23,7 +24,7 @@
                 font-size: 13px;
                 text-align: center;
                 color: #53535f;
-                padding: 15px 3px 15px 3px;
+                padding: 15px 10px 10px 10px;
             }
             @media (width: 425px) {
                 #nostream {
@@ -45,7 +46,7 @@
                 padding-top: 3px;
                 flex: auto;
             }
-            #updateBtn {
+            #update-btn {
                 background: url('icons/update.svg') no-repeat;
                 width: 24px;
                 height: 24px;
@@ -54,8 +55,9 @@
                 color-scheme: only light;
                 flex: 24px;
                 flex-grow: 0;
+                display: none;
             }
-            #updateBtn:hover {
+            #update-btn:hover {
                 background-image: url('icons/update_hover.svg');
             }
             #dropdown {
@@ -188,6 +190,7 @@
             }
             .dark-theme #nostream {
                 background: #1F1F23;
+                color: #bcbcd1;
             }
             .dark-theme #settings {
                 background: #1F1F23;
@@ -229,7 +232,7 @@
     <body>
         <div id="title">
             <span id="title_txt">LIVE CHANNELS</span>
-            <span id="updateBtn" title="update"></span>
+            <span id="update-btn" title="update"></span>
             <div id="dropdown">
                 <div id="more"></div>
                 <div id="settings">Settings</div>

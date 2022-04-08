@@ -5,7 +5,7 @@
     "use strict";
 
     const settingsBtn = document.getElementById("settings");
-    const updateBtn = document.getElementById("updateBtn");
+    const updateBtn = document.getElementById("update-btn");
     const title = document.getElementById("title_txt");
     const nostreamDiv = document.getElementById("nostream");
     const streamsDiv = document.getElementById("streams");
@@ -27,6 +27,7 @@
         chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             if (!storage.loggedin) {
                 updateBadge("0");
+                updateBtn.style.display = "none";
                 nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
                 nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
                 nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
@@ -35,6 +36,7 @@
                 streamsDiv.innerHTML = "";
                 return;
             } else {
+                updateBtn.style.display = "block";
                 if (!storage.liveChannels || storage.liveChannels.length === 0) {
                     updateBadge("0");
                     nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
@@ -105,13 +107,13 @@
     });
 
     // update the UI if the message "updateUI" is received from background.js
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((request) => {
         if (request.message === "updateUI") updateUI();
     });
 
     // update the UI according to the extension's `status` when fetching an update in the
     // background.
-    chrome.storage.onChanged.addListener((storage, namespace) => {
+    chrome.storage.onChanged.addListener((storage) => {
         if (storage.status !== undefined) {
             if (storage.status.newValue === "updating") {
                 nostreamDiv.textContent = chrome.i18n.getMessage("nostream_updating");
@@ -166,11 +168,13 @@
     }
 
     window.addEventListener("click", (event) => {
-        if (event.target.id === "updateBtn") {
-            chrome.storage.local.get(["status"], (storage) => {
-                if (!storage.status || storage.status === "done") {
-                    // tell background.js to fetch an update.
-                    chrome.runtime.sendMessage({"message": "update"});
+        if (event.target.id === "update-btn") {
+            chrome.storage.local.get(["status", "loggedin"], (storage) => {
+                if (storage.loggedin !== undefined && storage.loggedin) {
+                    if(!storage.status || storage.status === "done") {
+                        // tell background.js to fetch an update.
+                        chrome.runtime.sendMessage({"message": "update"});
+                    }
                 }
             });
         } else if (event.target.id === "settings") {

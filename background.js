@@ -60,7 +60,7 @@ function getStorageItem(item) {
             if (storage[item] !== undefined) resolve(storage[item]);
             else {
                 if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
-                reject(`Error: could not find "${item}" in storage.`);
+                reject(new Error(`could not find "${item}" in storage.`));
             }
         });
     });
@@ -95,8 +95,12 @@ async function GETRequest(URL) {
 }
 
 async function updateLiveChannels() {
-    chrome.storage.local.set({"status": "updating"});
     try {
+        const loginStatus = await getStorageItem("loggedin");
+        if (!loginStatus) throw new Error("failed to update, the user is not logged in.");
+
+        chrome.storage.local.set({"status": "updating"});
+
         // get the list of all live streams
         let liveChannels = [];
         const settings = await getStorageItem("settings");
@@ -176,11 +180,11 @@ async function updateLiveChannels() {
 
         // tell popup.js to update the UI
         chrome.runtime.sendMessage({"message": "updateUI"});
+        chrome.storage.local.set({"status": "done"});
     } catch (error) {
         console.error(error);
+        chrome.storage.local.set({"status": "done"});
     }
-
-    chrome.storage.local.set({"status": "done"});
 }
 
 function updateBadge(liveChannelCounter) {
@@ -286,21 +290,14 @@ async function showNotification(channel) {
     }
 }
 
-(async () => {
-    try {
-        const liveChannels = await getStorageItem("liveChannels");
-        if (liveChannels.length === 0) updateBadge("0");
-    } catch (error) {
-        console.error(error);
-        updateBadge("0");
-    }
-})();
+// set the badge to "0" initially
+updateBadge("0");
 
 // get list of all live channels every 2 min
 updateLiveChannels();
 setInterval(updateLiveChannels, 60*1000*2);
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request) => {
     if (request.message === "update") {
         // update when the updateBtn is clicked on the popup.html
         updateLiveChannels();
@@ -310,7 +307,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
-chrome.storage.onChanged.addListener(async (storage, namespace) => {
+chrome.storage.onChanged.addListener(async (storage) => {
     if(storage.liveChannels !== undefined) {
         // check for each channel if it's already in the storage, if not, show notification
         // and update the badge.
