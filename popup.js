@@ -124,6 +124,12 @@
                 chrome.storage.local.get(["loggedin"], (storage) => {
                     if (storage.loggedin !== undefined) {
                         if (!storage.loggedin) {
+                            updateBadge("0");
+                            updateBtn.style.display = "none";
+                            nostreamDiv.innerHTML = `
+                                This extension requires your public Twitch account information.<br/><br/>
+                                You need to <a href="#" id="login">Log In</a> to give it authorization
+                                to get the list of channels you follow.`;
                             nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
                             nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
                             nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");

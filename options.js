@@ -57,7 +57,7 @@ function logIn() {
 }
 
 function getAuthToken() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         chrome.storage.local.get(["access_token"], (storage) => {
             if (storage.access_token === undefined || !storage.access_token) {
                 resolve(logIn());
