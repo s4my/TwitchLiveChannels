@@ -66,36 +66,6 @@ function getAuthToken() {
     });
 }
 
-function validateToken() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["access_token"], (storage) => {
-            if (storage.access_token !== undefined || storage.access_token) {
-                fetch ("https://id.twitch.tv/oauth2/validate", {
-                    headers: {"Authorization": `Bearer ${storage.access_token}`}
-                }).then(response => {
-                    if (!response.ok) {
-                        throw new Error(`failed to verify access token validity (${response.status})`);
-                    }
-                    return response.json();
-                }).then(response => {
-                    if (response["expires_in"] === 0 && response["client_id"] !== CLIENT_ID) {
-                        chrome.storage.local.set({"loggedin": false});
-                        updateBadge("0");
-                        resolve(false);
-                    } else {
-                        resolve(true);
-                        chrome.storage.local.set({"loggedin": true});
-                    }
-                }).catch(error => {
-                    chrome.storage.local.set({"loggedin": false});
-                    updateBadge("0");
-                    reject(error);
-                });
-            }
-        });
-    });
-}
-
 async function getUserInfo() {
     try {
         const response = await fetch (
@@ -275,10 +245,10 @@ form.addEventListener("change", () => {
     });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    chrome.storage.local.get(["settings", "access_token"], async (storage) => {
-        if (storage.settings !== undefined && storage.access_token !== undefined) {
-            if (storage.settings["username"] && storage.access_token) {
+document.addEventListener("DOMContentLoaded", async () => {
+    await chrome.storage.local.get(["settings", "loggedin"], async (storage) => {
+        if (storage.settings !== undefined && storage.loggedin !== undefined) {
+            if (storage.settings["username"] && storage.loggedin) {
                 loginButton.style.display = "none";
                 logoutButton.style.display = "block";
 
@@ -289,19 +259,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 popupCheckbox.checked = storage.settings["popup"];
                 notificationCheckbox.checked = storage.settings["notifications"];
                 themeSelection.selectedIndex = storage.settings["theme"];
-
-                try {
-                    await validateToken();
-                } catch (error) {
-                    if (error) console.error(error);
-
-                    loginButton.style.display = "block";
-                    logoutButton.style.display = "none";
-                    profilePicture.style.background = "";
-                    popupCheckbox.checked = true;
-                    notificationCheckbox.checked = true;
-                    themeSelection.selectedIndex = 0;
-                }
+            } else {
+                loginButton.style.display = "block";
+                logoutButton.style.display = "none";
+                profilePicture.style.background = "";
+                popupCheckbox.checked = true;
+                notificationCheckbox.checked = true;
+                themeSelection.selectedIndex = 0;
             }
         }
     });
