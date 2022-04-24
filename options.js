@@ -43,7 +43,8 @@ function logIn() {
             interactive: true
         }, (redirect_url) => {
             if (chrome.runtime.lastError || redirect_url.includes("error")) {
-                console.error(`failed to get Access Token (redirect_url: ${redirect_url}`);
+                console.error("failed to get Access Token (redirect_url: " + redirect_url +
+                    ", error: " + chrome.runtime.lastError +")");
                 loadingDiv.style.display = "none";
                 reject();
             } else {

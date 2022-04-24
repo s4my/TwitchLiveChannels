@@ -5,8 +5,11 @@ design/
 screenshots/
 Releases/
 build/
+config/
+node_modules/
 make.sh
 release_notes.txt
 translations.txt
 .eslintrc.json
 package.json
+package-lock.json
