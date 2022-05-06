@@ -191,7 +191,7 @@
             else window.open(chrome.runtime.getURL("options.html"));
         }
 
-        if (event.target.matches(".stream, .streamer, .logo, .logo>img, .viewers>span, .category")) {
+        if (event.target.matches(".stream, .streamer, .logo, .logo>img, .viewers, .viewers>span, .category")) {
             const name = event.target.closest(".stream").getElementsByClassName("streamer")[0]
                 .textContent.toLowerCase();
 
