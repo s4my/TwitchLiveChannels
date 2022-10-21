@@ -4,6 +4,7 @@
 <html>
     <head>
         <title>Twitch Live Channels - Popup</title>
+        <script src="popup.js" defer></script>
         <style>
             body {
                 background: #f7f7f8;
@@ -244,7 +245,16 @@
             to get the list of channels you follow.
         </div>
         <div id="streams"></div>
-        <script src="popup.js"></script>
+        <template id="stream-template">
+            <div class="stream">
+                <div class="logo">
+                    <img src="" width="32px" height="32px" style="border-radius: 50%;"/>
+                </div>
+                <div class="streamer"></div>
+                <div class="category"></div>
+                <div class="viewers"><span class="live-logo"></span><span></span></div>
+            </div>
+        </template>
     </body>
 </html>
 

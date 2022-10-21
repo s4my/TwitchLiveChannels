@@ -1,6 +1,6 @@
 {
   "name": "Twitch Live Channels",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "default_locale": "en",
   "description": "Twitch Live Channels helps you keep track of who is LIVE out of the channels you follow on Twitch (https://www.twitch.tv/).",
   "content_security_policy": "default-src 'self' https://id.twitch.tv/ https://api.twitch.tv https://static-cdn.jtvnw.net; script-src 'self'; img-src 'self' data: blob: https:; object-src 'self'; frame-ancestors 'none'; style-src 'unsafe-inline';",

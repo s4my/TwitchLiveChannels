@@ -52,37 +52,24 @@
             updateBadge(storage.liveChannels.length.toString());
 
             for (const channel of storage.liveChannels) {
-                const name = channel.name;
-                const category = channel.category;
-                const viewers = numberWithCommas(channel.viewers);
-                const title = channel.title;
-                const logo = channel.logo.replace("300x300", "70x70");
+                const streamDiv = document.getElementById("stream-template").content
+                                  .cloneNode(true).firstElementChild;
+                streamDiv.setAttribute("title", channel.title);
 
-                streamsDiv.innerHTML += `
-                    <div class="stream">
-                        <div class="logo">
-                            <img src="" width="32px" height="32px" style="border-radius: 50%;"/>
-                        </div>
-                        <div class="streamer"></div>
-                        <div class="category"></div>
-                        <div class="viewers"><span class="live-logo"></span><span></span></div>
-                    </div>
-                `;
+                const logoDiv = streamDiv.querySelector(".logo");
+                logoDiv.firstElementChild.setAttribute("src", channel.logo.replace("300x300",
+                                                       "70x70"));
 
-                let streamDiv = Array.from(document.getElementsByClassName("stream")).pop();
-                streamDiv.setAttribute("title", title);
+                const streamerDiv = streamDiv.querySelector(".streamer");
+                streamerDiv.textContent = channel.name;
 
-                let logoDiv = Array.from(document.getElementsByClassName("logo")).pop();
-                logoDiv.children[0].setAttribute("src", logo);
+                const categoryDiv = streamDiv.querySelector(".category");
+                categoryDiv.textContent = channel.category;
 
-                let streamerDiv = Array.from(document.getElementsByClassName("streamer")).pop();
-                streamerDiv.textContent = name;
+                const viewersDiv = streamDiv.querySelector(".viewers");
+                viewersDiv.children[1].textContent = numberWithCommas(channel.viewers);
 
-                let categoryDiv = Array.from(document.getElementsByClassName("category")).pop();
-                categoryDiv.textContent = category;
-
-                let viewersDiv = Array.from(document.getElementsByClassName("viewers")).pop();
-                viewersDiv.children[1].textContent = viewers;
+                streamsDiv.append(streamDiv);
             }
         });
     }
