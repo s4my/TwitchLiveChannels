@@ -57,8 +57,7 @@
                 streamDiv.setAttribute("title", channel.title);
 
                 const logoDiv = streamDiv.querySelector(".logo");
-                logoDiv.firstElementChild.setAttribute("src", channel.logo.replace("300x300",
-                                                       "70x70"));
+                logoDiv.firstElementChild.setAttribute("src", channel.logo.replace("300x300", "70x70"));
 
                 const streamerDiv = streamDiv.querySelector(".streamer");
                 streamerDiv.textContent = channel.name;
@@ -170,10 +169,7 @@
                     }
                 }
             });
-        } else if (event.target.id === "settings") {
-            if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
-            else window.open(chrome.runtime.getURL("options.html"));
-        } else if (event.target.id === "login") {
+        } else if (event.target.id === "settings" || event.target.id === "login") {
             if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
             else window.open(chrome.runtime.getURL("options.html"));
         }
