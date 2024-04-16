@@ -67,13 +67,6 @@
         "message": "Dark",
         "description": "the dark theme option in the settings"
     },
-    "settings_save_btn": {
-        "message": "Save",
-        "description": "the save button in the settings"
-    },
-    "settings_save_changes": {
-        "message": "Save the changes"
-    },
     "settings_saved": {
         "message": "Settings saved"
     },

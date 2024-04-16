@@ -50,12 +50,6 @@
     "settings_dark_theme": {
         "message": "Oscuro"
     },
-    "settings_save_btn": {
-        "message": "Guardar"
-    },
-    "settings_save_changes": {
-        "message": "Guardar los cambios"
-    },
     "settings_saved": {
         "message": "Configuración guardados"
     },

@@ -6,7 +6,6 @@ const CLIENT_ID = "yhzcodpomkejkstupuqajj9leqg630";
 const form = document.getElementById("form");
 const loginButton = document.getElementById("login-btn");
 const logoutButton = document.getElementById("logout-btn");
-const saveButton = document.getElementById("save-btn");
 const popupCheckbox = document.getElementById("cb-popup");
 const notificationCheckbox = document.getElementById("cb-notification");
 const themeSelection = document.getElementById("theme-selection");
@@ -18,7 +17,6 @@ let userJustLoggedIn = false;
 
 loginButton.textContent = chrome.i18n.getMessage("settings_login_btn");
 logoutButton.textContent = chrome.i18n.getMessage("settings_logout_btn");
-saveButton.textContent = chrome.i18n.getMessage("settings_save_btn");
 popupCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_popup_option");
 notificationCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_notifications");
 theme.firstChild.textContent = chrome.i18n.getMessage("settings_theme");
@@ -83,7 +81,6 @@ async function getUserInfo() {
         if (response.status === 401) {
             loginButton.style.display = "block";
             logoutButton.style.display = "none";
-            saveButton.disabled = true;
 
             document.getElementById("profile-picture").style.background = "";
 
@@ -121,16 +118,16 @@ function settingsSaved(settings) {
     });
 }
 
-saveButton.addEventListener("click", (e) => {
+function saveSettings() {
     const openInPopup = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
     const selectedTheme = themeSelection.selectedIndex;
 
-    // when saving the settings, if the user just logged in, tell background.js to call
-    // updateLiveChannels(), otherwise there's no need to fetch an update every time
+    // When saving the settings, if the user just logged in, tell background.js to call
+    // updateLiveChannels(); otherwise, there's no need to fetch an update every time
     // a setting is changed.
     chrome.storage.local.get(["settings"], async (storage) => {
-        if (storage.settings !== undefined) {
+        if (storage.settings) {
             const settings = {
                 "username": storage.settings["username"],
                 "userID": storage.settings["userID"],
@@ -163,19 +160,15 @@ saveButton.addEventListener("click", (e) => {
         settingsSaved(settings);
         chrome.runtime.sendMessage({"message": "update"});
     });
-
-    saveButton.disabled = true;
-    e.preventDefault();
-});
+}
 
 loginButton.addEventListener("click", async () => {
     await logIn().then(() => {
         loginButton.style.display = "none";
         logoutButton.style.display = "block";
-        saveButton.disabled = false;
 
         chrome.storage.local.get(["settings"], async (storage) => {
-            if (storage.settings !== undefined) {
+            if (storage.settings) {
                 profilePicture.style.background =
                     `url(${storage.settings["profile_picture"].replace("300x300", "70x70")})`+
                     " center no-repeat";
@@ -189,13 +182,10 @@ loginButton.addEventListener("click", async () => {
         });
         chrome.runtime.sendMessage({"message": "validate_token"});
 
-        saveMsg.textContent = chrome.i18n.getMessage("settings_save_changes");
-        saveMsg.style.visibility = "visible";
-        saveMsg.style.color = "#e97e4f";
-
-        saveButton.disabled = false;
         chrome.storage.local.set({"loggedin": true});
         userJustLoggedIn = true;
+
+        saveSettings();
     }).catch(error => {
         saveMsg.textContent = chrome.i18n.getMessage("settings_error_03");
         saveMsg.style.visibility = "visible";
@@ -226,7 +216,6 @@ logoutButton.addEventListener("click", async () => {
 
     loginButton.style.display = "block";
     logoutButton.style.display = "none";
-    saveButton.disabled = true;
     chrome.storage.local.set({"loggedin": false});
     updateBadge("0");
     userJustLoggedIn = false;
@@ -235,21 +224,21 @@ logoutButton.addEventListener("click", async () => {
 });
 
 form.addEventListener("change", () => {
-    chrome.storage.local.get(["settings"], (storage) => {
-        if (storage.settings !== undefined) {
-            if (popupCheckbox.checked !== storage.settings["popup"] ||
-                notificationCheckbox.checked !== storage.settings["notifications"] ||
-                themeSelection.selectedIndex !== storage.settings["theme"]) {
-                saveButton.disabled = false;
-            } else saveButton.disabled = true;
+    chrome.storage.local.get(["settings", "loggedin"], (storage) => {
+        if (storage.settings && storage.loggedin && storage.settings.username) {
+            if (popupCheckbox.checked !== storage.settings.popup ||
+                notificationCheckbox.checked !== storage.settings.notifications ||
+                themeSelection.selectedIndex !== storage.settings.theme) {
+                saveSettings();
+            }
         }
     });
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
     await chrome.storage.local.get(["settings", "loggedin"], async (storage) => {
-        if (storage.settings !== undefined && storage.loggedin !== undefined) {
-            if (storage.settings["username"] && storage.loggedin) {
+        if (storage.settings && storage.loggedin) {
+            if (storage.settings.username && storage.loggedin) {
                 loginButton.style.display = "none";
                 logoutButton.style.display = "block";
 

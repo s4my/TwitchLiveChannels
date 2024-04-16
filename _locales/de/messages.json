@@ -50,12 +50,6 @@
     "settings_dark_theme": {
         "message": "Dunkel"
     },
-    "settings_save_btn": {
-        "message": "Speichern"
-    },
-    "settings_save_changes": {
-        "message": "Änderungen speichern"
-    },
     "settings_saved": {
         "message": "Einstellungen gespeichert"
     },
