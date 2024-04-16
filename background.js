@@ -75,7 +75,8 @@ async function GETRequest(URL) {
                 method: "GET",
                 headers: {
                     "Client-ID": CLIENT_ID,
-                    "Authorization": `Bearer ${authToken}`
+                    "Authorization": `Bearer ${authToken}`,
+                    "Cache-Control": 'no-cache'
                 }
             }
         );
@@ -105,7 +106,7 @@ async function updateLiveChannels() {
         let liveChannels = [];
         const settings = await getStorageItem("settings");
 
-        const URL = `https://api.twitch.tv/helix/streams/followed?user_id=${settings["userID"]}`;
+        const URL = `https://api.twitch.tv/helix/streams/followed?first=100&user_id=${settings["userID"]}`;
 
         const response = await GETRequest(URL);
         if (!response) throw new Error("failed to fetch live channels.");
