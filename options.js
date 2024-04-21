@@ -235,6 +235,16 @@ form.addEventListener("change", () => {
     });
 });
 
+popupCheckbox.parentElement.addEventListener("click", () => {
+    popupCheckbox.checked = !popupCheckbox.checked;
+    form.dispatchEvent(new Event("change"));
+});
+
+notificationCheckbox.parentElement.addEventListener("click", () => {
+    notificationCheckbox.checked = !notificationCheckbox.checked;
+    form.dispatchEvent(new Event("change"));
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
     await chrome.storage.local.get(["settings", "loggedin"], async (storage) => {
         if (storage.settings && storage.loggedin) {

@@ -9,6 +9,12 @@
                 background: #f7f7f8;
                 font-family: Inter,Roobert,Helvetica Neue,Helvetica,Arial,sans-serif;
             }
+            #cb-popup, div:has(> #cb-popup),
+            #cb-notification, div:has(> #cb-notification) {
+                cursor: pointer;
+                user-select: none;
+                font-size: 14px;
+            }
             #save-msg {
                 display: inline-block;
                 font-size: 14px;
@@ -24,6 +30,7 @@
                 font-weight: bold;
                 border: 1px;
                 border-radius: 4px;
+                user-select: none;
                 cursor: pointer;
             }
             #login-btn:hover {
@@ -43,6 +50,7 @@
                 cursor: pointer;
                 height: 37px;
                 display: none;
+                user-select: none;
             }
             #logout-btn:hover {
                 background-color: #FC6675;
