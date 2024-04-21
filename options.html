@@ -92,16 +92,31 @@
             #theme {
                 margin-left: 5px;
                 font-size: 14px;
+                user-select: none;
             }
             #theme-selection {
-                background-color: rgba(1, 0, 0, 0.1);
+                background-color: #F6F8FA;
+                background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0iIzU4NjA2OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC40MjcgOS40MjdsMy4zOTYgMy4zOTZhLjI1MS4yNTEgMCAwMC4zNTQgMGwzLjM5Ni0zLjM5NkEuMjUuMjUgMCAwMDExLjM5NiA5SDQuNjA0YS4yNS4yNSAwIDAwLS4xNzcuNDI3ek00LjQyMyA2LjQ3TDcuODIgMy4wNzJhLjI1LjI1IDAgMDEuMzU0IDBMMTEuNTcgNi40N2EuMjUuMjUgMCAwMS0uMTc3LjQyN0g0LjZhLjI1LjI1IDAgMDEtLjE3Ny0uNDI3eiIgLz48L3N2Zz4=");
+                background-repeat: no-repeat;
+                background-position: right 4px center;
+                background-size: 16px;
+                height: 32px;
+                padding-right: 24px;
+                padding-left: 5px;
+                -webkit-appearance: none;
+                appearance: none;
+                font-size: 14px;
+                vertical-align: middle;
+                border: 1px solid #D0D7DE;
                 border-radius: 6px;
-                border: 1px solid rgba(1, 0, 0, 0.1);
-                padding: 3px 1px;
-                font-size: 13px;
                 color: #1e0e10;
-                margin-top: 10px;
                 cursor: pointer;
+            }
+            #theme-selection:focus-visible {
+                background-color: #ffffff;
+                border-color: #0550ae;
+                outline: none;
+                box-shadow: inset 0 0 0 1px #0969da;
             }
 
             @media (prefers-color-scheme: dark) {
@@ -123,6 +138,18 @@
                 #loading {
                     filter: invert();
                 }
+                #theme-selection {
+                    background-color: #18181B;
+                    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0iIzZlNzY4MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC40MjcgOS40MjdsMy4zOTYgMy4zOTZhLjI1MS4yNTEgMCAwMC4zNTQgMGwzLjM5Ni0zLjM5NkEuMjUuMjUgMCAwMDExLjM5NiA5SDQuNjA0YS4yNS4yNSAwIDAwLS4xNzcuNDI3ek00LjQyMyA2LjQ3TDcuODIgMy4wNzJhLjI1LjI1IDAgMDEuMzU0IDBMMTEuNTcgNi40N2EuMjUuMjUgMCAwMS0uMTc3LjQyN0g0LjZhLjI1LjI1IDAgMDEtLjE3Ny0uNDI3eiIgLz48L3N2Zz4=");
+                    background-repeat: no-repeat;
+                    background-position: right 4px center;
+                    background-size: 16px;
+                    border-color: #2F353C;
+                    color: #FFFFFF;
+                }
+                #theme-selection:focus {
+                    background-color: #18181B;
+                }
             }
         </style>
     </head>
@@ -136,6 +163,7 @@
             <div style="margin: 11px 0 10px 0px; font-size: 13px;">
                 <div><input id="cb-popup" type="checkbox" checked>Open streams in a popup window</div>
                 <div><input id="cb-notification" type="checkbox" checked>Show notifications</div>
+                <br>
                 <span id="theme">
                     Theme:
                     <select id="theme-selection">
