@@ -5,9 +5,71 @@
     <head>
         <title>Twitch Live Channels - Settings</title>
         <style>
+            :root {
+                --background-color: #f7f7f8;
+                --background-dark-color: #18181B;
+                --checkbox-outer-circel-size: 16px;
+                --checkbox-inner-circel-size: 8px;
+                --checkbox-color: #772CE8;
+                --checkbox-dark-color: #A970FF;
+            }
             body {
-                background: #f7f7f8;
+                background: var(--background-color);
                 font-family: Inter,Roobert,Helvetica Neue,Helvetica,Arial,sans-serif;
+                margin-top: 10px;
+                color: var(--background-dark-color);
+            }
+            input[type='checkbox'] {
+                width: var(--checkbox-outer-circel-size);
+                height: var(--checkbox-outer-circel-size);
+                border: none;
+                clip: rect(0px, 0px, 0px, 0px);
+                padding: 0px;
+                overflow: hidden;
+                position: absolute;
+            }
+            input[type='checkbox'] + .twitch-checkbox::before {
+                background-color: var(--background-color);
+                border-color: var(--checkbox-color);
+            }
+            input[type='checkbox']:checked + .twitch-checkbox::after {
+                background-color: var(--checkbox-color);
+            }
+            input[type='checkbox']:not(:checked) + .twitch-checkbox::after {
+                background-color: var(--background-color);
+            }
+            .twitch-checkbox {
+                border-radius: 2px;
+                display: block;
+                position: relative;
+                padding: 5px 0px 0px 20px;
+                margin-left: 5px;
+                margin-top: 5px;
+                cursor: pointer;
+            }
+            .twitch-checkbox::before /* outer cercle */ {
+                border: 2px solid rgba(50, 50, 57, 0.95);
+                position: absolute;
+                left: 0px;
+                box-sizing: border-box;
+                content: "";
+                top: 50%;
+                width: var(--checkbox-outer-circel-size);
+                height: var(--checkbox-outer-circel-size);
+                margin-top: -7px;
+                border-radius: 50%;
+            }
+            .twitch-checkbox::after /* inner cercle */ {
+                display: block;
+                content: "";
+                position: absolute;
+                left: 4px;
+                top: 50%;
+                width: var(--checkbox-inner-circel-size);
+                height: var(--checkbox-inner-circel-size);
+                transform: translate3d(0px, -50%, 0px);
+                border-radius: 50%;
+                margin-top: 1px;
             }
             #cb-popup, div:has(> #cb-popup),
             #cb-notification, div:has(> #cb-notification) {
@@ -73,22 +135,6 @@
                 border: none;
                 display: none;
             }
-            #username {
-                background-color: rgba(1, 0, 0, 0.1);
-                border-radius: 6px;
-                border: 1px solid rgba(1, 0, 0, 0.1);
-                padding: 6px 8px;
-                font-size: 15px;
-                color: #404040;
-                width: 230px;
-            }
-            #username:invalid {
-                border: 1px solid #e9716f;
-            }
-            #username-text {
-                font-size: 16px;
-                display: inline;
-            }
             #theme {
                 margin-left: 5px;
                 font-size: 14px;
@@ -121,25 +167,31 @@
 
             @media (prefers-color-scheme: dark) {
                 body {
-                    background: #18181B;
-                    color: #efeff1;
+                    background: var(--background-dark-color);
+                    color: var(--background-color);
+                }
+
+                input[type='checkbox'] + .twitch-checkbox.twitch-checkbox::before {
+                    background-color: var(--background-dark-color);
+                    border-color: var(--checkbox-dark-color);
+                }
+
+                input[type='checkbox']:not(:checked) + .twitch-checkbox::after {
+                    background-color: var(--background-dark-color);
+                }
+
+                input[type='checkbox']:checked + .twitch-checkbox::after {
+                    background-color: var(--checkbox-dark-color);
                 }
                 #theme-selection {
                     background: #464649;
                     color: #efeff1;
-                }
-                #username {
-                    background: #464649;
-                    color: #efeff1;
-                }
-                #username:active {
-                    border-color: #a970ff;
                 }
                 #loading {
                     filter: invert();
                 }
                 #theme-selection {
-                    background-color: #18181B;
+                    background-color: var(--background-dark-color);
                     background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0iIzZlNzY4MSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC40MjcgOS40MjdsMy4zOTYgMy4zOTZhLjI1MS4yNTEgMCAwMC4zNTQgMGwzLjM5Ni0zLjM5NkEuMjUuMjUgMCAwMDExLjM5NiA5SDQuNjA0YS4yNS4yNSAwIDAwLS4xNzcuNDI3ek00LjQyMyA2LjQ3TDcuODIgMy4wNzJhLjI1LjI1IDAgMDEuMzU0IDBMMTEuNTcgNi40N2EuMjUuMjUgMCAwMS0uMTc3LjQyN0g0LjZhLjI1LjI1IDAgMDEtLjE3Ny0uNDI3eiIgLz48L3N2Zz4=");
                     background-repeat: no-repeat;
                     background-position: right 4px center;
@@ -148,7 +200,7 @@
                     color: #FFFFFF;
                 }
                 #theme-selection:focus {
-                    background-color: #18181B;
+                    background-color: var(--background-dark-color);
                 }
             }
         </style>
@@ -160,19 +212,24 @@
             <button id="logout-btn" title="Log Out">Log Out</button>
         </div>
         <form id="form">
-            <div style="margin: 11px 0 10px 0px; font-size: 13px;">
-                <div><input id="cb-popup" type="checkbox" checked>Open streams in a popup window</div>
-                <div><input id="cb-notification" type="checkbox" checked>Show notifications</div>
-                <br>
-                <span id="theme">
-                    Theme:
-                    <select id="theme-selection">
-                        <option value="Auto">Auto</option>
-                        <option value="Light">Light</option>
-                        <option value="Dark">Dark</option>
-                    </select>
-                </span>
+            <div>
+                <input id="cb-popup" type="checkbox" checked>
+                <label class="twitch-checkbox">Open streams in a popup window</label>
             </div>
+
+            <div>
+                <input id="cb-notification" type="checkbox" checked>
+                <label class="twitch-checkbox">Show notifications</label>
+            </div>
+            <br>
+            <span id="theme">
+                Theme:
+                <select id="theme-selection">
+                    <option value="Auto">Auto</option>
+                    <option value="Light">Light</option>
+                    <option value="Dark">Dark</option>
+                </select>
+            </span>
             <span style="display: flex; align-items: center;">
                 <div id="loading"></div>
                 <p id="save-msg">Settings Saved.</p>

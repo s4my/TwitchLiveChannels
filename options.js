@@ -7,7 +7,9 @@ const form = document.getElementById("form");
 const loginButton = document.getElementById("login-btn");
 const logoutButton = document.getElementById("logout-btn");
 const popupCheckbox = document.getElementById("cb-popup");
+const popupCheckboxLabel = document.querySelector("#cb-popup + label");
 const notificationCheckbox = document.getElementById("cb-notification");
+const notificationCheckboxLabel = document.querySelector("#cb-notification + label");
 const themeSelection = document.getElementById("theme-selection");
 const theme = document.getElementById("theme");
 const profilePicture = document.getElementById("profile-picture");
@@ -17,8 +19,8 @@ let userJustLoggedIn = false;
 
 loginButton.textContent = chrome.i18n.getMessage("settings_login_btn");
 logoutButton.textContent = chrome.i18n.getMessage("settings_logout_btn");
-popupCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_popup_option");
-notificationCheckbox.parentElement.lastChild.textContent = chrome.i18n.getMessage("settings_notifications");
+popupCheckboxLabel.textContent = chrome.i18n.getMessage("settings_popup_option");
+notificationCheckboxLabel.textContent = chrome.i18n.getMessage("settings_notifications");
 theme.firstChild.textContent = chrome.i18n.getMessage("settings_theme");
 themeSelection.children[0].textContent = chrome.i18n.getMessage("settings_auto_theme");
 themeSelection.children[1].textContent = chrome.i18n.getMessage("settings_light_theme");
@@ -235,12 +237,12 @@ form.addEventListener("change", () => {
     });
 });
 
-popupCheckbox.parentElement.addEventListener("click", () => {
+popupCheckboxLabel.parentElement.addEventListener("click", () => {
     popupCheckbox.checked = !popupCheckbox.checked;
     form.dispatchEvent(new Event("change"));
 });
 
-notificationCheckbox.parentElement.addEventListener("click", () => {
+notificationCheckboxLabel.parentElement.addEventListener("click", () => {
     notificationCheckbox.checked = !notificationCheckbox.checked;
     form.dispatchEvent(new Event("change"));
 });
