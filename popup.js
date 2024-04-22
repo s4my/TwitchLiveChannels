@@ -26,7 +26,7 @@
 
         chrome.storage.local.get(["liveChannels", "loggedin"], (storage) => {
             if (!storage.loggedin) {
-                updateBadge("0");
+                updateBadge("");
                 updateBtn.style.display = "none";
                 nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
                 nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");

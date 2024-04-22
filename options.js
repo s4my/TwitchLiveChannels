@@ -227,7 +227,7 @@ logoutButton.addEventListener("click", async () => {
     loginButton.style.display = "block";
     logoutButton.style.display = "none";
     chrome.storage.local.set({"loggedin": false});
-    updateBadge("0");
+    updateBadge("");
     userJustLoggedIn = false;
     themeSelection.disabled = true;
 

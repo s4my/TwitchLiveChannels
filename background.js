@@ -46,7 +46,7 @@ async function validateToken() {
             }).catch(error => {
                 console.error(error);
                 chrome.storage.local.set({"loggedin": false});
-                updateBadge("0");
+                updateBadge("");
             });
         }
     } catch (error) {
@@ -84,7 +84,7 @@ async function GETRequest(URL) {
         if (response.status === 401) {
             chrome.storage.local.set({"loggedin": false});
             chrome.storage.local.set({"access_token": ""});
-            updateBadge("0");
+            updateBadge("");
             throw new Error("OAuth token is missing or expired.");
         }
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -291,8 +291,7 @@ async function showNotification(channel) {
     }
 }
 
-// set the badge to "0" initially
-updateBadge("0");
+updateBadge("");
 
 // get list of all live channels every 2 min
 updateLiveChannels();
