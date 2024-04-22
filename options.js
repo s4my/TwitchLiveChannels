@@ -104,7 +104,6 @@ async function getUserInfo() {
         }
 
         const jsonResponse = await response.json();
-
         if (jsonResponse["data"].length === 0) return null;
 
         return jsonResponse["data"][0];
