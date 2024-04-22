@@ -31,7 +31,7 @@ In the settings you can:
 - Enable/Disable notifications
 - Switch themes (Auto, Light, Dark)
 <p align="center">
-   <img src="https://user-images.githubusercontent.com/16526701/157367428-340ce8e0-9034-44d8-8783-dbd48b22ffd2.png" alt="settings"\>
+   <img src="https://github.com/s4my/TwitchLiveChannels/assets/16526701/58ea3bf5-4b00-4d50-a4fb-fedc61dc8a56" alt="settings"\>
 </p>
 
 ## 🚩 Problems or issues?
