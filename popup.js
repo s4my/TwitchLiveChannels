@@ -97,34 +97,29 @@
         if (request.message === "updateUI") updateUI();
     });
 
-    // update the UI according to the extension's `status` when fetching an update in the
-    // background.
+    // update the UI according to the extension's `status` when fetching an update in the background.
     chrome.storage.onChanged.addListener((storage) => {
-        if (storage.status !== undefined) {
+        if (storage.status) {
             if (storage.status.newValue === "updating") {
                 nostreamDiv.textContent = chrome.i18n.getMessage("nostream_updating");
                 updateBtn.style.backgroundImage = "url('/icons/loading.gif')";
                 updateBtn.style.cursor = "unset";
                 updateBtn.style.pointerEvents = "none";
             } else {
-                chrome.storage.local.get(["loggedin"], (storage) => {
-                    if (storage.loggedin !== undefined) {
-                        if (!storage.loggedin) {
-                            updateBadge("0");
-                            updateBtn.style.display = "none";
-                            nostreamDiv.innerHTML = `
-                                This extension requires your public Twitch account information.<br/><br/>
-                                You need to <a href="#" id="login">Log In</a> to give it authorization
-                                to get the list of channels you follow.`;
-                            nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
-                            nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
-                            nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
-                            nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
-                        } else {
-                            nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
-                        }
-                    }
-                });
+                if (storage.loggedin) {
+                    nostreamDiv.textContent = chrome.i18n.getMessage("nostream_loggedin");
+                } else {
+                    updateBadge("");
+                    updateBtn.style.display = "none";
+                    nostreamDiv.innerHTML = `
+                        This extension requires your public Twitch account information.<br/><br/>
+                        You need to <a href="#" id="login">Log In</a> to give it authorization
+                        to get the list of channels you follow.`;
+                    nostreamDiv.childNodes[0].textContent = chrome.i18n.getMessage("nostream_loggedout_01");
+                    nostreamDiv.childNodes[3].textContent = chrome.i18n.getMessage("nostream_loggedout_02");
+                    nostreamDiv.childNodes[4].textContent = chrome.i18n.getMessage("nostream_loggedout_03");
+                    nostreamDiv.childNodes[5].textContent = chrome.i18n.getMessage("nostream_loggedout_04");
+                }
 
                 updateBtn.style.backgroundImage = "";
                 updateBtn.style.cursor = "pointer";

@@ -115,7 +115,7 @@ async function getUserInfo() {
 
 function settingsSaved(settings) {
     chrome.storage.local.set({"settings": settings}, () => {
-        displayMessage(chrome.i18n.getMessage("settings_saved"), false, true)
+        displayMessage(chrome.i18n.getMessage("settings_saved"), false, true);
     });
 }
 
