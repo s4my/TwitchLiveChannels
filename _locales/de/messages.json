@@ -65,6 +65,9 @@
     "settings_error_04": {
         "message": "Fehler: Beim Versuch, sich abzumelden, ist etwas schief gelaufen"
     },
+    "settings_error_05": {
+        "message": "Fehler: Bitte melden Sie sich an, um Einstellungen zu ändern"
+    },
     "chat_tooltip": {
         "message": "Chat"
     }

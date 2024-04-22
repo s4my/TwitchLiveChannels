@@ -65,6 +65,9 @@
     "settings_error_04": {
         "message": "Erreur: une erreur s'est produite lors de la tentative de déconnexion"
     },
+    "settings_error_05": {
+        "message": "Erreur: veuillez vous connecter pour modifier les paramètres."
+    },
     "chat_tooltip": {
         "message": "Chat"
     }

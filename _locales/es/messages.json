@@ -65,6 +65,9 @@
     "settings_error_04": {
         "message": "Error: algo fue mal mientras probando a registro fuera"
     },
+    "settings_error_05": {
+        "message": "Error: por favor inicie sesión para modificar la configuración"
+    },
     "chat_tooltip": {
         "message": "Chat"
     }

@@ -31,6 +31,14 @@ function updateBadge(counter) {
     chrome.browserAction.setBadgeText({"text": counter});
 }
 
+function displayMessage(message, error, timeout) {
+    saveMsg.textContent = message;
+    saveMsg.style.visibility = "visible";
+    saveMsg.style.color = error ? "#b33030" : "#5ece37";
+
+    if (timeout) setTimeout(() => saveMsg.style.visibility = "hidden", 1000);
+}
+
 function logIn() {
     const loadingDiv = document.getElementById("loading");
     loadingDiv.style.display = "block";
@@ -86,17 +94,12 @@ async function getUserInfo() {
 
             document.getElementById("profile-picture").style.background = "";
 
-            saveMsg.textContent = chrome.i18n.getMessage("settings_error_01");
-            saveMsg.style.visibility = "visible";
-            saveMsg.style.color = "#b33030";
-
+            displayMessage(chrome.i18n.getMessage("settings_error_01"), true, false);
             return null;
         }
 
         if (!response.ok) {
-            saveMsg.textContent = `${chrome.i18n.getMessage("settings_error_02")} (status code:${response.status})`;
-            saveMsg.style.visibility = "visible";
-            saveMsg.style.color = "#b33030";
+            displayMessage(`${chrome.i18n.getMessage("settings_error_02")} (status code:${response.status})`, true, false);
             return null;
         }
 
@@ -113,10 +116,7 @@ async function getUserInfo() {
 
 function settingsSaved(settings) {
     chrome.storage.local.set({"settings": settings}, () => {
-        saveMsg.textContent = chrome.i18n.getMessage("settings_saved");
-        saveMsg.style.visibility = "visible";
-        saveMsg.style.color = "#5ece37";
-        setTimeout(() => saveMsg.style.visibility = "hidden", 1000);
+        displayMessage(chrome.i18n.getMessage("settings_saved"), false, true)
     });
 }
 
@@ -164,6 +164,17 @@ function saveSettings() {
     });
 }
 
+function toggleCheckbox(checkbox) {
+    chrome.storage.local.get("loggedin", (storage) => {
+        if (storage.loggedin) {
+            checkbox.checked = !checkbox.checked;
+            form.dispatchEvent(new Event("change"));
+        } else {
+            displayMessage(chrome.i18n.getMessage("settings_error_05"), true, true);
+        }
+    });
+}
+
 loginButton.addEventListener("click", async () => {
     await logIn().then(() => {
         loginButton.style.display = "none";
@@ -182,16 +193,16 @@ loginButton.addEventListener("click", async () => {
                     " center no-repeat";
             }
         });
+
         chrome.runtime.sendMessage({"message": "validate_token"});
 
         chrome.storage.local.set({"loggedin": true});
         userJustLoggedIn = true;
+        themeSelection.disabled = false;
 
         saveSettings();
     }).catch(error => {
-        saveMsg.textContent = chrome.i18n.getMessage("settings_error_03");
-        saveMsg.style.visibility = "visible";
-        saveMsg.style.color = "#b33030";
+        displayMessage(chrome.i18n.getMessage("settings_error_03"), true, false);
         console.error(error);
     });
 });
@@ -210,9 +221,7 @@ logoutButton.addEventListener("click", async () => {
     );
 
     if (!response.ok) {
-        saveMsg.textContent = `${chrome.i18n.getMessage("settings_error_04")} (status code:${response.status})`;
-        saveMsg.style.visibility = "visible";
-        saveMsg.style.color = "#b33030";
+        displayMessage(`${chrome.i18n.getMessage("settings_error_04")} (status code:${response.status})`, true, false);
         return;
     }
 
@@ -221,6 +230,7 @@ logoutButton.addEventListener("click", async () => {
     chrome.storage.local.set({"loggedin": false});
     updateBadge("0");
     userJustLoggedIn = false;
+    themeSelection.disabled = true;
 
     document.getElementById("profile-picture").style.background = "";
 });
@@ -237,18 +247,11 @@ form.addEventListener("change", () => {
     });
 });
 
-popupCheckboxLabel.parentElement.addEventListener("click", () => {
-    popupCheckbox.checked = !popupCheckbox.checked;
-    form.dispatchEvent(new Event("change"));
-});
+popupCheckboxLabel.parentElement.addEventListener("click", () => toggleCheckbox(popupCheckbox));
+notificationCheckboxLabel.parentElement.addEventListener("click", () => toggleCheckbox(notificationCheckbox));
 
-notificationCheckboxLabel.parentElement.addEventListener("click", () => {
-    notificationCheckbox.checked = !notificationCheckbox.checked;
-    form.dispatchEvent(new Event("change"));
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-    await chrome.storage.local.get(["settings", "loggedin"], async (storage) => {
+document.addEventListener("DOMContentLoaded", () => {
+    chrome.storage.local.get(["settings", "loggedin"], (storage) => {
         if (storage.settings && storage.loggedin) {
             if (storage.settings.username && storage.loggedin) {
                 loginButton.style.display = "none";
@@ -261,6 +264,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 popupCheckbox.checked = storage.settings["popup"];
                 notificationCheckbox.checked = storage.settings["notifications"];
                 themeSelection.selectedIndex = storage.settings["theme"];
+                themeSelection.disabled = false;
             } else {
                 loginButton.style.display = "block";
                 logoutButton.style.display = "none";
@@ -268,6 +272,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 popupCheckbox.checked = true;
                 notificationCheckbox.checked = true;
                 themeSelection.selectedIndex = 0;
+                themeSelection.disabled = true;
             }
         }
     });

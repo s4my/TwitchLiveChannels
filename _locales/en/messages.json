@@ -82,6 +82,9 @@
     "settings_error_04": {
         "message": "Error: something went wrong while trying to log out"
     },
+    "settings_error_05": {
+        "message": "Error: please log in to modify settings"
+    },
     "chat_tooltip": {
         "message": "Chat",
         "description": "the tooltip of the chat button in the video player"
