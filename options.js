@@ -113,12 +113,6 @@ async function getUserInfo() {
     }
 }
 
-function settingsSaved(settings) {
-    chrome.storage.local.set({"settings": settings}, () => {
-        displayMessage(chrome.i18n.getMessage("settings_saved"), false, true);
-    });
-}
-
 function saveSettings() {
     const openInPopup = popupCheckbox.checked;
     const showNotifications = notificationCheckbox.checked;
@@ -138,28 +132,33 @@ function saveSettings() {
                 "theme": selectedTheme
             };
 
-            settingsSaved(settings);
+            chrome.storage.local.set({"settings": settings}, () => {
+                displayMessage(chrome.i18n.getMessage("settings_saved"), false, true);
+            });
+
             if (userJustLoggedIn) {
                 chrome.runtime.sendMessage({"message": "update"});
                 userJustLoggedIn = false;
             }
-            return;
+        } else {
+            const userInfo = await getUserInfo();
+            if (!userInfo) return;
+
+            const settings = {
+                "username": userInfo.display_name,
+                "userID": userInfo.id,
+                "profile_picture": userInfo.profile_image_url,
+                "popup": openInPopup,
+                "notifications": showNotifications,
+                "theme": selectedTheme
+            };
+
+            chrome.storage.local.set({"settings": settings}, () => {
+                displayMessage(chrome.i18n.getMessage("settings_saved"), false, true);
+            });
+
+            chrome.runtime.sendMessage({"message": "update"});
         }
-
-        const userInfo = await getUserInfo();
-        if (!userInfo) return;
-
-        const settings = {
-            "username": userInfo.display_name,
-            "userID": userInfo.id,
-            "profile_picture": userInfo.profile_image_url,
-            "popup": openInPopup,
-            "notifications": showNotifications,
-            "theme": selectedTheme
-        };
-
-        settingsSaved(settings);
-        chrome.runtime.sendMessage({"message": "update"});
     });
 }
 
