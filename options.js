@@ -197,6 +197,9 @@ loginButton.addEventListener("click", async () => {
         chrome.storage.local.set({"loggedin": true});
         userJustLoggedIn = true;
         themeSelection.disabled = false;
+        popupCheckbox.disabled = false;
+        notificationCheckbox.disabled = false;
+        theme.classList.remove("theme-disabled");
 
         saveSettings();
     }).catch(error => {
@@ -229,6 +232,9 @@ logoutButton.addEventListener("click", async () => {
     updateBadge("");
     userJustLoggedIn = false;
     themeSelection.disabled = true;
+    popupCheckbox.disabled = true;
+    notificationCheckbox.disabled = true;
+    theme.classList.add("theme-disabled");
 
     document.getElementById("profile-picture").style.background = "";
 });
@@ -263,6 +269,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 notificationCheckbox.checked = storage.settings["notifications"];
                 themeSelection.selectedIndex = storage.settings["theme"];
                 themeSelection.disabled = false;
+                popupCheckbox.disabled = false;
+                notificationCheckbox.disabled = false;
+                theme.classList.remove("theme-disabled");
             } else {
                 loginButton.style.display = "block";
                 logoutButton.style.display = "none";
@@ -271,6 +280,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 notificationCheckbox.checked = true;
                 themeSelection.selectedIndex = 0;
                 themeSelection.disabled = true;
+                popupCheckbox.disabled = true;
+                notificationCheckbox.disabled = true;
+                theme.classList.add("theme-disabled");
             }
         }
     });
