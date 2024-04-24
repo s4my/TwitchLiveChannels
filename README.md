@@ -20,8 +20,6 @@ __Twitch Live Channels__ is a browser extension that will help you keep track of
 
 Once installed, you'll be prompted with the settings page, where you'll need to Log In with your Twitch account to authorize __Twitch Live Channels__ to get the list of channels you follow. Here you can configure the extension to send you 🔔 _Notifications_ whenever a channel you follow goes Live.
 
-After you have done choosing the right settings for you, hit the __SAVE__ button and you’re done.
-
 A small icon will appear on the top right of your browser's window, if you click on it, you can see what channels are currently Live, clicking on any channel will cause it to open the stream in `popup window` or in a `new tab` depending on what you chose in the settings.
 
 ## ⚙️  Settings
