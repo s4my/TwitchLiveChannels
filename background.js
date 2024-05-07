@@ -123,9 +123,9 @@ async function updateLiveChannels() {
 
                 if (!user_id || !category) continue;
 
-                //sometimes the `user_name` is empty for fault of the twitch API
-                //(https://github.com/twitchdev/issues/issues/500) which causes false positive
-                //notifications.
+                // sometimes the `user_name` is empty for fault of the twitch API
+                // (https://github.com/twitchdev/issues/issues/500) which causes false
+                // positive notifications.
 
                 let user_name = stream.user_name;
                 if (user_name === "") {
