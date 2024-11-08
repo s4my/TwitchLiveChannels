@@ -12,6 +12,7 @@
     justify-content: center;
     align-items: center;
 }
+
 #chat-btn:hover {
     background: #ffffff32;
 }
@@ -21,10 +22,10 @@
 }
 
 #chat-tooltip {
-    background-color: #040109;
-    padding: 3px 6px;
+    background-color: #FFFFFF;
+    color: #0e0e10;
+    padding: 5px 4px;
     border-radius: 0.4rem;
-    color: #FFFFFF;
     position: absolute;
     font-size: 1.3rem;
     font-weight: 600;
@@ -34,8 +35,19 @@
     pointer-events: none;
     user-select: none;
     white-space: nowrap;
-    margin-bottom: 63px;
+    margin-bottom: 75px;
     display: none;
+}
+
+#chat-tooltip::after {
+    border-color: #FFFFFF;
+    content: "";
+    display: inline-block;
+    border-style: solid;
+    position: absolute;
+    bottom: -3px;
+    left: calc(100% - 16px);
+    transform: rotate(45deg);
 }
 
 /*
