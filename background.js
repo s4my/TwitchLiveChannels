@@ -195,8 +195,8 @@ function updateBadge(liveChannelCounter) {
 
 async function showNotification(channel) {
     let notificationID = null;
-    const name = channel.name;
-    const category = channel.category;
+    const channelName = channel.name;
+    const channelTitle = channel.title;
 
     const logo = await fetch(channel.logo.replace("300x300", "70x70"))
         .then(response => response.blob())
@@ -229,6 +229,7 @@ async function showNotification(channel) {
         });
 
     let notificationOptions = null;
+    let notificationTitle = `${channelName} ${chrome.i18n.getMessage("notification_title")}`
 
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         notificationOptions = {
@@ -237,19 +238,18 @@ async function showNotification(channel) {
             type: "list",
             message: "",
             items: [{
-                title : name,
-                message : ` is Live streaming ${category}`
+                title : notificationTitle,
+                message : channelTitle
             }],
             iconUrl: logo,
             buttons: [{title : "Open"}]
         };
     } else if (navigator.userAgent.indexOf("Firefox") > -1) {
         notificationOptions = {
-            title: navigator.userAgent.indexOf("Win") > -1 ? `${name} just went LIVE`:"Twitch Live Channels",
+            title: notificationTitle,
             priority: 0,
             type: "basic",
-            message: navigator.userAgent.indexOf("Win") > -1 ?
-                `Streaming ${category}`:`<b>${name}</b> is Live streaming ${category}`,
+            message: channelTitle,
             iconUrl: logo
         };
     }
@@ -268,7 +268,7 @@ async function showNotification(channel) {
                             const popupHeight = 650;
 
                             chrome.windows.create({
-                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(channelName) +
                                      "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                 width: popupWidth,
                                 height: popupHeight,
@@ -278,7 +278,7 @@ async function showNotification(channel) {
                                 type: "popup"
                             });
                         } else {
-                            chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
+                            chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(channelName)});
                         }
 
                         chrome.notifications.clear(notificationID);

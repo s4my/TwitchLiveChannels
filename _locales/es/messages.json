@@ -70,5 +70,8 @@
     },
     "chat_tooltip": {
         "message": "Chat"
+    },
+    "notification_title": {
+        "message": "está en vivo!"
     }
 }

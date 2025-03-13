@@ -88,5 +88,9 @@
     "chat_tooltip": {
         "message": "Chat",
         "description": "the tooltip of the chat button in the video player"
+    },
+    "notification_title": {
+        "message": "is live!",
+        "description": "the title of the notifications"
     }
 }
