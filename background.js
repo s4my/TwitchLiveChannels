@@ -18,40 +18,72 @@ async function validateToken() {
     try {
         const accessToken = await getStorageItem("access_token");
 
-        if (accessToken) {
-            fetch ("https://id.twitch.tv/oauth2/validate", {
-                headers: {"Authorization": `Bearer ${accessToken}`}
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error("failed to verify Access Token validity (${response.status})");
-                }
-                return response.json();
-            }).then(response => {
-                if (response["expires_in"] === 0 && response["client_id"] !== CLIENT_ID) {
-                    chrome.identity.launchWebAuthFlow({
-                        url: `https://id.twitch.tv/oauth2/authorize?client_id=${CLIENT_ID}`+
-                             `&redirect_uri=${chrome.identity.getRedirectURL()}&response_type=token`+
-                             "&scope=user:read:follows&force_verify=true",
-                        interactive: true
-                    }, (redirect_url) => {
-                        if (chrome.runtime.lastError || redirect_url.includes("error")) {
-                            throw new Error("failed to get Access Token: ("+chrome.runtime.lastError.message+")");
-                        } else {
-                            const access_token = redirect_url.split("#").pop().split("&")[0].split("=")[1];
-                            chrome.storage.local.set({"access_token": access_token});
-                            chrome.storage.local.set({"loggedin": true});
-                        }
-                    });
-                }
-            }).catch(error => {
-                console.error(error);
-                chrome.storage.local.set({"loggedin": false});
-                updateBadge("");
-            });
+        if (!accessToken) {
+            console.log("No token found, skipping validation.");
+            return;
         }
+
+        const response = await fetch("https://id.twitch.tv/oauth2/validate", {
+            headers: { "Authorization": `Bearer ${accessToken}` }
+        });
+
+        if (response.status === 401) {
+            console.warn("Access token expired or revoked. Re-authenticating...");
+            await refreshUserSession();
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Twitch API error: ${response.status}`);
+        }
+
+        // If token expires in less than an hour, refresh it proactively
+        const data = await response.json();
+
+        if (data.expires_in < 3600 || data.client_id !== CLIENT_ID) {
+            await refreshUserSession();
+        } else {
+            chrome.storage.local.set({ "loggedin": true });
+        }
+
     } catch (error) {
-        console.error(error);
+        console.error("Validation process failed:", error);
+        chrome.storage.local.set({ "loggedin": false });
+        updateBadge("");
     }
+}
+
+async function refreshUserSession() {
+    const authUrl = `https://id.twitch.tv/oauth2/authorize` +
+                    `?client_id=${CLIENT_ID}` +
+                    `&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}` +
+                    `&response_type=token` +
+                    `&scope=user:read:follows` +
+                    `&force_verify=true`;
+
+    return new Promise((resolve, reject) => {
+        chrome.identity.launchWebAuthFlow({
+            url: authUrl,
+            interactive: true
+        }, (redirectUrl) => {
+            if (chrome.runtime.lastError || !redirectUrl || redirectUrl.includes("error")) {
+                const errorMsg = chrome.runtime.lastError?.message || "User cancelled or flow failed";
+                reject(new Error(errorMsg));
+                return;
+            }
+
+            // Extract token from URL hash
+            const url = new URL(redirectUrl.replace("#", "?"));
+            const newToken = url.searchParams.get("access_token");
+
+            if (newToken) {
+                chrome.storage.local.set({ "access_token": newToken, "loggedin": true });
+                resolve(newToken);
+            } else {
+                reject(new Error("Token missing in redirect URL"));
+            }
+        });
+    });
 }
 
 function getStorageItem(item) {
