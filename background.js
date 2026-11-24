@@ -326,21 +326,22 @@ async function showNotification(channel) {
             });
         } else if (navigator.userAgent.indexOf("Firefox") > -1) {
             browser.notifications.onClicked.addListener((ID) => {
-                if (settings["popup"]) {
-                    if (ID === notificationID) {
-                        browser.windows.create({
-                            url: "https://player.twitch.tv/?channel=" + encodeURIComponent(channelUserName) +
-                            "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
-                            focused: true,
-                            state: "maximized",
-                            type: "popup"
-                        });
+                if (ID === notificationID) {
+                    if (settings["popup"]) {
+                            browser.windows.create({
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(channelUserName) +
+                                "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                                focused: true,
+                                state: "maximized",
+                                type: "popup"
+                            });
 
-                        browser.notifications.clear(ID);
+                    } else {
+                        browser.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(channelUserName)});
                     }
-                } else {
-                    browser.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(channelUserName)});
                 }
+
+                browser.notifications.clear(ID);
             });
         }
     } catch (error) {
