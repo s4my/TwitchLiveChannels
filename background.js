@@ -155,32 +155,38 @@ async function updateLiveChannels() {
 
                 if (!user_id || !category) continue;
 
-                // sometimes the `user_name` is empty for fault of the twitch API
+                let display_name = stream.user_name;
+
+                // sometimes the `stream.user_name` is empty for fault of the twitch API
                 // (https://github.com/twitchdev/issues/issues/500) which causes false
                 // positive notifications.
 
-                let user_name = stream.user_name;
-                if (user_name === "") {
+                if (display_name === "") {
                     try {
                         const liveChannels = await getStorageItem("liveChannels");
                         for (const channel of liveChannels) {
                             if (channel.id === user_id) {
-                                user_name = channel.name;
+                                display_name = channel.display_name;
                                 break;
                             }
                         }
                     } catch (error) {
-                        continue;
+                        if (stream.user_login === "") {
+                            continue;
+                        }
+
+                        display_name = stream.user_login;
                     }
                 }
 
-                if (user_name === "") continue;
+                let user_login = stream.user_login;
 
                 user_ids.push(stream.user_id);
 
                 const data = {
                     "id": user_id,
-                    "name": user_name,
+                    "user_login": user_login,
+                    "display_name": display_name,
                     "category": category,
                     "viewers": viewers,
                     "title": title,
@@ -227,7 +233,8 @@ function updateBadge(liveChannelCounter) {
 
 async function showNotification(channel) {
     let notificationID = null;
-    const channelName = channel.name;
+    const channelUserName = channel.user_login;
+    const channelDisplayName = channel.display_name;
     const channelTitle = channel.title;
 
     const logo = await fetch(channel.logo.replace("300x300", "70x70"))
@@ -261,7 +268,7 @@ async function showNotification(channel) {
         });
 
     let notificationOptions = null;
-    let notificationTitle = `${channelName} ${chrome.i18n.getMessage("notification_title")}`
+    let notificationTitle = `${channelDisplayName} ${chrome.i18n.getMessage("notification_title")}`
 
     if (navigator.userAgent.indexOf("Chrome") > -1) {
         notificationOptions = {
@@ -300,7 +307,7 @@ async function showNotification(channel) {
                             const popupHeight = 650;
 
                             chrome.windows.create({
-                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(channelName) +
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(channelUserName) +
                                      "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                 width: popupWidth,
                                 height: popupHeight,
@@ -310,11 +317,29 @@ async function showNotification(channel) {
                                 type: "popup"
                             });
                         } else {
-                            chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(channelName)});
+                            chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(channelUserName)});
                         }
 
                         chrome.notifications.clear(notificationID);
                     }
+                }
+            });
+        } else if (navigator.userAgent.indexOf("Firefox") > -1) {
+            browser.notifications.onClicked.addListener((ID) => {
+                if (settings["popup"]) {
+                    if (ID === notificationID) {
+                        browser.windows.create({
+                            url: "https://player.twitch.tv/?channel=" + encodeURIComponent(channelUserName) +
+                            "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
+                            focused: true,
+                            state: "maximized",
+                            type: "popup"
+                        });
+
+                        browser.notifications.clear(ID);
+                    }
+                } else {
+                    browser.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(channelUserName)});
                 }
             });
         }
@@ -348,7 +373,7 @@ chrome.storage.onChanged.addListener(async (storage) => {
 
             if (storage.liveChannels.oldValue?.length > 0) {
                 for (const channelOld of storage.liveChannels.oldValue) {
-                    if (channelNew.name === channelOld.name) {
+                    if (channelNew.user_login === channelOld.user_login) {
                         notificationStatus = false;
                         break;
                     }

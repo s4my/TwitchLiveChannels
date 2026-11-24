@@ -60,7 +60,8 @@
                 logoDiv.firstElementChild.setAttribute("src", channel.logo.replace("300x300", "70x70"));
 
                 const streamerDiv = streamDiv.querySelector(".streamer");
-                streamerDiv.textContent = channel.name;
+                streamerDiv.textContent = channel.display_name;
+                streamerDiv.setAttribute("data-user-login", channel.user_login);
 
                 const categoryDiv = streamDiv.querySelector(".category");
                 categoryDiv.textContent = channel.category;
@@ -170,20 +171,19 @@
         }
 
         if (event.target.matches(".stream, .streamer, .logo, .logo>img, .viewers, .viewers>span, .category")) {
-            const name = event.target.closest(".stream").getElementsByClassName("streamer")[0]
-                .textContent.toLowerCase();
+            const username = event.target.closest(".stream").getElementsByClassName("streamer")[0].getAttribute("data-user-login");
 
             chrome.storage.local.get(["settings"], (storage) => {
                 if (storage.settings !== undefined) {
                     if (!storage.settings["popup"]) {
-                        chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(name)});
+                        chrome.tabs.create({url: "https://www.twitch.tv/" + encodeURIComponent(username)});
                     } else {
                         if (navigator.userAgent.indexOf("Chrome") > -1) {
                             const popupWidth = 900;
                             const popupHeight = 650;
 
                             chrome.windows.create({
-                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(username) +
                                      "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                 width: popupWidth,
                                 height: popupHeight,
@@ -194,7 +194,7 @@
                             });
                         } else if (navigator.userAgent.indexOf("Firefox") > -1) {
                             chrome.windows.create({
-                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(name) +
+                                url: "https://player.twitch.tv/?channel=" + encodeURIComponent(username) +
                                      "&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&volume=1",
                                 focused: true,
                                 state: "maximized",
